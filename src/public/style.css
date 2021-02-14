@@ -1,5 +1,81 @@
+:root {
+	--theme-main-background: #111;
+
+	--theme-main-text: #eee;
+	--theme-darker-text: #999;
+	--theme-transparent-border: rgba(128,128,128,.3)
+}
+
+
 body {
 	font-family: sans-serif;
-	color: #eee;
-	background-color: #111
+	color: var(--theme-main-text);
+	background-color: var(--theme-main-background)
+}
+
+/* makes random height and stuff look less broken */
+* {
+	box-sizing: border-box;
+	vertical-align: baseline;
+}
+
+/* base styles for inputs */
+input[type=text], input[type=submit] {
+	-webkit-appearance: none;
+	background-color: transparent;
+	color: var(--theme-darker-text);
+	transition-duration: 250ms;
+	border: 1px solid var(--theme-transparent-border);
+	border-radius: 4px;
+	margin: 0;
+	height: 2em;
+	font-size: 1em;
+}
+
+/* base styles for text input boxes */
+input[type=text] {
+	text-align: left;
+	padding-left: .5em
+}
+/* Selecting a text box */
+input[type=text]:focus {
+	/* make the text lighter */
+	color: var(--theme-main-text)
+}
+
+
+/* base styles for buttons */
+input[type=submit] {
+	margin-left: .2em;
+	cursor: pointer;
+}
+/* Hovering over a button */
+input[type=submit]:hover {
+	/* make the text lighter */
+	color: var(--theme-main-text)
+}
+
+
+
+
+
+.enter-username-button, .view-profiles-button {
+	/* add a slight shadow on the form in the index page */
+	box-shadow: 0 0 1em #000
+}
+
+/* the main "SkyBlock stats" title */
+#main-title {
+	text-align: center;
+	font-size: calc(2em + 1vw);
+}
+
+/* the main "enter username" form */
+.user-form {
+	text-align: center;
+	font-size: 1.25rem;
+
+	/* center the forms */
+	margin: 0 auto;
+	width: max-content;
 }

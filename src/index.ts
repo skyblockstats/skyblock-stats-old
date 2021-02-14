@@ -1,9 +1,10 @@
 import * as nunjucks from 'nunjucks'
-import * as express from 'express'
+import express from 'express'
+import path from 'path'
 
 const app = express()
 
-const env = nunjucks.configure('views', {
+const env = nunjucks.configure('src/views', {
 	autoescape: true,
 	express: app
 })
@@ -12,6 +13,6 @@ app.get('/', function(req, res) {
 	res.render('index.html', {})
 })
 
-app.use('/', express.static('public'))
+app.use('/', express.static('src/public'))
 
 app.listen(8081, () => console.log('pog'))

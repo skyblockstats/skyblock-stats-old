@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
-{% block main %}
-<h1 style="text-align: center">Coming soonish</h1>
-{% endblock %}
+{% block main -%}
+
+<h1 id="main-title">SkyBlock Stats</h1>
+<form action="/player" method="post" class="user-form">
+	<input class="enter-username-button" type="text" placeholder="Enter username" name="name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Enter username">
+	<input class="view-profiles-button" type="submit" value="View profiles">
+</form>
+
+{%- endblock %}
