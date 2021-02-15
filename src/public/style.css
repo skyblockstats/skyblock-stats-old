@@ -13,6 +13,20 @@ body {
 	background-color: var(--theme-main-background)
 }
 
+/* content is uglier when its max width */
+main {
+    margin: 1em auto;
+    min-height: calc(100vh - 5rem);
+    width: 80%;
+}
+
+/* minecraft font */
+@font-face {
+	font-family: Minecraft;
+	src: url(//cdn.matdoes.dev/fonts/Minecraft.otf);
+	font-display: swap
+}
+
 /* makes random height and stuff look less broken */
 * {
 	box-sizing: border-box;
@@ -55,6 +69,15 @@ input[type=submit]:hover {
 	color: var(--theme-main-text)
 }
 
+/* base styles for anchor tags */
+a {
+	color: #19f;
+	text-decoration: none;
+}
+
+h1 {
+	font-size: 2.5em
+}
 
 
 
@@ -79,3 +102,26 @@ input[type=submit]:hover {
 	margin: 0 auto;
 	width: max-content;
 }
+
+.username {
+	/* usernames have the minecraft font */
+	font-family: Minecraft, sans-serif;
+	/* rreduce the size of the text because the font is too big */
+    font-size: .8em;
+}
+
+.profile-name {
+	margin-right: .5em
+}
+
+.profile-members > .username {
+	margin-right: .35em
+}
+
+.profile-list {
+	font-size: 1.5em;
+}
+.profile-list-item {
+	margin-bottom: .5em;
+}
+
