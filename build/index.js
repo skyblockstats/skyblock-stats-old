@@ -18,16 +18,33 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const nunjucks = __importStar(require("nunjucks"));
-const express = __importStar(require("express"));
-const app = express();
-const env = nunjucks.configure('views', {
+const express_1 = __importDefault(require("express"));
+const hypixel_1 = require("./hypixel");
+const serve_static_1 = __importDefault(require("serve-static"));
+const body_parser_1 = __importDefault(require("body-parser"));
+const app = express_1.default();
+const env = nunjucks.configure('src/views', {
     autoescape: true,
     express: app
 });
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
     res.render('index.html', {});
 });
-app.use('/', express.static('public'));
-app.listen(8081, () => console.log('pog'));
+app.get('/player/:user', async (req, res) => {
+    const data = await hypixel_1.fetchPlayer(req.params.user);
+    res.render('profiles.html', { data });
+});
+// we use bodyparser to be able to get data from req.body
+const urlencodedParser = body_parser_1.default.urlencoded({ extended: false });
+// redirect post requests from /player to /player/:user
+app.post('/player', urlencodedParser, (req, res) => {
+    res.redirect('/player/' + req.body['user-search']);
+});
+// we use serveStatic so it caches
+app.use(serve_static_1.default('src/public'));
+app.listen(8081, () => console.log('App started :)'));

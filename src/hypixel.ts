@@ -1,11 +1,13 @@
 import fetch from 'node-fetch'
 import { Agent } from 'https'
+// import { Agent } from 'http'
 
 if (!process.env.key)
 	// if there's no key in env, run dotenv
 	require('dotenv').config()
 
 const baseApi = 'https://skyblock-api2.matdoes.dev' // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
+// const baseApi = 'http://localhost:8080'
 
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
 const httpsAgent = new Agent({

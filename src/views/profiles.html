@@ -9,9 +9,15 @@
 	{%- for profile in data.profiles -%}
 		<li class="profile-list-item">
 			<a class="profile-name" href="/player/{{ data.player.username }}/{{ profile.name }}">{{ profile.name }}</a>
-			{#- This is necessary to remove the space between the profile name and the user list :) -#}
+			{#- This comment is necessary to remove the space between the profile name and the user list :) -#}
 			<span class="profile-members">
-				{%- if profile.members|length > 1 %}{% for player in profile.members %}{{ render.username(player) }}{% endfor -%}
+				{%- if profile.members|length > 1 %}{% for player in profile.members -%}
+					{#- don't unnecessarily hyperlink to the page it's already o -#}
+					{%- set hyperlinkToProfile = player.uuid != data.player.uuid -%}
+					{%- if hyperlinkToProfile %}<a href="/player/{{ player.username }}">{% endif -%}
+						{{- render.username(player) -}}
+					{%- if hyperlinkToProfile %}</a>{% endif -%}
+				{%- endfor -%}
 				{%- else %}Solo{% endif -%}
 			</span>
 		</li>
