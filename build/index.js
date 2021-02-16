@@ -27,10 +27,18 @@ const express_1 = __importDefault(require("express"));
 const hypixel_1 = require("./hypixel");
 const serve_static_1 = __importDefault(require("serve-static"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const nunjucks_with_1 = __importDefault(require("@allmarkedup/nunjucks-with"));
 const app = express_1.default();
 const env = nunjucks.configure('src/views', {
     autoescape: true,
-    express: app
+    express: app,
+});
+// we need this extension to have sections work correctly
+env.addExtension('WithExtension', new nunjucks_with_1.default());
+env.addFilter('clean', (word) => {
+    return word
+        .replace(/^./, word[0].toUpperCase())
+        .replace(/_/g, ' ');
 });
 app.get('/', (req, res) => {
     res.render('index.html', {});
@@ -38,6 +46,10 @@ app.get('/', (req, res) => {
 app.get('/player/:user', async (req, res) => {
     const data = await hypixel_1.fetchPlayer(req.params.user);
     res.render('profiles.html', { data });
+});
+app.get('/player/:user/:profile', async (req, res) => {
+    const data = await hypixel_1.fetchProfile(req.params.user, req.params.profile);
+    res.render('member.html', { data });
 });
 // we use bodyparser to be able to get data from req.body
 const urlencodedParser = body_parser_1.default.urlencoded({ extended: false });
