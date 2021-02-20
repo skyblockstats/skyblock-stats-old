@@ -1,9 +1,8 @@
-{% import "render.html" as render %}
-
-{% extends "base.html" %}
+{% import "render.njk" as render %}
+{% extends "base.njk" %}
 
 {%- block main -%}
-	<h1>{{ render.username(data.player) }}'s profiles</h1>
+	<h1>{{ render.username(data.player, headType='3d') }}'s profiles</h1>
 
 	<ul class="profile-list">
 	{%- for profile in data.profiles -%}
@@ -15,7 +14,7 @@
 					{#- don't unnecessarily hyperlink to the page it's already o -#}
 					{%- set hyperlinkToProfile = player.uuid != data.player.uuid -%}
 					{%- if hyperlinkToProfile %}<a href="/player/{{ player.username }}">{% endif -%}
-						{{- render.username(player) -}}
+						{{- render.username(player, headType='2d') -}}
 					{%- if hyperlinkToProfile %}</a>{% endif -%}
 				{%- endfor -%}
 				{%- else %}Solo{% endif -%}

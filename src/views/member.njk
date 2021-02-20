@@ -1,0 +1,95 @@
+{% import "render.njk" as render %}
+{% extends "base.njk" %}
+
+{%- block head -%}
+{{- super() -}}
+<script>
+const scrollToHash = () => {
+	{# get the url hash #}
+	const hash = location.hash.slice(1)
+	{# get the element with that hash #}
+	const selectedEl = document.getElementById(hash)
+	if (selectedEl) {
+		{# uncollapse the element #}
+		selectedEl.getElementsByClassName('collapsePart')[0].classList.remove('collapsed')
+		{# scroll to the element with the hash #}
+		selectedEl.scrollIntoView()
+	}
+}
+document.addEventListener('DOMContentLoaded', () => {
+	const toc = document.getElementById('toc')
+
+	for (const sectionEl of document.getElementsByClassName('collapsible')) {
+		var collapsibleTitle = sectionEl.getElementsByTagName('h2')[0]
+		if (!collapsibleTitle)
+			{# if the element doesn't exist, try getting it with h3 instead of h2 #}
+			collapsibleTitle = sectionEl.getElementsByTagName('h3')[0]
+
+		const name = collapsibleTitle.innerText
+		const hashLink = sectionEl.id
+		collapsibleTitle.classList.add('sectionTitle')
+		sectionEl.classList.add('section')
+
+		{# unless the element shouldn't be in the table of contents, put it there #}
+		if (!sectionEl.classList.contains('noTOC')) {
+			const newListItemEl = document.createElement('li')
+			const newAnchorEl = document.createElement('a')
+			newAnchorEl.href = '#' + hashLink
+			newAnchorEl.innerText = name
+			newListItemEl.append(newAnchorEl)
+			toc.append(newListItemEl)
+		}
+
+		if (!sectionEl.classList.contains('noCollapse')) {
+			const collapsiblePartEl = document.createElement('div')
+			collapsiblePartEl.classList.add('collapsePart')
+			collapsiblePartEl.classList.add('collapsed')
+			collapseArrowEl = document.createElement('div')
+			collapseArrowEl.classList.add('collapseArrow')
+			collapseArrowEl
+			collapsiblePartEl.appendChild(collapseArrowEl)
+			collapsiblePartEl.appendChild(collapsibleTitle)
+			sectionEl.prepend(collapsiblePartEl)
+			console.log('ok')
+			collapsiblePartEl.addEventListener('click', (e) => {
+				console.log('collapsiblePartEl clicked', collapsiblePartEl)
+				collapsiblePartEl.classList.toggle('collapsed')
+			})
+		}
+	}
+	scrollToHash()
+
+})
+addEventListener('hashchange', scrollToHash)
+</script>
+{%- endblock -%}
+
+{%- block main -%}
+	<h1>{{ render.username(data.member, headType='3d') }}</h1>
+	{% set categories = [
+		'deaths',
+		'kills'
+	] %}
+
+	<ul id="toc">
+		<h3>Contents</h3>
+		{# {%- for category in categories -%}
+			<li><a href="#{{ category }}">{{ category|clean }}</a></li>
+		{%- endfor -%} #}
+	</ul>
+
+	<div>
+		<div id="categories">
+			{% for category in categories %}
+				<section id="{{ category }}"  class="collapsible">
+					<h2>{{ category|title }}</h2>
+					{#- we need to use with so the include passes context -#}
+					{%- with { data: data, category: category } -%}
+						{#- include the category from the sections folder -#}
+						{%- include "sections/" + category + ".njk" -%}
+					{% endwith %}
+				</section>
+			{% endfor %}
+		</section>
+	</div>
+{%- endblock -%}

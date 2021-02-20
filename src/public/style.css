@@ -15,9 +15,9 @@ body {
 
 /* content is uglier when its max width */
 main {
-    margin: 1em auto;
-    min-height: calc(100vh - 5rem);
-    width: 80%;
+	margin: 1em auto;
+	min-height: calc(100vh - 5rem);
+	width: 80%;
 }
 
 /* minecraft font */
@@ -107,7 +107,7 @@ h1 {
 	/* usernames have the minecraft font */
 	font-family: Minecraft, sans-serif;
 	/* rreduce the size of the text because the font is too big */
-    font-size: .8em;
+	font-size: .8em;
 }
 
 .profile-name {
@@ -125,3 +125,49 @@ h1 {
 	margin-bottom: .5em;
 }
 
+.head2d {
+	/* pixelated rendering on 2d heads */
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
+	/* make the head centered correctly */
+	position: relative;
+	top: .1em;
+	/* same size as font */
+	height: 1em;
+	width: 1em;
+}
+
+.head3d {
+	/* make the head centered correctly */
+	position: relative;
+	top: .2em;
+	/* same size as font */
+	height: 1em;
+	width: 1em;
+}
+
+.userHead {
+	/* make the head not be touching the username */
+	margin-right: .2em;
+}
+
+/* add a collapsible svg arrow */
+.collapseArrow {
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj48cGF0aCBkPSJNMTcuNSA0Ljc1bC03LjUgNy41LTcuNS03LjVMMSA2LjI1bDkgOSA5LTl6IiBmaWxsPSIjYWFhIi8+IDwvc3ZnPg==);
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	margin-right: 1em;
+	transition-duration: 100ms
+}
+
+.sectionTitle {
+	display: inline-block;
+	margin: 0;
+	text-shadow: 0 0 .5em #000;
+}
+
+/* hide all elements preceding a collapsed section */
+.collapsePart.collapsed ~ * {
+	display: none
+}

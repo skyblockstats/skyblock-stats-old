@@ -1,0 +1,15 @@
+{%- macro username(player, headType=none) -%}
+	{%- if headType === '3d' %}{{ head3d(player, isPartOfUsername=true) -}}
+	{%- elif headType === '2d' %}{{ head2d(player, isPartOfUsername=true) -}}
+	{%- endif -%}
+
+	<span class="username" style="color: {{ player.rank.color }}">{{ player.username }}</span>
+{%- endmacro -%}
+
+{%- macro head3d(player, isPartOfUsername=false) -%}
+	<img class="head head3d{% if isPartOfUsername %} userHead{% endif %}" src="https://www.mc-heads.net/head/{{ player.uuid }}/128" alt="{{ player.username }}'s head">
+{%- endmacro -%}
+
+{%- macro head2d(player, isPartOfUsername=false) -%}
+	<img class="head head2d{% if isPartOfUsername %} userHead{% endif %}" src="https://www.mc-heads.net/avatar/{{ player.uuid }}/16" alt="{{ player.username }}'s face">
+{%- endmacro -%}
