@@ -41,15 +41,15 @@ env.addFilter('clean', (word) => {
         .replace(/_/g, ' ');
 });
 app.get('/', (req, res) => {
-    res.render('index.html', {});
+    res.render('index.njk', {});
 });
 app.get('/player/:user', async (req, res) => {
     const data = await hypixel_1.fetchPlayer(req.params.user);
-    res.render('profiles.html', { data });
+    res.render('profiles.njk', { data });
 });
 app.get('/player/:user/:profile', async (req, res) => {
     const data = await hypixel_1.fetchProfile(req.params.user, req.params.profile);
-    res.render('member.html', { data });
+    res.render('member.njk', { data });
 });
 // we use bodyparser to be able to get data from req.body
 const urlencodedParser = body_parser_1.default.urlencoded({ extended: false });
