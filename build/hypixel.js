@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.INVENTORIES = exports.fetchProfile = exports.fetchPlayer = void 0;
+exports.INVENTORIES = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const https_1 = require("https");
 // import { Agent } from 'http'
@@ -47,6 +47,10 @@ async function fetchProfile(user, profile) {
     return await fetchApi(`player/${user}/${profile}`);
 }
 exports.fetchProfile = fetchProfile;
+async function fetchLeaderboard(name) {
+    return await fetchApi(`leaderboard/${name}`);
+}
+exports.fetchLeaderboard = fetchLeaderboard;
 exports.INVENTORIES = {
     armor: 'inv_armor',
     inventory: 'inv_contents',

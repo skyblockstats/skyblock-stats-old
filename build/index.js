@@ -35,9 +35,17 @@ const env = nunjucks.configure('src/views', {
 });
 // we need this extension to have sections work correctly
 env.addExtension('WithExtension', new nunjucks_with_1.default());
-env.addFilter('clean', (word) => {
-    return word
-        .replace(/^./, word[0].toUpperCase())
+function moveStringToEnd(word, thing) {
+    if (thing.startsWith(`${word}_`))
+        thing = thing.substr(`${word}_`.length) + `_${word}`;
+    return thing;
+}
+env.addFilter('clean', (thing) => {
+    thing = moveStringToEnd('deaths', thing);
+    thing = moveStringToEnd('kills', thing);
+    thing = moveStringToEnd('collection', thing);
+    return thing
+        .replace(/^./, thing[0].toUpperCase())
         .replace(/_/g, ' ');
 });
 app.get('/', (req, res) => {
@@ -50,6 +58,10 @@ app.get('/player/:user', async (req, res) => {
 app.get('/player/:user/:profile', async (req, res) => {
     const data = await hypixel_1.fetchProfile(req.params.user, req.params.profile);
     res.render('member.njk', { data });
+});
+app.get('/leaderboard/:name', async (req, res) => {
+    const data = await hypixel_1.fetchLeaderboard(req.params.name);
+    res.render('leaderboard.njk', { data, name: req.params.name });
 });
 // we use bodyparser to be able to get data from req.body
 const urlencodedParser = body_parser_1.default.urlencoded({ extended: false });
