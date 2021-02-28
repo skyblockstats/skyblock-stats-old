@@ -13,9 +13,7 @@
 				{%- if profile.members|length > 1 %}{% for player in profile.members -%}
 					{#- don't unnecessarily hyperlink to the page it's already o -#}
 					{%- set hyperlinkToProfile = player.uuid != data.player.uuid -%}
-					{%- if hyperlinkToProfile %}<a href="/player/{{ player.username }}">{% endif -%}
-						{{- render.username(player, headType='2d') -}}
-					{%- if hyperlinkToProfile %}</a>{% endif -%}
+					{{- render.username(player, headType='2d', hyperlinkToProfile=hyperlinkToProfile) -}}
 				{%- endfor -%}
 				{%- else %}Solo{% endif -%}
 			</span>

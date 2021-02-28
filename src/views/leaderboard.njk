@@ -1,0 +1,15 @@
+{% import "render.njk" as render %}
+{% extends "base.njk" %}
+
+{%- block main -%}
+
+	<h1>{{ name|clean }}</h1>
+
+	<ol class="leaderboard-profile-list">
+	{%- for leaderboardItem in data -%}
+		<li class="leaderboard-profile-list-item">
+			<span>{{ leaderboardItem.value }} {{ name|clean|lower }}</span> {{ render.username(leaderboardItem.player, headType='2d', hyperlinkToProfile=true) -}}
+		</li>
+	{%- endfor -%}
+	<ol>
+{%- endblock -%}

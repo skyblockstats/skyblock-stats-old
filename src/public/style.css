@@ -118,7 +118,7 @@ h1 {
 	margin-right: .35em
 }
 
-.profile-list {
+.profile-list, .leaderboard-profile-list {
 	font-size: 1.5em;
 }
 .profile-list-item {

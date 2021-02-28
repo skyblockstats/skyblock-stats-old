@@ -50,7 +50,9 @@ export async function fetchProfile(user: string, profile: string): Promise<Clean
 	return await fetchApi(`player/${user}/${profile}`)
 }
 
-
+export async function fetchLeaderboard(name: string) {
+	return await fetchApi(`leaderboard/${name}`)
+}
 
 export interface CleanUser {
     player: CleanPlayer

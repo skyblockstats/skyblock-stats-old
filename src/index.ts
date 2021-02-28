@@ -1,6 +1,6 @@
 import * as nunjucks from 'nunjucks'
 import express from 'express'
-import { fetchPlayer, fetchProfile } from './hypixel'
+import { fetchLeaderboard, fetchPlayer, fetchProfile } from './hypixel'
 import serveStatic from 'serve-static'
 import bodyParser from 'body-parser'
 import WithExtension from '@allmarkedup/nunjucks-with'
@@ -11,12 +11,22 @@ const env = nunjucks.configure('src/views', {
 	autoescape: true,
 	express: app,
 })
+
 // we need this extension to have sections work correctly
 env.addExtension('WithExtension', new WithExtension())
 
-env.addFilter('clean', (word: string) => {
-	return word
-		.replace(/^./, word[0].toUpperCase())
+function moveStringToEnd(word: string, thing: string) {
+	if (thing.startsWith(`${word}_`))
+		thing = thing.substr(`${word}_`.length) + `_${word}`
+	return thing
+}
+
+env.addFilter('clean', (thing: string) => {
+	thing = moveStringToEnd('deaths', thing)
+	thing = moveStringToEnd('kills', thing)
+	thing = moveStringToEnd('collection', thing)
+	return thing
+		.replace(/^./, thing[0].toUpperCase())
 		.replace(/_/g, ' ')
 })
 
@@ -33,6 +43,11 @@ app.get('/player/:user', async(req, res) => {
 app.get('/player/:user/:profile', async(req, res) => {
 	const data = await fetchProfile(req.params.user, req.params.profile)
 	res.render('member.njk', { data })
+})
+
+app.get('/leaderboard/:name', async(req, res) => {
+	const data = await fetchLeaderboard(req.params.name)
+	res.render('leaderboard.njk', { data, name: req.params.name })
 })
 
 // we use bodyparser to be able to get data from req.body
