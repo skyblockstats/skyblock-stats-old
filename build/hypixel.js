@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.INVENTORIES = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = void 0;
+exports.INVENTORIES = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const https_1 = require("https");
 // import { Agent } from 'http'
@@ -51,6 +51,10 @@ async function fetchLeaderboard(name) {
     return await fetchApi(`leaderboard/${name}`);
 }
 exports.fetchLeaderboard = fetchLeaderboard;
+async function fetchLeaderboards() {
+    return await fetchApi(`leaderboards`);
+}
+exports.fetchLeaderboards = fetchLeaderboards;
 exports.INVENTORIES = {
     armor: 'inv_armor',
     inventory: 'inv_contents',

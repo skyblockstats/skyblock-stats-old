@@ -63,6 +63,16 @@ app.get('/leaderboard/:name', async (req, res) => {
     const data = await hypixel_1.fetchLeaderboard(req.params.name);
     res.render('leaderboard.njk', { data, name: req.params.name });
 });
+app.get('/leaderboards/:name', async (req, res) => {
+    res.redirect(`/leaderboard/${req.params.name}`);
+});
+app.get('/leaderboards', async (req, res) => {
+    const data = await hypixel_1.fetchLeaderboards();
+    res.render('leaderboards.njk', { data });
+});
+app.get('/leaderboard', async (req, res) => {
+    res.redirect('/leaderboards');
+});
 // we use bodyparser to be able to get data from req.body
 const urlencodedParser = body_parser_1.default.urlencoded({ extended: false });
 // redirect post requests from /player to /player/:user
