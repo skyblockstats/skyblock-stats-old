@@ -1,0 +1,27 @@
+{% import "render.njk" as render %}
+{% extends "base.njk" %}
+
+{%- block head -%}
+{{- super() -}}
+<script>{% include 'toc.js' %}</script>
+{%- endblock -%}
+
+
+{%- block main -%}
+	<h1>Hypixel SkyBlock leaderboards</h1>
+
+	<ul id="toc"><h3>Contents</h3></ul>
+
+	<div id="categories">
+		{%- for category, leaderboards in data -%}
+			<section id="{{ category }}"  class="collapsible">
+				<h2>{{ category|clean|title }}</h2>
+				<ul>
+				{%- for leaderboard in leaderboards -%}
+					<li><a href="/leaderboard/{{ leaderboard }}">{{ leaderboard|clean }}</a></li>
+				{%- endfor -%}
+				</ul>
+			</section>
+		{% endfor %}
+	<div>
+{%- endblock -%}

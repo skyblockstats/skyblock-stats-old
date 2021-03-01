@@ -54,6 +54,10 @@ export async function fetchLeaderboard(name: string) {
 	return await fetchApi(`leaderboard/${name}`)
 }
 
+export async function fetchLeaderboards() {
+	return await fetchApi(`leaderboards`)
+}
+
 export interface CleanUser {
     player: CleanPlayer
     profiles?: CleanProfile[]

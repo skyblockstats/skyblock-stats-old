@@ -1,6 +1,6 @@
 import * as nunjucks from 'nunjucks'
 import express from 'express'
-import { fetchLeaderboard, fetchPlayer, fetchProfile } from './hypixel'
+import { fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile } from './hypixel'
 import serveStatic from 'serve-static'
 import bodyParser from 'body-parser'
 import WithExtension from '@allmarkedup/nunjucks-with'
@@ -48,6 +48,19 @@ app.get('/player/:user/:profile', async(req, res) => {
 app.get('/leaderboard/:name', async(req, res) => {
 	const data = await fetchLeaderboard(req.params.name)
 	res.render('leaderboard.njk', { data, name: req.params.name })
+})
+
+app.get('/leaderboards/:name', async(req, res) => {
+	res.redirect(`/leaderboard/${req.params.name}`)
+})
+
+app.get('/leaderboards', async(req, res) => {
+	const data = await fetchLeaderboards()
+	res.render('leaderboards.njk', { data })
+})
+
+app.get('/leaderboard', async(req, res) => {
+	res.redirect('/leaderboards')
 })
 
 // we use bodyparser to be able to get data from req.body
