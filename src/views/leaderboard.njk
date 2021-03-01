@@ -8,7 +8,7 @@
 	<ol class="leaderboard-profile-list">
 	{%- for leaderboardItem in data -%}
 		<li class="leaderboard-profile-list-item">
-			<span>{{ leaderboardItem.value }} {{ name|clean|lower }}</span> {{ render.username(leaderboardItem.player, headType='2d', hyperlinkToProfile=true) -}}
+			<span>{{ leaderboardItem.value|clean }} {{ name|clean|lower }}</span> {{ render.username(leaderboardItem.player, headType='2d', hyperlinkToProfile=true) -}}
 		</li>
 	{%- endfor -%}
 	<ol>

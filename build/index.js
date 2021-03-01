@@ -41,12 +41,17 @@ function moveStringToEnd(word, thing) {
     return thing;
 }
 env.addFilter('clean', (thing) => {
-    thing = moveStringToEnd('deaths', thing);
-    thing = moveStringToEnd('kills', thing);
-    thing = moveStringToEnd('collection', thing);
-    return thing
-        .replace(/^./, thing[0].toUpperCase())
-        .replace(/_/g, ' ');
+    if (typeof thing === 'number') {
+        return thing.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    else {
+        thing = moveStringToEnd('deaths', thing);
+        thing = moveStringToEnd('kills', thing);
+        thing = moveStringToEnd('collection', thing);
+        return thing
+            .replace(/^./, thing[0].toUpperCase())
+            .replace(/_/g, ' ');
+    }
 });
 app.get('/', (req, res) => {
     res.render('index.njk', {});

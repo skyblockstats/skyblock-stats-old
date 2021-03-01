@@ -21,13 +21,17 @@ function moveStringToEnd(word: string, thing: string) {
 	return thing
 }
 
-env.addFilter('clean', (thing: string) => {
-	thing = moveStringToEnd('deaths', thing)
-	thing = moveStringToEnd('kills', thing)
-	thing = moveStringToEnd('collection', thing)
-	return thing
-		.replace(/^./, thing[0].toUpperCase())
-		.replace(/_/g, ' ')
+env.addFilter('clean', (thing: string|number) => {
+	if (typeof thing === 'number') {
+		return thing.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+	} else {
+		thing = moveStringToEnd('deaths', thing)
+		thing = moveStringToEnd('kills', thing)
+		thing = moveStringToEnd('collection', thing)
+		return thing
+			.replace(/^./, thing[0].toUpperCase())
+			.replace(/_/g, ' ')
+	}
 })
 
 app.get('/', (req, res) => {
