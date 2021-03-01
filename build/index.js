@@ -42,12 +42,11 @@ function moveStringToEnd(word, thing) {
 }
 env.addFilter('clean', (thing) => {
     if (typeof thing === 'number') {
-        return thing.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return thing.toLocaleString();
     }
     else {
-        thing = moveStringToEnd('deaths', thing);
-        thing = moveStringToEnd('kills', thing);
-        thing = moveStringToEnd('collection', thing);
+        for (const string of ['deaths', 'kills', 'collection', 'skill'])
+            thing = moveStringToEnd(string, thing);
         return thing
             .replace(/^./, thing[0].toUpperCase())
             .replace(/_/g, ' ');
