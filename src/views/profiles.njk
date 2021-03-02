@@ -1,6 +1,8 @@
 {% import "render.njk" as render %}
 {% extends "base.njk" %}
 
+{% block metatitle %}{% block title %}{{ data.player.username }}'s SkyBlock profiles{% endblock %}{% endblock %}
+
 {%- block main -%}
 	<h1>{{ render.username(data.player, headType='3d') }}'s profiles</h1>
 

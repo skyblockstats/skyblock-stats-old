@@ -1,13 +1,15 @@
 {% import 'render.njk' as render %}
 {% extends 'base.njk' %}
 
+{% block metatitle %}{% block title %}{{ data.member.username }}'s SkyBlock profile ({{ data.member.profileName }}) {% endblock %}{% endblock %}
+
 {%- block head -%}
 {{- super() -}}
 <script>{% include 'toc.js' %}</script>
 {%- endblock -%}
 
 {%- block main -%}
-	<h1>{{ render.username(data.member, headType='3d') }}</h1>
+	<h1>{{ render.username(data.member, headType='3d') }} ({{ data.member.profileName }})</h1>
 	{% set categories = [
 		'deaths',
 		'kills'

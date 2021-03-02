@@ -1,8 +1,9 @@
 {% import "render.njk" as render %}
 {% extends "base.njk" %}
 
-{%- block main -%}
+{% block metatitle %}{% block title %}{{ data.name|clean }} - SkyBlock Leaderboards{% endblock %}{% endblock %}
 
+{%- block main -%}
 	<h1>{{ data.name|clean }}</h1>
 
 	<ol class="leaderboard-profile-list">
