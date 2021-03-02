@@ -122,4 +122,16 @@ app.post('/player', urlencodedParser, (req, res) => {
 });
 // we use serveStatic so it caches
 app.use(serve_static_1.default('src/public'));
+// this should always be the last route!
+// shortcut that redirects the user to their active profile
+app.get('/:user', async (req, res) => {
+    const player = await hypixel_1.fetchPlayer(req.params.user);
+    if (player && player.activeProfile) {
+        const activeProfileId = player.activeProfile;
+        const activeProfileName = player.profiles.find((profile) => profile.uuid === activeProfileId);
+        if (activeProfileName === null || activeProfileName === void 0 ? void 0 : activeProfileName.name)
+            return res.redirect(`/player/${player.player.username}/${activeProfileName === null || activeProfileName === void 0 ? void 0 : activeProfileName.name}`);
+    }
+    return res.status(404).send('Not found');
+});
 app.listen(8081, () => console.log('App started :)'));
