@@ -21,9 +21,46 @@ function moveStringToEnd(word: string, thing: string) {
 	return thing
 }
 
+
+function millisecondsToTime(totalMilliseconds: number) {
+	const totalSeconds = totalMilliseconds / 1000
+	const totalMinutes = totalSeconds / 60
+	const totalHours = totalMinutes / 60
+
+	const milliseconds = Math.floor(totalMilliseconds) % 1000
+	const seconds = Math.floor(totalSeconds) % 60
+	const minutes = Math.floor(totalMinutes) % 60
+	const hours = Math.floor(totalHours)
+
+	const stringUnits: string[] = []
+
+	if (hours > 1) stringUnits.push(`${hours} hours`)
+	else if (hours == 1) stringUnits.push(`${hours} hour`)
+	if (minutes > 1) stringUnits.push(`${minutes} minutes`)
+	else if (minutes == 1) stringUnits.push(`${minutes} minute`)
+	if (seconds > 1) stringUnits.push(`${seconds} seconds`)
+	else if (seconds == 1) stringUnits.push(`${seconds} second`)
+	if (milliseconds > 1) stringUnits.push(`${milliseconds} milliseconds`)
+	else if (milliseconds == 1) stringUnits.push(`${milliseconds} millisecond`)
+	return stringUnits.slice(0, 2).join(' and ')
+}
+
+function cleanNumber(number: number, unit?: string): string {
+	switch (unit) {
+		case 'time':
+			return millisecondsToTime(number)
+		case 'date':
+			return (new Date(number * 1000)).toUTCString()
+	}
+	return number.toLocaleString() + ' ' + unit
+
+}
+
+env.addFilter('cleannumber', cleanNumber)
+
 env.addFilter('clean', (thing: string|number) => {
 	if (typeof thing === 'number') {
-		return thing.toLocaleString()
+		return cleanNumber(thing)
 	} else {
 		for (const string of ['deaths', 'kills', 'collection', 'skill'])
 			thing = moveStringToEnd(string, thing)
@@ -50,7 +87,7 @@ app.get('/player/:user/:profile', async(req, res) => {
 
 app.get('/leaderboard/:name', async(req, res) => {
 	const data = await fetchLeaderboard(req.params.name)
-	res.render('leaderboard.njk', { data, name: req.params.name })
+	res.render('leaderboard.njk', { data })
 })
 
 app.get('/leaderboards/:name', async(req, res) => {

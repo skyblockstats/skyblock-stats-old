@@ -3,12 +3,12 @@
 
 {%- block main -%}
 
-	<h1>{{ name|clean }}</h1>
+	<h1>{{ data.name|clean }}</h1>
 
 	<ol class="leaderboard-profile-list">
-	{%- for leaderboardItem in data -%}
+	{%- for leaderboardItem in data.list -%}
 		<li class="leaderboard-profile-list-item">
-			<span>{{ leaderboardItem.value|clean }} {{ name|clean|lower }}</span> {{ render.username(leaderboardItem.player, headType='2d', hyperlinkToProfile=true) -}}
+			<span>{{ leaderboardItem.value|cleannumber(data.unit or data.name|clean|lower) }} </span> {{ render.username(leaderboardItem.player, headType='2d', hyperlinkToProfile=true) -}}
 		</li>
 	{%- endfor -%}
 	<ol>
