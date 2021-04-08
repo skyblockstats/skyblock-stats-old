@@ -1,5 +1,5 @@
 <ul>
-{%- for name, value in data.member.stats.deaths -%}
+{%- for name, value in data.member.stats.deaths | dictsort(true, 'value') | reverse -%}
 	<li>{{ name|clean }}: {{ value }}</li>
 {%- endfor -%}
 </ul>
