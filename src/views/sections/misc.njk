@@ -1,0 +1,5 @@
+<ul>
+{%- for name, value in data.member.stats.misc | dictsort(true, 'value') | reverse -%}
+	<li>{{ name|clean }}: {{ value }}</li>
+{%- endfor -%}
+</ul>

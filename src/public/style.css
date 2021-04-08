@@ -167,7 +167,11 @@ hr {
 	height: 20px;
 	display: inline-block;
 	margin-right: 1em;
-	transition-duration: 100ms
+	/* transition-duration: 100ms */
+}
+
+.collapsePart:not(.collapsed) .collapseArrow {
+	transform: rotate(-180deg)
 }
 
 .sectionTitle {
