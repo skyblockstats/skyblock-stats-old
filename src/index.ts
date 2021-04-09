@@ -1,9 +1,9 @@
-import * as nunjucks from 'nunjucks'
-import express from 'express'
-import { fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile } from './hypixel'
-import serveStatic from 'serve-static'
-import bodyParser from 'body-parser'
+import { baseApi, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile } from './hypixel'
 import WithExtension from '@allmarkedup/nunjucks-with'
+import serveStatic from 'serve-static'
+import * as nunjucks from 'nunjucks'
+import bodyParser from 'body-parser'
+import express from 'express'
 
 const app = express()
 
@@ -14,6 +14,7 @@ const env = nunjucks.configure('src/views', {
 
 // we need this extension to have sections work correctly
 env.addExtension('WithExtension', new WithExtension())
+env.addGlobal('BASE_API', baseApi)
 
 function moveStringToEnd(word: string, thing: string) {
 	if (thing.startsWith(`${word}_`))

@@ -1,4 +1,20 @@
-<noscript><p>Enable Javascript >:(</p></noscript>
+<noscript><p>Enable JavaScript, nerd</p></noscript>
+<div id="member-leaderboard-spots">
+	gaming
+</div>
 <script>
-console.log('pog')
+
+const leaderboardsEl = document.getElementById('member-leaderboard-spots')
+
+async function loadLeaderboards() {
+	console.log('good, loading leaderboards')
+	await fetch(`{{ BASE_API }}/player/{{ data.member.uuid }}/{{ data.profile.uuid }}/leaderboards`)
+}
+
+let observer = new IntersectionObserver(loadLeaderboards, {
+  rootMargin: '0px',
+  threshold: 0
+})
+observer.observe(leaderboardsEl)
+
 </script>
