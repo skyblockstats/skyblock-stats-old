@@ -73,6 +73,7 @@ async function loadLeaderboards() {
 
 		for (const leaderboardItem of playerLeaderboardSpots.sort((a, b) => a.positionIndex - b.positionIndex)) {
 			let leaderboardItemEl = document.createElement('li')
+			leaderboardItemEl.classList.add('member-leaderboard-item')
 
 			let leaderboardItemAnchor = document.createElement('a')
 			const leaderboardNameClean = clean(leaderboardItem.name)
