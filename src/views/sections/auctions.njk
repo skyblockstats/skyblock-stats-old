@@ -1,5 +1,7 @@
 <ul>
-{%- for name, value in data.member.stats.auctions | dictsort(true, 'value') | reverse -%}
-	<li>{{ name|clean }}: {{ value }}</li>
+{%- for stat in data.member.stats | sort(true, true, 'value') -%}
+	{%- if stat.category == 'auctions' -%}
+		<li>{{ stat.categorizedName|clean }}: {{ stat.value }}</li>
+	{%- endif -%}
 {%- endfor -%}
 </ul>

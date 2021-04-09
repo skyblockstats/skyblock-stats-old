@@ -3,15 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.INVENTORIES = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = void 0;
+exports.INVENTORIES = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const https_1 = require("https");
 // import { Agent } from 'http'
 if (!process.env.key)
     // if there's no key in env, run dotenv
     require('dotenv').config();
-const baseApi = 'https://skyblock-api2.matdoes.dev'; // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
-// const baseApi = 'http://localhost:8080'
+exports.baseApi = 'https://skyblock-api2.matdoes.dev'; // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
+// export const baseApi = 'http://localhost:8080'
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
 const httpsAgent = new https_1.Agent({
     keepAlive: true
@@ -21,7 +21,7 @@ const httpsAgent = new https_1.Agent({
  * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
  */
 async function fetchApi(path) {
-    const fetchUrl = `${baseApi}/${path}`;
+    const fetchUrl = `${exports.baseApi}/${path}`;
     const fetchResponse = await node_fetch_1.default(fetchUrl, {
         agent: () => httpsAgent,
         headers: {

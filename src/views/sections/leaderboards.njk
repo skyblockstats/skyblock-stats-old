@@ -6,9 +6,16 @@
 
 const leaderboardsEl = document.getElementById('member-leaderboard-spots')
 
+let leaderboardsUnseen = true
+
 async function loadLeaderboards() {
+	// if we've already seen the leaderboards, return
+	if (!leaderboardsUnseen) return
+
 	console.log('good, loading leaderboards')
-	await fetch(`{{ BASE_API }}/player/{{ data.member.uuid }}/{{ data.profile.uuid }}/leaderboards`)
+	leaderboardsUnseen = false
+	const response = await fetch(`{{ BASE_API }}/player/{{ data.member.uuid }}/{{ data.profile.uuid }}/leaderboards`)
+	await response.json()
 }
 
 let observer = new IntersectionObserver(loadLeaderboards, {

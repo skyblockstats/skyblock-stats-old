@@ -22,12 +22,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const nunjucks = __importStar(require("nunjucks"));
-const express_1 = __importDefault(require("express"));
 const hypixel_1 = require("./hypixel");
-const serve_static_1 = __importDefault(require("serve-static"));
-const body_parser_1 = __importDefault(require("body-parser"));
 const nunjucks_with_1 = __importDefault(require("@allmarkedup/nunjucks-with"));
+const serve_static_1 = __importDefault(require("serve-static"));
+const nunjucks = __importStar(require("nunjucks"));
+const body_parser_1 = __importDefault(require("body-parser"));
+const express_1 = __importDefault(require("express"));
 const app = express_1.default();
 const env = nunjucks.configure('src/views', {
     autoescape: true,
@@ -35,6 +35,7 @@ const env = nunjucks.configure('src/views', {
 });
 // we need this extension to have sections work correctly
 env.addExtension('WithExtension', new nunjucks_with_1.default());
+env.addGlobal('BASE_API', hypixel_1.baseApi);
 function moveStringToEnd(word, thing) {
     if (thing.startsWith(`${word}_`))
         thing = thing.substr(`${word}_`.length) + `_${word}`;

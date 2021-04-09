@@ -7,7 +7,7 @@ if (!process.env.key)
 	require('dotenv').config()
 
 export const baseApi = 'https://skyblock-api2.matdoes.dev' // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
-// const baseApi = 'http://localhost:8080'
+// export const baseApi = 'http://localhost:8080'
 
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
 const httpsAgent = new Agent({
