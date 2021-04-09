@@ -205,3 +205,6 @@ h2.sectionTitle {
 #toc li {
 	list-style-type: none;
 }
+.member-leaderboard-item-anchor {
+	color: inherit
+}

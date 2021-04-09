@@ -1,12 +1,61 @@
 <noscript><p>Enable JavaScript, nerd</p></noscript>
-<div id="member-leaderboard-spots">
-	gaming
-</div>
+<ul id="member-leaderboard-spots">Loading...</ul>
 <script>
 
 const leaderboardsEl = document.getElementById('member-leaderboard-spots')
 
 let leaderboardsUnseen = true
+
+function moveStringToEnd(word, thing) {
+	if (thing.startsWith(`${word}_`))
+		thing = thing.substr(`${word}_`.length) + `_${word}`
+	return thing
+}
+
+function millisecondsToTime(totalMilliseconds) {
+	const totalSeconds = totalMilliseconds / 1000
+	const totalMinutes = totalSeconds / 60
+	const totalHours = totalMinutes / 60
+
+	const milliseconds = Math.floor(totalMilliseconds) % 1000
+	const seconds = Math.floor(totalSeconds) % 60
+	const minutes = Math.floor(totalMinutes) % 60
+	const hours = Math.floor(totalHours)
+
+	const stringUnits = []
+
+	if (hours > 1) stringUnits.push(`${hours} hours`)
+	else if (hours == 1) stringUnits.push(`${hours} hour`)
+	if (minutes > 1) stringUnits.push(`${minutes} minutes`)
+	else if (minutes == 1) stringUnits.push(`${minutes} minute`)
+	if (seconds > 1) stringUnits.push(`${seconds} seconds`)
+	else if (seconds == 1) stringUnits.push(`${seconds} second`)
+	if (milliseconds > 1) stringUnits.push(`${milliseconds} milliseconds`)
+	else if (milliseconds == 1) stringUnits.push(`${milliseconds} millisecond`)
+	return stringUnits.slice(0, 2).join(' and ')
+}
+
+function cleanNumber(number, unit) {
+	switch (unit) {
+		case 'time':
+			return millisecondsToTime(number)
+		case 'date':
+			return (new Date(number * 1000)).toUTCString()
+	}
+	return number.toLocaleString() + ' ' + unit
+}
+
+function clean(thing) {
+	if (typeof thing === 'number') {
+		return cleanNumber(thing)
+	} else {
+		for (const string of ['deaths', 'kills', 'collection', 'skill'])
+			thing = moveStringToEnd(string, thing)
+		return thing
+			.replace(/^./, thing[0].toUpperCase())
+			.replace(/_/g, ' ')
+	}
+}
 
 async function loadLeaderboards() {
 	// if we've already seen the leaderboards, return
@@ -15,7 +64,24 @@ async function loadLeaderboards() {
 	console.log('good, loading leaderboards')
 	leaderboardsUnseen = false
 	const response = await fetch(`{{ BASE_API }}/player/{{ data.member.uuid }}/{{ data.profile.uuid }}/leaderboards`)
-	await response.json()
+	const playerLeaderboardSpots = await response.json()
+	console.log(playerLeaderboardSpots)
+	console.log('aight')
+
+	leaderboardsEl.innerText = ''
+
+	for (const leaderboardItem of playerLeaderboardSpots.sort((a, b) => a.positionIndex - b.positionIndex)) {
+		let leaderboardItemEl = document.createElement('li')
+
+		let leaderboardItemAnchor = document.createElement('a')
+		const leaderboardNameClean = clean(leaderboardItem.name)
+		leaderboardItemAnchor.textContent = `${leaderboardItem.positionIndex + 1}) ${cleanNumber(leaderboardItem.value, leaderboardItem.unit || leaderboardNameClean.toLowerCase())}`
+		leaderboardItemAnchor.href = `/leaderboard/${leaderboardItem.name}`
+		leaderboardItemAnchor.classList.add('member-leaderboard-item-anchor')
+
+		leaderboardItemEl.appendChild(leaderboardItemAnchor)
+		leaderboardsEl.appendChild(leaderboardItemEl)
+	}
 }
 
 let observer = new IntersectionObserver(loadLeaderboards, {

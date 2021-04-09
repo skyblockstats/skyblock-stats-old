@@ -54,12 +54,11 @@ function cleanNumber(number: number, unit?: string): string {
 			return (new Date(number * 1000)).toUTCString()
 	}
 	return number.toLocaleString() + ' ' + unit
-
 }
 
 env.addFilter('cleannumber', cleanNumber)
 
-env.addFilter('clean', (thing: string|number) => {
+env.addFilter('clean', (thing: string | number) => {
 	if (typeof thing === 'number') {
 		return cleanNumber(thing)
 	} else {
