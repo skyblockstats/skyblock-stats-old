@@ -68,19 +68,23 @@ async function loadLeaderboards() {
 	console.log(playerLeaderboardSpots)
 	console.log('aight')
 
-	leaderboardsEl.innerText = ''
+	if (playerLeaderboardSpots.length > 0) {
+		leaderboardsEl.innerText = ''
 
-	for (const leaderboardItem of playerLeaderboardSpots.sort((a, b) => a.positionIndex - b.positionIndex)) {
-		let leaderboardItemEl = document.createElement('li')
+		for (const leaderboardItem of playerLeaderboardSpots.sort((a, b) => a.positionIndex - b.positionIndex)) {
+			let leaderboardItemEl = document.createElement('li')
 
-		let leaderboardItemAnchor = document.createElement('a')
-		const leaderboardNameClean = clean(leaderboardItem.name)
-		leaderboardItemAnchor.textContent = `${leaderboardItem.positionIndex + 1}) ${cleanNumber(leaderboardItem.value, leaderboardItem.unit || leaderboardNameClean.toLowerCase())}`
-		leaderboardItemAnchor.href = `/leaderboard/${leaderboardItem.name}`
-		leaderboardItemAnchor.classList.add('member-leaderboard-item-anchor')
+			let leaderboardItemAnchor = document.createElement('a')
+			const leaderboardNameClean = clean(leaderboardItem.name)
+			leaderboardItemAnchor.textContent = `${leaderboardItem.positionIndex + 1}) ${cleanNumber(leaderboardItem.value, leaderboardItem.unit || leaderboardNameClean.toLowerCase())}`
+			leaderboardItemAnchor.href = `/leaderboard/${leaderboardItem.name}`
+			leaderboardItemAnchor.classList.add('member-leaderboard-item-anchor')
 
-		leaderboardItemEl.appendChild(leaderboardItemAnchor)
-		leaderboardsEl.appendChild(leaderboardItemEl)
+			leaderboardItemEl.appendChild(leaderboardItemAnchor)
+			leaderboardsEl.appendChild(leaderboardItemEl)
+		}
+	} else {
+		leaderboardsEl.textContent = 'This person isn\'t in any leaderboards.'
 	}
 }
 
