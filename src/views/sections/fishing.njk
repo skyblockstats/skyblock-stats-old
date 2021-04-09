@@ -1,7 +1,12 @@
 <ul>
+{%- set count = 0 -%}
 {%- for stat in data.member.stats | sort(true, true, 'value') -%}
 	{%- if stat.category == 'fishing' -%}
 		<li>{{ stat.categorizedName|clean }}: {{ stat.value }}</li>
+		{%- set count = count + 1 -%}
 	{%- endif -%}
 {%- endfor -%}
+{%- if count == 0 -%}
+	<p>No fishing stats</p>
+{%- endif -%}
 </ul>

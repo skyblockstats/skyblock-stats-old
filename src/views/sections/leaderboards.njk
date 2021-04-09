@@ -1,8 +1,7 @@
 <noscript><p>Enable JavaScript, nerd</p></noscript>
 <ul id="member-leaderboard-spots">Loading...</ul>
 <script>
-
-const leaderboardsEl = document.getElementById('member-leaderboard-spots')
+document.addEventListener('DOMContentLoaded', () => {
 
 let leaderboardsUnseen = true
 
@@ -57,9 +56,10 @@ function clean(thing) {
 	}
 }
 
-async function loadLeaderboards() {
+async function loadLeaderboards(entries) {
 	// if we've already seen the leaderboards, return
-	if (!leaderboardsUnseen) return
+	if (!leaderboardsUnseen || entries.length === 0 || !entries[0].isIntersecting) return
+	console.log(entries)
 
 	console.log('good, loading leaderboards')
 	leaderboardsUnseen = false
@@ -69,7 +69,7 @@ async function loadLeaderboards() {
 	console.log('aight')
 
 	if (playerLeaderboardSpots.length > 0) {
-		leaderboardsEl.innerText = ''
+		leaderboardsEl.innerHTML = ''
 
 		for (const leaderboardItem of playerLeaderboardSpots.sort((a, b) => a.positionIndex - b.positionIndex)) {
 			let leaderboardItemEl = document.createElement('li')
@@ -77,7 +77,9 @@ async function loadLeaderboards() {
 
 			let leaderboardItemAnchor = document.createElement('a')
 			const leaderboardNameClean = clean(leaderboardItem.name)
-			leaderboardItemAnchor.textContent = `${leaderboardItem.positionIndex + 1}) ${cleanNumber(leaderboardItem.value, leaderboardItem.unit || leaderboardNameClean.toLowerCase())}`
+
+			leaderboardItemAnchor.innerHTML = `${leaderboardItem.positionIndex + 1}) <b>${leaderboardNameClean}</b>: ${cleanNumber(leaderboardItem.value, leaderboardItem.unit || '')}`
+
 			leaderboardItemAnchor.href = `/leaderboard/${leaderboardItem.name}`
 			leaderboardItemAnchor.classList.add('member-leaderboard-item-anchor')
 
@@ -89,10 +91,14 @@ async function loadLeaderboards() {
 	}
 }
 
+const leaderboardsEl = document.getElementById('member-leaderboard-spots')
+
 let observer = new IntersectionObserver(loadLeaderboards, {
-  rootMargin: '0px',
-  threshold: 0
+	rootMargin: '0px',
+	threshold: 0
 })
 observer.observe(leaderboardsEl)
+
+})
 
 </script>
