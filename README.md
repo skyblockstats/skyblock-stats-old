@@ -1,3 +1,3 @@
 # skyblock.matdoes.dev
 
-Powered by [skyblock-api](https://github.com/skyblockstats/skyblock-api)
+Frontend for [skyblock-api](https://github.com/skyblockstats/skyblock-api)
