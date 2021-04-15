@@ -36,6 +36,7 @@ const env = nunjucks.configure('src/views', {
 // we need this extension to have sections work correctly
 env.addExtension('WithExtension', new nunjucks_with_1.default());
 env.addGlobal('BASE_API', hypixel_1.baseApi);
+env.addGlobal('getTime', () => (new Date()).getTime() / 1000);
 function moveStringToEnd(word, thing) {
     if (thing.startsWith(`${word}_`))
         thing = thing.substr(`${word}_`.length) + `_${word}`;

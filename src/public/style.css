@@ -123,16 +123,28 @@ hr {
 	margin-right: .5em
 }
 
+.profile-members {
+	color: var(--theme-main-text)
+}
 .profile-members .username {
-	margin-right: .35em
+	margin-right: .35em;
 }
 
 .profile-list, .leaderboard-profile-list {
 	font-size: 1.5em;
 }
+
 .profile-list-item {
 	margin-bottom: .5em;
+	color: var(--theme-darker-text)
 }
+.profile-list-item-active {
+	color: #fff
+}
+.profile-list-item-online {
+	color: #0e0
+}
+
 
 .head2d {
 	/* pixelated rendering on 2d heads */

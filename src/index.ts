@@ -15,6 +15,7 @@ const env = nunjucks.configure('src/views', {
 // we need this extension to have sections work correctly
 env.addExtension('WithExtension', new WithExtension())
 env.addGlobal('BASE_API', baseApi)
+env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
 
 function moveStringToEnd(word: string, thing: string) {
 	if (thing.startsWith(`${word}_`))
