@@ -1,6 +1,5 @@
 {% import "render.njk" as render %}
 
-{# {% asyncEach item in data.member.inventories.ender_chest %} #}
-	{# {{ render.item(item, slot=true) }} #}
-	{{ 'a'|itemToUrl }}
-{# {% endeach %} #}
+{% asyncEach item in data.member.inventories.ender_chest %}
+	{{ render.item(item, slot=true) }}
+{% endeach %}

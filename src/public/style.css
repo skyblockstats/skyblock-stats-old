@@ -223,3 +223,20 @@ h2.sectionTitle {
 .member-leaderboard-item {
 	list-style-type: none
 }
+
+.item {
+	display: inline-block;
+	width: 2em;
+	height: 2em;
+}
+.item-slot {
+	border: 1px solid #888;
+	border-radius: .3em
+}
+.item img {
+	position: absolute;
+	width: 2em;
+	height: 2em;
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
+}

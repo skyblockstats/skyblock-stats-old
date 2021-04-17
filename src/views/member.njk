@@ -25,7 +25,7 @@
 
 	<div>
 		<div id="categories">
-			{% asyncEach category in categories %}
+			{% asyncAll category in categories %}
 				<section id="{{ category }}"  class="collapsible">
 					<h2>{{ category|replace('_', ' ')|title }}</h2>
 					{#- we need to use with so the include passes context -#}
@@ -34,7 +34,7 @@
 						{%- include "sections/" + category + ".njk" -%}
 					{% endwith %}
 				</section>
-			{% endeach %}
-		</section>
+			{% endall %}
+		</div>
 	</div>
 {%- endblock -%}

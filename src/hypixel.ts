@@ -1,4 +1,5 @@
 import fetch from 'node-fetch'
+import NodeCache from 'node-cache'
 import { Agent } from 'https'
 // import { Agent } from 'http'
 
@@ -48,7 +49,7 @@ export async function fetchPlayer(user: string): Promise<CleanUser> {
  * @param user A username or UUID
  * @profile A profile name or UUID
  */
-export async function fetchProfile(user: string, profile: string): Promise<CleanFullProfile> {
+export async function fetchProfile(user: string, profile: string): Promise<CleanMemberProfile> {
 	return await fetchApi(`player/${user}/${profile}`)
 }
 
@@ -60,8 +61,16 @@ export async function fetchLeaderboards() {
 	return await fetchApi(`leaderboards`)
 }
 
+const itemToUrlCache = new NodeCache({
+	stdTTL: 60,
+	checkperiod: 5,
+	useClones: false,
+})
 
-export async function itemToUrl(item: Item) {
+export async function itemToUrl(item: Item): Promise<string> {
+	const stringifiedItem = JSON.stringify(item)
+	if (itemToUrlCache.has(stringifiedItem))
+		return itemToUrlCache.get(stringifiedItem)
 	const itemNbt: skyblockAssets.NBT = {
 		ExtraAttributes: {
 			id: item.id,
@@ -75,45 +84,71 @@ export async function itemToUrl(item: Item) {
 		nbt: itemNbt,
 		pack: 'packshq'
 	})
+	itemToUrlCache.set(stringifiedItem, textureUrl)
 	return textureUrl
 }
 
+export function itemToUrlCached(item: Item): string {
+	if (!item) return null
+	const stringifiedItem = JSON.stringify(item)
+	return itemToUrlCache.get(stringifiedItem)
+}
 
-export interface CleanUser {
-    player: CleanPlayer
-    profiles?: CleanProfile[]
-    activeProfile?: string
-    online?: boolean
+/** Get all the items in an inventories object to cache them */
+export async function cacheInventories(inventories: Inventories) {
+	const promises: Promise<any>[] = []
+	for (const inventoryItems of Object.values(inventories ?? {}))
+		for (const inventoryItem of inventoryItems)
+			if (inventoryItem)
+				promises.push(itemToUrl(inventoryItem))
+	await Promise.all(promises)
 }
 
 
-export interface CleanPlayer extends CleanBasicPlayer {
-    rank: CleanRank
-    socials: CleanSocialMedia
-    profiles?: CleanBasicProfile[]
+interface CleanUser {
+	player: CleanPlayer
+	profiles?: CleanProfile[]
+	activeProfile?: string
+	online?: boolean
 }
 
 export interface CleanProfile extends CleanBasicProfile {
     members?: CleanBasicMember[]
 }
 
-export interface CleanBasicPlayer {
-    uuid: string
-    username: string
+export interface CleanFullProfile extends CleanProfile {
+    members: CleanMember[]
+    bank: Bank
+    minions: CleanMinion[]
+	minion_count: number
 }
 
-export interface CleanRank {
-	name: string,
-	color: string | null,
-	colored: string | null,
+interface Item {
+	id: string
+	count: number
+	vanillaId: string
+
+	display: {
+		name: string
+		lore: string[]
+		glint: boolean
+	}
+
+	reforge?: string
+	anvil_uses?: number
+	timestamp?: string
+	enchantments?: { [ name: string ]: number }
+
+	skull_owner?: string
 }
 
-export interface CleanSocialMedia {
-	discord: string | null
-	forums: string | null
+interface CleanPlayer extends CleanBasicPlayer {
+    rank: CleanRank
+    socials: CleanSocialMedia
+    profiles?: CleanBasicProfile[]
+    first_join: number
 }
 
-/** A basic profile that only includes the profile uuid and name */
 export interface CleanBasicProfile {
     uuid: string
 
@@ -121,23 +156,19 @@ export interface CleanBasicProfile {
     name?: string
 }
 
+
 export interface CleanBasicMember {
     uuid: string
     username: string
     last_save: number
     first_join: number
-}
-
-export interface CleanFullProfile extends CleanProfile {
-    members: (CleanMember|CleanBasicMember)[]
-    bank: Bank
-    minions: CleanMinion[]
-	minion_count: number
+    rank: CleanRank
 }
 
 export interface CleanMember extends CleanBasicMember {
     purse: number
-    stats: CleanProfileStats
+    stats: StatItem[]
+    rawHypixelStats?: { [ key: string ]: number }
     minions: CleanMinion[]
 	fairy_souls: FairySouls
     inventories: Inventories
@@ -158,11 +189,28 @@ export interface CleanMinion {
     levels: boolean[]
 }
 
-export interface CleanProfileStats {
-    [ category: string ]: {
-        [ stat: string ]: any
-        total?: any
-    }
+export interface CleanBasicPlayer {
+    uuid: string
+    username: string
+}
+
+export interface CleanRank {
+	name: string,
+	color: string | null,
+	colored: string | null,
+}
+
+export interface CleanSocialMedia {
+	discord: string | null
+	forums: string | null
+}
+
+export interface StatItem {
+	rawName: string
+	value: number
+	categorizedName: string
+	category: string
+	unit: string
 }
 
 export interface FairySouls {
@@ -184,7 +232,7 @@ export const INVENTORIES = {
 	wardrobe: 'wardrobe_contents'
 }
 
-export type Inventories = { [name in keyof typeof INVENTORIES ]: Inventories }
+export type Inventories = { [name in keyof typeof INVENTORIES ]: Item[] }
 
 export interface Objective {
 	name: string
@@ -284,6 +332,12 @@ export interface Collection {
 	category: CollectionCategory
 }
 
+export interface SlayerData {
+	xp: number
+	kills: number
+	bosses: Slayer[]
+}
+
 const SLAYER_NAMES = {
 	spider: 'tarantula',
 	zombie: 'revenant',
@@ -300,30 +354,41 @@ interface SlayerTier {
 
 export interface Slayer {
 	name: SlayerName
+	raw_name: string
 	xp: number
+	kills: number
 	tiers: SlayerTier[]
 }
 
-export interface SlayerData {
-	xp: number
-	bosses: Slayer[]
+export interface CleanMemberProfile {
+    member: CleanMemberProfilePlayer
+    profile: CleanFullProfileBasicMembers
 }
 
-interface Item {
-	id: string
-	count: number
-	vanillaId: string
-
-	display: {
-		name: string
-		lore: string[]
-		glint: boolean
-	}
-
-	reforge?: string
-	anvil_uses?: number
-	timestamp?: string
-	enchantments?: { [ name: string ]: number }
-
-	skull_owner?: string
+export interface CleanMemberProfilePlayer extends CleanPlayer {
+    // The profile name may be different for each player, so we put it here
+    profileName: string
+    first_join: number
+    last_save: number
+    bank?: Bank
+    purse?: number
+    stats?: StatItem[]
+    rawHypixelStats?: { [ key: string ]: number }
+    minions?: CleanMinion[]
+	fairy_souls?: FairySouls
+    inventories?: Inventories
+    objectives?: Objective[]
+    skills?: Skill[]
+    visited_zones?: Zone[]
+    collections?: Collection[]
+    slayers?: SlayerData
 }
+
+
+export interface CleanFullProfileBasicMembers extends CleanProfile {
+    members: CleanBasicMember[]
+    bank: Bank
+    minions: CleanMinion[]
+	minion_count: number
+}
+

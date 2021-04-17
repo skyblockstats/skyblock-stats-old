@@ -15,10 +15,11 @@
 	<img class="head head2d{% if isPartOfUsername %} userHead{% endif %}" src="https://www.mc-heads.net/avatar/{{ player.uuid }}/16" alt="{{ player.username }}'s face">
 {%- endmacro -%}
 
+
 {%- macro item(data, slot=true) -%}
 	<span class="item{% if slot %} item-slot{% endif %}">
 		{%- if data -%}
-			{{ data|itemToUrl }}
+			<img src="{{ data|itemToUrl }}">
 		{%- endif -%}
 	</span>
 {%- endmacro -%}
