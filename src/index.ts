@@ -1,4 +1,4 @@
-import { baseApi, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile } from './hypixel'
+import { baseApi, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile, itemToUrl } from './hypixel'
 import WithExtension from '@allmarkedup/nunjucks-with'
 import serveStatic from 'serve-static'
 import * as nunjucks from 'nunjucks'
@@ -16,6 +16,12 @@ const env = nunjucks.configure('src/views', {
 env.addExtension('WithExtension', new WithExtension())
 env.addGlobal('BASE_API', baseApi)
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
+env.addFilter('itemToUrl', (item, callback) => {
+	itemToUrl(item).then(url => {
+		console.log('itemToUrl', url)
+		callback(url)
+	})
+}, true)
 
 function moveStringToEnd(word: string, thing: string) {
 	if (thing.startsWith(`${word}_`))
@@ -70,6 +76,8 @@ env.addFilter('clean', (thing: string | number) => {
 			.replace(/_/g, ' ')
 	}
 })
+
+
 
 app.get('/', (req, res) => {
 	res.render('index.njk', {})

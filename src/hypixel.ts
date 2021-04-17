@@ -2,6 +2,8 @@ import fetch from 'node-fetch'
 import { Agent } from 'https'
 // import { Agent } from 'http'
 
+import * as skyblockAssets from 'skyblock-assets'
+
 if (!process.env.key)
 	// if there's no key in env, run dotenv
 	require('dotenv').config()
@@ -57,6 +59,25 @@ export async function fetchLeaderboard(name: string) {
 export async function fetchLeaderboards() {
 	return await fetchApi(`leaderboards`)
 }
+
+
+export async function itemToUrl(item: Item) {
+	const itemNbt: skyblockAssets.NBT = {
+		ExtraAttributes: {
+			id: item.id,
+			display: {
+				Name: item.display.name
+			}
+		}
+	}
+	const textureUrl = await skyblockAssets.getTextureUrl({
+		id: item.vanillaId,
+		nbt: itemNbt,
+		pack: 'packshq'
+	})
+	return textureUrl
+}
+
 
 export interface CleanUser {
     player: CleanPlayer
@@ -286,4 +307,23 @@ export interface Slayer {
 export interface SlayerData {
 	xp: number
 	bosses: Slayer[]
+}
+
+interface Item {
+	id: string
+	count: number
+	vanillaId: string
+
+	display: {
+		name: string
+		lore: string[]
+		glint: boolean
+	}
+
+	reforge?: string
+	anvil_uses?: number
+	timestamp?: string
+	enchantments?: { [ name: string ]: number }
+
+	skull_owner?: string
 }

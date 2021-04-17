@@ -17,23 +17,24 @@
 		'fishing',
 		'races',
 		'misc',
-		'leaderboards'
+		'leaderboards',
+		'ender_chest'
 	] %}
 
 	<ul id="toc"><h3>Contents</h3></ul>
 
 	<div>
 		<div id="categories">
-			{% for category in categories %}
+			{% asyncEach category in categories %}
 				<section id="{{ category }}"  class="collapsible">
-					<h2>{{ category|title }}</h2>
+					<h2>{{ category|replace('_', ' ')|title }}</h2>
 					{#- we need to use with so the include passes context -#}
 					{%- with { data: data, category: category } -%}
 						{#- include the category from the sections folder -#}
 						{%- include "sections/" + category + ".njk" -%}
 					{% endwith %}
 				</section>
-			{% endfor %}
+			{% endeach %}
 		</section>
 	</div>
 {%- endblock -%}
