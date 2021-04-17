@@ -37,12 +37,9 @@ const env = nunjucks.configure('src/views', {
 env.addExtension('WithExtension', new nunjucks_with_1.default());
 env.addGlobal('BASE_API', hypixel_1.baseApi);
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000);
-env.addFilter('itemToUrl', (item, callback) => {
-    hypixel_1.itemToUrl(item).then(url => {
-        console.log('itemToUrl', url);
-        callback(url);
-    });
-}, true);
+env.addFilter('itemToUrl', (item) => {
+    return hypixel_1.itemToUrlCached(item);
+});
 function moveStringToEnd(word, thing) {
     if (thing.startsWith(`${word}_`))
         thing = thing.substr(`${word}_`.length) + `_${word}`;
@@ -106,6 +103,7 @@ app.get('/player/:user', async (req, res) => {
 });
 app.get('/player/:user/:profile', async (req, res) => {
     const data = await hypixel_1.fetchProfile(req.params.user, req.params.profile);
+    await hypixel_1.cacheInventories(data.member.inventories);
     res.render('member.njk', { data });
 });
 app.get('/leaderboard/:name', async (req, res) => {
