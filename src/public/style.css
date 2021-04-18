@@ -226,17 +226,24 @@ h2.sectionTitle {
 
 .item {
 	display: inline-block;
-	width: 2em;
-	height: 2em;
+	font-size: 32px;
+	width: 1.2em;
+	height: 1.2em;
 }
 .item-slot {
 	border: 1px solid #888;
-	border-radius: .3em
+	border-radius: .1em
 }
 .item img {
 	position: absolute;
-	width: 2em;
-	height: 2em;
+	margin-top: .075em;
+	margin-left: .075em;
+	width: 1em;
+	height: 1em;
 	image-rendering: crisp-edges;
 	image-rendering: pixelated;
+}
+
+.item-slot {
+	margin: .05em
 }

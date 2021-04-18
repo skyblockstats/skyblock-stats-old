@@ -1,5 +1,3 @@
 {% import "render.njk" as render %}
 
-{% asyncEach item in data.member.inventories.ender_chest %}
-	{{ render.item(item, slot=true) }}
-{% endeach %}
+{{ render.inventory(data.member.inventories.ender_chest) }}

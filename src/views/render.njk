@@ -23,3 +23,12 @@
 		{%- endif -%}
 	</span>
 {%- endmacro -%}
+
+{%- macro inventory(items) -%}
+	{%- for itemData in items -%}
+		{%- if loop.index0 > 0 and loop.index0 % 9 == 0 %}</div>{%- endif -%}
+		{%- if loop.index0 % 9 == 0 %}<div>{%- endif -%}
+		{{- item(itemData, slot=true) -}}
+	{%- endfor -%}
+	</div>
+{%- endmacro -%}

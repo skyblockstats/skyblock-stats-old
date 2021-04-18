@@ -79,17 +79,22 @@ export async function itemToUrl(item: Item): Promise<string> {
 			}
 		}
 	}
-	const textureUrl = await skyblockAssets.getTextureUrl({
+	let textureUrl = await skyblockAssets.getTextureUrl({
 		id: item.vanillaId,
 		nbt: itemNbt,
 		pack: 'packshq'
 	})
+
+	if (!textureUrl && item.head_texture)
+		textureUrl = `https://mc-heads.net/head/${item.head_texture}`
+
 	itemToUrlCache.set(stringifiedItem, textureUrl)
 	return textureUrl
 }
 
 export function itemToUrlCached(item: Item): string {
 	if (!item) return null
+
 	const stringifiedItem = JSON.stringify(item)
 	return itemToUrlCache.get(stringifiedItem)
 }
@@ -139,7 +144,7 @@ interface Item {
 	timestamp?: string
 	enchantments?: { [ name: string ]: number }
 
-	skull_owner?: string
+	head_texture?: string
 }
 
 interface CleanPlayer extends CleanBasicPlayer {
