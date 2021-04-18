@@ -40,6 +40,10 @@ env.addGlobal('getTime', () => (new Date()).getTime() / 1000);
 env.addFilter('itemToUrl', (item) => {
     return hypixel_1.itemToUrlCached(item);
 });
+env.addFilter('append', (arr, item) => {
+    arr.push(item);
+    return arr;
+});
 function moveStringToEnd(word, thing) {
     if (thing.startsWith(`${word}_`))
         thing = thing.substr(`${word}_`.length) + `_${word}`;

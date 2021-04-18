@@ -19,6 +19,10 @@ env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
 env.addFilter('itemToUrl', (item) => {
 	return itemToUrlCached(item)
 })
+env.addFilter('append', (arr: any[], item: any) => {
+	arr.push(item)
+	return arr
+})
 
 
 function moveStringToEnd(word: string, thing: string) {

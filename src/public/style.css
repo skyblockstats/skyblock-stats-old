@@ -6,6 +6,11 @@
 	--theme-transparent-border: rgba(128,128,128,.3)
 }
 
+@font-face {
+	font-family: Minecraft;
+	src: url(https://cdn.matdoes.dev/fonts/Minecraft.otf);
+	font-display: swap
+}
 
 body {
 	font-family: sans-serif;
