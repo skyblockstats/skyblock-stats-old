@@ -18,31 +18,58 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const itemEls = document.getElementsByClassName('item')
 	const tooltipEl = document.getElementById('global-tooltip')
+	let tooltipLocked = false
 
 	document.addEventListener('mousemove', (e) => {
-		tooltipEl.style.top = e.pageY + 'px'
-		tooltipEl.style.left = e.pageX + 'px'
+		if (!tooltipLocked) {
+			tooltipEl.style.top = e.pageY + 'px'
+			tooltipEl.style.left = e.pageX + 'px'
+		}
 	})
 	
 	for (const itemEl of itemEls) {
 		itemEl.addEventListener('mouseover', () => {
-			const loreHtml = itemEl.dataset.loreHtml
-				.replace(/&lt;/g, '<')
-				.replace(/&gt;/g, '>')
-				.replace(/&quot;/g, '"')
-			const nameHtml = itemEl.dataset.nameHtml
-				.replace(/&lt;/g, '<')
-				.replace(/&gt;/g, '>')
-				.replace(/&quot;/g, '"')
-			tooltipEl.innerHTML = `<p class="item-lore-name">${nameHtml}</p><p class="item-lore-text">${loreHtml}</p>`
+			if (!tooltipLocked) {
+				const loreHtml = itemEl.dataset.loreHtml
+					.replace(/&lt;/g, '<')
+					.replace(/&gt;/g, '>')
+					.replace(/&quot;/g, '"')
+				const nameHtml = itemEl.dataset.nameHtml
+					.replace(/&lt;/g, '<')
+					.replace(/&gt;/g, '>')
+					.replace(/&quot;/g, '"')
+				tooltipEl.innerHTML = `<p class="item-lore-name">${nameHtml}</p><p class="item-lore-text">${loreHtml}</p>`
+			}
 			tooltipEl.style.display = 'block'
-			console.log('mouseover')
 		})
 
 		itemEl.addEventListener('mouseout', () => {
-			tooltipEl.innerHTML = ''
-			tooltipEl.style.display = 'none'
-			console.log('mouseout')
+			if (!tooltipLocked) {
+				tooltipEl.innerHTML = ''
+				tooltipEl.style.display = 'none'
+			}
+		})
+
+		itemEl.addEventListener('click', () => {
+			console.log('image clicked')
+			tooltipLocked = !tooltipLocked
+			if (tooltipLocked) {
+				tooltipEl.style.userSelect = 'auto'
+				tooltipEl.style.pointerEvents = 'auto'
+			} else {
+				tooltipEl.style.userSelect = null
+				tooltipEl.style.pointerEvents = null
+			}
+		})
+
+		document.addEventListener('mousedown', (e) => {
+			if (tooltipLocked && !tooltipEl.contains(e.target)) {
+				console.log('unlocked tooltip', e)
+				tooltipLocked = false
+				tooltipEl.style.userSelect = null
+				tooltipEl.style.pointerEvents = null
+				tooltipEl.style.display = 'none'
+			}
 		})
 	}
 })
