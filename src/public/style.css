@@ -96,6 +96,9 @@ h3 {
 hr {
 	opacity: .2
 }
+button {
+	outline: none;
+}
 
 
 .enter-username-button, .view-profiles-button {
@@ -269,7 +272,10 @@ h2.sectionTitle {
 }
 
 #inventory-tabs {
-  margin-bottom: 1em
+	margin-bottom: 1em;
+	margin-bottom: 1em;
+	overflow: hidden;
+	border-radius: 1em;
 }
 .inventory-tab {
 	background-color: var(--theme-lighter-background);
@@ -284,12 +290,6 @@ h2.sectionTitle {
 	background-color: var(--theme-lightest-background)
 }
 
-.inventory-tab-first {
-	border-radius: 1em 0 0 1em;
-}
-.inventory-tab-last {
-	border-radius: 0 1em 1em 0;
-}
 #global-tooltip {
 	position: absolute;
 	user-select: none;
@@ -307,4 +307,21 @@ h2.sectionTitle {
 }
 #global-tooltip .item-lore-name {
 	margin-bottom: .5em
+}
+
+
+#armor {
+	margin-right: 2em;
+	height: 16em;
+	display: inline-block;
+	float: left
+}
+
+#inventories {
+	display: inline-block;
+	min-height: 16em
+}
+.inventory-container-armor .item-slot {
+	display: block;
+	margin-bottom: .25em
 }

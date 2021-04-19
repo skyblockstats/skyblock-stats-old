@@ -23,6 +23,12 @@
 
 	<div>
 		<div id="categories">
+			{%- if data.member.inventories.armor -%}
+				<section id="armor">
+					<h2>Armor</h2>
+					{%- include "sections/armor.njk" -%}
+				</section>
+			{%- endif -%}
 			{%- if data.member.inventories.inventory -%}
 				<section id="inventories">
 					<h2>Inventories</h2>

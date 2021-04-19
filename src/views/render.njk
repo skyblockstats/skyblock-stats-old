@@ -34,14 +34,16 @@
 {%- endmacro -%}
 
 {%- macro inventory(items, name='') -%}
-	{% if name == 'inventory' %}
-		{% set items = items|slice(9)|append(items|slice(0, 9)) %}
-	{% endif %}
+	<div{% if name %} class="inventory-container-{{ name }}"{% endif %}>
+		{%- if name == 'inventory' -%}
+			{%- set items = items|slice(9)|append(items|slice(0, 9)) -%}
+		{%- endif -%}
 
-	{%- for itemData in items -%}
-		{%- if loop.index0 > 0 and loop.index0 % 9 == 0 %}</div>{%- endif -%}
-		{%- if loop.index0 % 9 == 0 %}<div>{%- endif -%}
-		{{- item(itemData, slot=true) -}}
-	{%- endfor -%}
+		{%- for itemData in items -%}
+			{%- if loop.index0 > 0 and loop.index0 % 9 == 0 %}</div>{%- endif -%}
+			{%- if loop.index0 % 9 == 0 %}<div>{%- endif -%}
+			{{- item(itemData, slot=true) -}}
+		{%- endfor -%}
+		</div>
 	</div>
 {%- endmacro -%}

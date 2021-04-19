@@ -1,9 +1,17 @@
+{%- set displayingInventories = [] -%}
+
+{%- for inventoryName, _ in data.member.inventories -%}
+	{%- if inventoryName != 'armor' -%}{%- set displayingInventories = displayingInventories|append(inventoryName) -%}{%- endif -%}
+{%- endfor -%}
+
 <div id="inventory-tabs">
-	{%- for inventoryName, inventoryContents in data.member.inventories -%}
-		<button class="inventory-tab{% if loop.first %} inventory-tab-first inventory-tab-active{% endif %}{% if loop.last %} inventory-tab-last{% endif %}" data-inventory-tab-name="{{ inventoryName }}">{{ inventoryName|replace('_', ' ')|capitalize }}</button>
+	{%- for inventoryName in displayingInventories -%}
+		{%- set inventoryContents = data.member.inventories[inventoryName] -%}
+		<button class="inventory-tab{% if loop.first %} inventory-tab-active{% endif %}" data-inventory-tab-name="{{ inventoryName }}">{{ inventoryName|replace('_', ' ')|capitalize }}</button>
 	{%- endfor -%}
 </div>
-{%- for inventoryName, inventoryContents in data.member.inventories -%}
+{%- for inventoryName in displayingInventories -%}
+	{%- set inventoryContents = data.member.inventories[inventoryName] -%}
 	<div id="{{ inventoryName }}" class="inventory-content{% if loop.first %} inventory-content-active{% endif %}">
 		{{- render.inventory(inventoryContents, name=inventoryName) -}}
 	</div>
