@@ -264,7 +264,7 @@ h2.sectionTitle {
 	font-family: Minecraft
 }
 
-.inventory-tab-content:not(.inventory-tab-content-active) {
+.inventory-content:not(.inventory-content-active) {
 	display: none
 }
 
@@ -280,7 +280,7 @@ h2.sectionTitle {
 	font-size: .75;
 	transition-duration: 200ms
 }
-.inventory-tab:hover {
+.inventory-tab:hover, .inventory-tab-active {
 	background-color: var(--theme-lightest-background)
 }
 

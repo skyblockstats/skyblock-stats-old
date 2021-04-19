@@ -1,26 +1,33 @@
 <div id="inventory-tabs">
 	{%- for inventoryName, inventoryContents in data.member.inventories -%}
-		<button class="inventory-tab{% if loop.first %} inventory-tab-first{% endif %}{% if loop.last %} inventory-tab-last{% endif %}" data-inventory-tab-name="{{ inventoryName }}">{{ inventoryName|replace('_', ' ')|capitalize }}</button>
+		<button class="inventory-tab{% if loop.first %} inventory-tab-first inventory-tab-active{% endif %}{% if loop.last %} inventory-tab-last{% endif %}" data-inventory-tab-name="{{ inventoryName }}">{{ inventoryName|replace('_', ' ')|capitalize }}</button>
 	{%- endfor -%}
 </div>
 {%- for inventoryName, inventoryContents in data.member.inventories -%}
-	<div id="{{ inventoryName }}" class="inventory-tab-content{% if loop.first %} inventory-tab-content-active{% endif %}">
-		{{- render.inventory(inventoryContents) -}}
+	<div id="{{ inventoryName }}" class="inventory-content{% if loop.first %} inventory-content-active{% endif %}">
+		{{- render.inventory(inventoryContents, name=inventoryName) -}}
 	</div>
 {%- endfor -%}
 
 <script>
 const inventoryTabEls = document.getElementsByClassName('inventory-tab')
-let activeInventoryTab = document.getElementsByClassName('inventory-tab-content-active')[0]
+let activeInventoryEl = document.getElementsByClassName('inventory-content-active')[0]
+let activeInventoryTabEl = document.getElementsByClassName('inventory-tab-active')[0]
 
-for (const inventoryTab of inventoryTabEls) {
-	inventoryTab.addEventListener('click', () => {
-		const inventoryTabName = inventoryTab.dataset.inventoryTabName
+for (const inventoryTabEl of inventoryTabEls) {
+	inventoryTabEl.addEventListener('click', () => {
+		const inventoryTabName = inventoryTabEl.dataset.inventoryTabName
 		const inventoryContentsEl = document.getElementById(inventoryTabName)
-		console.log(inventoryTab.dataset, inventoryTabName, inventoryContentsEl)
-		activeInventoryTab.classList.remove('inventory-tab-content-active')
-		activeInventoryTab = inventoryContentsEl
-		activeInventoryTab.classList.add('inventory-tab-content-active')
+
+		// replace the classes for the active inventory content element
+		activeInventoryEl.classList.remove('inventory-content-active')
+		activeInventoryEl = inventoryContentsEl
+		activeInventoryEl.classList.add('inventory-content-active')
+
+		// replace the classes for the active inventory tab element
+		activeInventoryTabEl.classList.remove('inventory-tab-active')
+		activeInventoryTabEl = inventoryTabEl
+		activeInventoryTabEl.classList.add('inventory-tab-active')
 	})
 }
 </script>

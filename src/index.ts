@@ -19,10 +19,9 @@ env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
 env.addFilter('itemToUrl', (item) => {
 	return itemToUrlCached(item)
 })
-env.addFilter('append', (arr: any[], item: any) => {
-	arr.push(item)
-	return arr
-})
+env.addFilter('append', (arr: any[], item: any) => arr.concat(item))
+
+env.addFilter('slice', (arr: any[], start?: number, end?: number) => arr.slice(start, end))
 
 
 function moveStringToEnd(word: string, thing: string) {
