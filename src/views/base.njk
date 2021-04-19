@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	})
 	
 	for (const itemEl of itemEls) {
+		// if the item doesn't have lore or a name, that must mean it's air
+		if (!itemEl.dataset.loreHtml && !itemEl.dataset.nameHtml) continue
+
 		itemEl.addEventListener('mouseover', () => {
 			if (!tooltipLocked) {
 				const loreHtml = itemEl.dataset.loreHtml
@@ -50,9 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		})
 
-		itemEl.addEventListener('click', () => {
-			console.log('image clicked')
+		itemEl.addEventListener('click', (e) => {
 			tooltipLocked = !tooltipLocked
+			tooltipEl.style.top = e.pageY + 'px'
+			tooltipEl.style.left = e.pageX + 'px'
+			tooltipEl.style.display = 'block'
 			if (tooltipLocked) {
 				tooltipEl.style.userSelect = 'auto'
 				tooltipEl.style.pointerEvents = 'auto'
@@ -64,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		document.addEventListener('mousedown', (e) => {
 			if (tooltipLocked && !tooltipEl.contains(e.target)) {
-				console.log('unlocked tooltip', e)
 				tooltipLocked = false
 				tooltipEl.style.userSelect = null
 				tooltipEl.style.pointerEvents = null
