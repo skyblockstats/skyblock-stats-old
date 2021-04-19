@@ -43,6 +43,7 @@ env.addFilter('itemToUrl', (item) => {
 });
 env.addFilter('append', (arr, item) => arr.concat(item));
 env.addFilter('slice', (arr, start, end) => arr.slice(start, end));
+env.addFilter('startsWith', (string, substring) => string.startsWith(substring));
 env.addFilter('cleannumber', util_1.cleanNumber);
 env.addFilter('clean', util_1.clean);
 env.addFilter('formattingCodeToHtml', util_1.formattingCodeToHtml);

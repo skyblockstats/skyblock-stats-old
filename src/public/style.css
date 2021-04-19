@@ -325,3 +325,9 @@ h2.sectionTitle {
 	display: block;
 	margin-bottom: .25em
 }
+img.item-custom-head {
+	width: .75em;
+	height: .75em;
+	margin-top: .1875em;
+	margin-left: .1875em;
+  }

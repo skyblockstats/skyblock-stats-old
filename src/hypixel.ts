@@ -80,14 +80,16 @@ export async function itemToUrl(item: Item): Promise<string> {
 		}
 	}
 
-	let textureUrl = await skyblockAssets.getTextureUrl({
-		id: item.vanillaId,
-		nbt: itemNbt,
-		pack: 'packshq'
-	})
+	let textureUrl: string
 
-	if (!textureUrl && item.head_texture)
+	if (item.head_texture)
 		textureUrl = `https://mc-heads.net/head/${item.head_texture}`
+	else
+		textureUrl = await skyblockAssets.getTextureUrl({
+			id: item.vanillaId,
+			nbt: itemNbt,
+			pack: 'packshq'
+		})
 
 	itemToUrlCache.set(stringifiedItem, textureUrl)
 	return textureUrl

@@ -24,11 +24,14 @@ env.addFilter('append', (arr: any[], item: any) => arr.concat(item))
 
 env.addFilter('slice', (arr: any[], start?: number, end?: number) => arr.slice(start, end))
 
+env.addFilter('startsWith', (string: string, substring: string) => string.startsWith(substring))
+
 env.addFilter('cleannumber', cleanNumber)
 
 env.addFilter('clean', clean)
 
 env.addFilter('formattingCodeToHtml', formattingCodeToHtml)
+
 
 
 
