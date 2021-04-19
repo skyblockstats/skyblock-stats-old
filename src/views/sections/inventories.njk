@@ -1,0 +1,26 @@
+<div id="inventory-tabs">
+	{%- for inventoryName, inventoryContents in data.member.inventories -%}
+		<button class="inventory-tab{% if loop.first %} inventory-tab-first{% endif %}{% if loop.last %} inventory-tab-last{% endif %}" data-inventory-tab-name="{{ inventoryName }}">{{ inventoryName|replace('_', ' ')|capitalize }}</button>
+	{%- endfor -%}
+</div>
+{%- for inventoryName, inventoryContents in data.member.inventories -%}
+	<div id="{{ inventoryName }}" class="inventory-tab-content{% if loop.first %} inventory-tab-content-active{% endif %}">
+		{{- render.inventory(inventoryContents) -}}
+	</div>
+{%- endfor -%}
+
+<script>
+const inventoryTabEls = document.getElementsByClassName('inventory-tab')
+let activeInventoryTab = document.getElementsByClassName('inventory-tab-content-active')[0]
+
+for (const inventoryTab of inventoryTabEls) {
+	inventoryTab.addEventListener('click', () => {
+		const inventoryTabName = inventoryTab.dataset.inventoryTabName
+		const inventoryContentsEl = document.getElementById(inventoryTabName)
+		console.log(inventoryTab.dataset, inventoryTabName, inventoryContentsEl)
+		activeInventoryTab.classList.remove('inventory-tab-content-active')
+		activeInventoryTab = inventoryContentsEl
+		activeInventoryTab.classList.add('inventory-tab-content-active')
+	})
+}
+</script>

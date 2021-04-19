@@ -1,5 +1,7 @@
 :root {
 	--theme-main-background: #111;
+	--theme-lighter-background: #222;
+	--theme-lightest-background: #333;
 
 	--theme-main-text: #eee;
 	--theme-darker-text: #999;
@@ -251,4 +253,40 @@ h2.sectionTitle {
 
 .item-slot {
 	margin: .05em
+}
+
+.item-count {
+	font-size: .45em;
+	float: right;
+	position: relative;
+	top: 1.21em;
+	right: .1em;
+	font-family: Minecraft
+}
+
+.inventory-tab-content:not(.inventory-tab-content-active) {
+	display: none
+}
+
+#inventory-tabs {
+  margin-bottom: 1em
+}
+.inventory-tab {
+	background-color: var(--theme-lighter-background);
+	color: var(--theme-main-text);
+	border: none;
+	padding: 1em;
+	cursor: pointer;
+	font-size: .75;
+	transition-duration: 200ms
+}
+.inventory-tab:hover {
+	background-color: var(--theme-lightest-background)
+}
+
+.inventory-tab-first {
+	border-radius: 1em 0 0 1em;
+}
+.inventory-tab-last {
+	border-radius: 0 1em 1em 0;
 }

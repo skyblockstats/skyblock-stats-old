@@ -86,17 +86,17 @@ async function itemToUrl(item) {
     if (itemToUrlCache.has(stringifiedItem))
         return itemToUrlCache.get(stringifiedItem);
     const itemNbt = {
+        display: {
+            Name: item.display.name
+        },
         ExtraAttributes: {
             id: item.id,
-            display: {
-                Name: item.display.name
-            }
         }
     };
     let textureUrl = await skyblockAssets.getTextureUrl({
         id: item.vanillaId,
         nbt: itemNbt,
-        pack: 'packshq'
+        pack: 'furfsky'
     });
     if (!textureUrl && item.head_texture)
         textureUrl = `https://mc-heads.net/head/${item.head_texture}`;

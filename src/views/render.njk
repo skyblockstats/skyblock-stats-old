@@ -20,6 +20,7 @@
 	<span class="item{% if slot %} item-slot{% endif %}">
 		{%- if data -%}
 			<img src="{{ data|itemToUrl }}">
+			{% if data.count != 1 %}<span class="item-count">{{ data.count }}</span>{% endif %}
 		{%- endif -%}
 	</span>
 {%- endmacro -%}

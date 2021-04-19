@@ -72,17 +72,18 @@ export async function itemToUrl(item: Item): Promise<string> {
 	if (itemToUrlCache.has(stringifiedItem))
 		return itemToUrlCache.get(stringifiedItem)
 	const itemNbt: skyblockAssets.NBT = {
+		display: {
+			Name: item.display.name
+		},
 		ExtraAttributes: {
 			id: item.id,
-			display: {
-				Name: item.display.name
-			}
 		}
 	}
+
 	let textureUrl = await skyblockAssets.getTextureUrl({
 		id: item.vanillaId,
 		nbt: itemNbt,
-		pack: 'packshq'
+		pack: 'furfsky'
 	})
 
 	if (!textureUrl && item.head_texture)
