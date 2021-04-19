@@ -96,7 +96,7 @@ async function itemToUrl(item) {
     let textureUrl = await skyblockAssets.getTextureUrl({
         id: item.vanillaId,
         nbt: itemNbt,
-        pack: 'furfsky'
+        pack: 'packshq'
     });
     if (!textureUrl && item.head_texture)
         textureUrl = `https://mc-heads.net/head/${item.head_texture}`;

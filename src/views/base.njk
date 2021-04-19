@@ -13,10 +13,45 @@
 	<meta property="og:type" content="website"/>
 
 	<link rel="stylesheet" href="/style.css">
+	<script>
+// this script handles the item hover lore tooltip
+document.addEventListener('DOMContentLoaded', () => {
+	const itemEls = document.getElementsByClassName('item')
+	const tooltipEl = document.getElementById('global-tooltip')
+
+	document.addEventListener('mousemove', (e) => {
+		tooltipEl.style.top = e.pageY + 'px'
+		tooltipEl.style.left = e.pageX + 'px'
+	})
+	
+	for (const itemEl of itemEls) {
+		itemEl.addEventListener('mouseover', () => {
+			const loreHtml = itemEl.dataset.loreHtml
+				.replace(/&lt;/g, '<')
+				.replace(/&gt;/g, '>')
+				.replace(/&quot;/g, '"')
+			const nameHtml = itemEl.dataset.nameHtml
+				.replace(/&lt;/g, '<')
+				.replace(/&gt;/g, '>')
+				.replace(/&quot;/g, '"')
+			tooltipEl.innerHTML = `<p class="item-lore-name">${nameHtml}</p><p class="item-lore-text">${loreHtml}</p>`
+			tooltipEl.style.display = 'block'
+			console.log('mouseover')
+		})
+
+		itemEl.addEventListener('mouseout', () => {
+			tooltipEl.innerHTML = ''
+			tooltipEl.style.display = 'none'
+			console.log('mouseout')
+		})
+	}
+})
+	</script>
 	{%- endblock -%}
 </head>
 <body>
 {%- block body -%}
+	<div id="global-tooltip" style="display: none"></div>
 	<main>
 	{%- block main -%}
 

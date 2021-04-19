@@ -83,7 +83,7 @@ export async function itemToUrl(item: Item): Promise<string> {
 	let textureUrl = await skyblockAssets.getTextureUrl({
 		id: item.vanillaId,
 		nbt: itemNbt,
-		pack: 'furfsky'
+		pack: 'packshq'
 	})
 
 	if (!textureUrl && item.head_texture)

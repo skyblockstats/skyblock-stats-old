@@ -23,6 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const hypixel_1 = require("./hypixel");
+const util_1 = require("./util");
 const nunjucks_with_1 = __importDefault(require("@allmarkedup/nunjucks-with"));
 const serve_static_1 = __importDefault(require("serve-static"));
 const nunjucks = __importStar(require("nunjucks"));
@@ -42,60 +43,9 @@ env.addFilter('itemToUrl', (item) => {
 });
 env.addFilter('append', (arr, item) => arr.concat(item));
 env.addFilter('slice', (arr, start, end) => arr.slice(start, end));
-function moveStringToEnd(word, thing) {
-    if (thing.startsWith(`${word}_`))
-        thing = thing.substr(`${word}_`.length) + `_${word}`;
-    return thing;
-}
-function millisecondsToTime(totalMilliseconds) {
-    const totalSeconds = totalMilliseconds / 1000;
-    const totalMinutes = totalSeconds / 60;
-    const totalHours = totalMinutes / 60;
-    const milliseconds = Math.floor(totalMilliseconds) % 1000;
-    const seconds = Math.floor(totalSeconds) % 60;
-    const minutes = Math.floor(totalMinutes) % 60;
-    const hours = Math.floor(totalHours);
-    const stringUnits = [];
-    if (hours > 1)
-        stringUnits.push(`${hours} hours`);
-    else if (hours == 1)
-        stringUnits.push(`${hours} hour`);
-    if (minutes > 1)
-        stringUnits.push(`${minutes} minutes`);
-    else if (minutes == 1)
-        stringUnits.push(`${minutes} minute`);
-    if (seconds > 1)
-        stringUnits.push(`${seconds} seconds`);
-    else if (seconds == 1)
-        stringUnits.push(`${seconds} second`);
-    if (milliseconds > 1)
-        stringUnits.push(`${milliseconds} milliseconds`);
-    else if (milliseconds == 1)
-        stringUnits.push(`${milliseconds} millisecond`);
-    return stringUnits.slice(0, 2).join(' and ');
-}
-function cleanNumber(number, unit) {
-    switch (unit) {
-        case 'time':
-            return millisecondsToTime(number);
-        case 'date':
-            return (new Date(number * 1000)).toUTCString();
-    }
-    return number.toLocaleString() + ' ' + unit;
-}
-env.addFilter('cleannumber', cleanNumber);
-env.addFilter('clean', (thing) => {
-    if (typeof thing === 'number') {
-        return cleanNumber(thing);
-    }
-    else {
-        for (const string of ['deaths', 'kills', 'collection', 'skill'])
-            thing = moveStringToEnd(string, thing);
-        return thing
-            .replace(/^./, thing[0].toUpperCase())
-            .replace(/_/g, ' ');
-    }
-});
+env.addFilter('cleannumber', util_1.cleanNumber);
+env.addFilter('clean', util_1.clean);
+env.addFilter('formattingCodeToHtml', util_1.formattingCodeToHtml);
 app.get('/', (req, res) => {
     res.render('index.njk', {});
 });

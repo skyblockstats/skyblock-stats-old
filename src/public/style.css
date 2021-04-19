@@ -290,3 +290,21 @@ h2.sectionTitle {
 .inventory-tab-last {
 	border-radius: 0 1em 1em 0;
 }
+#global-tooltip {
+	position: absolute;
+	user-select: none;
+	pointer-events: none;
+	overflow: hidden;
+	z-index: 100;
+	background-color: #0a0a0aee;
+	padding: 0 .25rem;
+	border-radius: 3px;
+	box-shadow: 0 0 0 3px #206,0 0 0 6px #000;
+	font-family: Minecraft
+}
+#global-tooltip p {
+	margin: 0
+}
+#global-tooltip .item-lore-name {
+	margin-bottom: .5em
+}
