@@ -24,7 +24,7 @@
 	<div>
 		<div id="categories">
 			{%- if data.member.inventories.armor -%}
-				<section id="armor">
+				<section id="armor"{% if data.member.inventories.inventory %} class="armor-float"{% endif %}>
 					<h2>Armor</h2>
 					{%- include "sections/armor.njk" -%}
 				</section>

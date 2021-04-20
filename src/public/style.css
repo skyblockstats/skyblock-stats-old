@@ -314,6 +314,8 @@ h2.sectionTitle {
 	margin-right: 2em;
 	height: 16em;
 	display: inline-block;
+}
+#armor.armor-float {
 	float: left
 }
 

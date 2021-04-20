@@ -90,6 +90,10 @@ export async function itemToUrl(item: Item): Promise<string> {
 			nbt: itemNbt,
 			pack: 'packshq'
 		})
+	
+	if (!textureUrl) {
+		console.log(item)
+	}
 
 	itemToUrlCache.set(stringifiedItem, textureUrl)
 	return textureUrl

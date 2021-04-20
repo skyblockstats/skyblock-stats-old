@@ -102,6 +102,9 @@ async function itemToUrl(item) {
             nbt: itemNbt,
             pack: 'packshq'
         });
+    if (!textureUrl) {
+        console.log(item);
+    }
     itemToUrlCache.set(stringifiedItem, textureUrl);
     return textureUrl;
 }
