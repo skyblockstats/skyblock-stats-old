@@ -1,11 +1,18 @@
 :root {
 	--theme-main-background: #111;
+	--theme-lighter-background: #222;
+	--theme-lightest-background: #333;
 
 	--theme-main-text: #eee;
 	--theme-darker-text: #999;
 	--theme-transparent-border: rgba(128,128,128,.3)
 }
 
+@font-face {
+	font-family: Minecraft;
+	src: url(https://cdn.matdoes.dev/fonts/Minecraft.otf);
+	font-display: swap
+}
 
 body {
 	font-family: sans-serif;
@@ -88,6 +95,9 @@ h3 {
 }
 hr {
 	opacity: .2
+}
+button {
+	outline: none;
 }
 
 
@@ -223,3 +233,103 @@ h2.sectionTitle {
 .member-leaderboard-item {
 	list-style-type: none
 }
+
+.item {
+	display: inline-block;
+	font-size: 32px;
+	width: 1.2em;
+	height: 1.2em;
+}
+.item-slot {
+	border: 1px solid #888;
+	border-radius: .1em
+}
+.item img {
+	position: absolute;
+	margin-top: .075em;
+	margin-left: .075em;
+	width: 1em;
+	height: 1em;
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
+}
+
+.item-slot {
+	margin: .05em
+}
+
+.item-count {
+	font-size: .45em;
+	float: right;
+	position: relative;
+	top: 1.21em;
+	right: .1em;
+	font-family: Minecraft
+}
+
+.inventory-content:not(.inventory-content-active) {
+	display: none
+}
+
+#inventory-tabs {
+	margin-bottom: 1em;
+	margin-bottom: 1em;
+	overflow: hidden;
+	border-radius: 1em;
+}
+.inventory-tab {
+	background-color: var(--theme-lighter-background);
+	color: var(--theme-main-text);
+	border: none;
+	padding: 1em;
+	cursor: pointer;
+	font-size: .75;
+	transition-duration: 200ms
+}
+.inventory-tab:hover, .inventory-tab-active {
+	background-color: var(--theme-lightest-background)
+}
+
+#global-tooltip {
+	position: absolute;
+	user-select: none;
+	pointer-events: none;
+	overflow: hidden;
+	z-index: 100;
+	background-color: #0a0a0aee;
+	padding: 0 .25rem;
+	border-radius: 3px;
+	box-shadow: 0 0 0 3px #206,0 0 0 6px #000;
+	font-family: Minecraft
+}
+#global-tooltip p {
+	margin: 0
+}
+#global-tooltip .item-lore-name {
+	margin-bottom: .5em
+}
+
+
+#armor {
+	margin-right: 2em;
+	height: 16em;
+	display: inline-block;
+}
+#armor.armor-float {
+	float: left
+}
+
+#inventories {
+	display: inline-block;
+	min-height: 16em
+}
+.inventory-container-armor .item-slot {
+	display: block;
+	margin-bottom: .25em
+}
+img.item-custom-head {
+	width: .75em;
+	height: .75em;
+	margin-top: .1875em;
+	margin-left: .1875em;
+  }

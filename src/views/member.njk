@@ -10,7 +10,7 @@
 
 {%- block main -%}
 	<h1>{{ render.username(data.member, headType='3d') }} ({{ data.member.profileName }})</h1>
-	{% set categories = [
+	{%- set categories = [
 		'deaths',
 		'kills',
 		'auctions',
@@ -18,22 +18,33 @@
 		'races',
 		'misc',
 		'leaderboards'
-	] %}
-
+	] -%}
 	<ul id="toc"><h3>Contents</h3></ul>
 
 	<div>
 		<div id="categories">
-			{% for category in categories %}
-				<section id="{{ category }}"  class="collapsible">
-					<h2>{{ category|title }}</h2>
+			{%- if data.member.inventories.armor -%}
+				<section id="armor"{% if data.member.inventories.inventory %} class="armor-float"{% endif %}>
+					<h2>Armor</h2>
+					{%- include "sections/armor.njk" -%}
+				</section>
+			{%- endif -%}
+			{%- if data.member.inventories.inventory -%}
+				<section id="inventories">
+					<h2>Inventories</h2>
+					{%- include "sections/inventories.njk" -%}
+				</section>
+			{%- endif -%}
+			{%- asyncAll category in categories -%}
+				<section id="{{ category }}" class="collapsible">
+					<h2>{{ category|replace('_', ' ')|title }}</h2>
 					{#- we need to use with so the include passes context -#}
-					{%- with { data: data, category: category } -%}
+					{% with { data: data, category: category } %}
 						{#- include the category from the sections folder -#}
 						{%- include "sections/" + category + ".njk" -%}
 					{% endwith %}
 				</section>
-			{% endfor %}
-		</section>
+			{%- endall -%}
+		</div>
 	</div>
 {%- endblock -%}
