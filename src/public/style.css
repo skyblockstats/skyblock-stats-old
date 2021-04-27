@@ -332,4 +332,17 @@ img.item-custom-head {
 	height: .75em;
 	margin-top: .1875em;
 	margin-left: .1875em;
-  }
+}
+
+.github-mark {
+	position: absolute;
+	top: .75em;
+	left: .75em;
+	opacity: .2;
+	transition-property: opacity;
+	transition-duration: 200ms;
+}
+.github-mark:hover {
+	opacity: .4
+}
+
