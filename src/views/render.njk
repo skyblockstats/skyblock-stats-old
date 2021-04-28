@@ -8,11 +8,11 @@
 {%- endmacro -%}
 
 {%- macro head3d(player, isPartOfUsername=false) -%}
-	<img class="head head3d{% if isPartOfUsername %} userHead{% endif %}" src="https://www.mc-heads.net/head/{{ player.uuid }}/128" alt="{{ player.username }}'s head">
+	<img loading="lazy" class="head head3d{% if isPartOfUsername %} userHead{% endif %}" src="https://www.mc-heads.net/head/{{ player.uuid }}/128" alt="{{ player.username }}'s head">
 {%- endmacro -%}
 
 {%- macro head2d(player, isPartOfUsername=false) -%}
-	<img class="head head2d{% if isPartOfUsername %} userHead{% endif %}" src="https://www.mc-heads.net/avatar/{{ player.uuid }}/16" alt="{{ player.username }}'s face">
+	<img loading="lazy" class="head head2d{% if isPartOfUsername %} userHead{% endif %}" src="https://www.mc-heads.net/avatar/{{ player.uuid }}/16" alt="{{ player.username }}'s face">
 {%- endmacro -%}
 
 
@@ -29,7 +29,7 @@
 		{%- if data -%}
 			{%- set imageUrl = data|itemToUrl -%}
 			{%- if imageUrl -%}
-				<img src="{{ imageUrl }}"{% if imageUrl|startsWith('https://mc-heads.net/head/') %} class="item-custom-head"{% endif %}>
+				<img loading="lazy" src="{{ imageUrl }}"{% if imageUrl|startsWith('https://mc-heads.net/head/') %} class="item-custom-head"{% endif %}>
 			{%- endif -%}
 			{%- if data.count != 1 %}<span class="item-count">{{ data.count }}</span>{% endif -%}
 		{%- endif -%}
