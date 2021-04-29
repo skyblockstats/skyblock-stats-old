@@ -1,6 +1,7 @@
 import fetch from 'node-fetch'
 import NodeCache from 'node-cache'
 import { Agent } from 'https'
+import vanillaDamages from 'skyblock-assets/data/vanilla_damages.json'
 // import { Agent } from 'http'
 
 import * as skyblockAssets from 'skyblock-assets'
@@ -67,17 +68,43 @@ const itemToUrlCache = new NodeCache({
 	useClones: false,
 })
 
-export async function itemToUrl(item: Item): Promise<string> {
+
+export async function itemToUrl(item: Item|string): Promise<string> {
+	let damage: number = null
+
+	const originalItem = item
+
+	if (typeof item === 'string') {
+		let itemId: string = vanillaDamages[item] ?? item
+		if (itemId.startsWith('minecraft:')) itemId = itemId.slice('minecraft:'.length)
+		if (itemId.includes(':')) {
+			itemId = itemId.split(':')[0]
+			damage = parseInt(itemId.split(':')[1])
+		}
+		item = {
+			count: 1,
+			display: {
+				glint: false,
+				lore: null,
+				name: null
+			},
+			id: null,
+			vanillaId: `minecraft:${itemId}`
+		}
+	}
 	const stringifiedItem = JSON.stringify(item)
+
 	if (itemToUrlCache.has(stringifiedItem))
 		return itemToUrlCache.get(stringifiedItem)
+
 	const itemNbt: skyblockAssets.NBT = {
 		display: {
 			Name: item.display.name
 		},
 		ExtraAttributes: {
 			id: item.id,
-		}
+		},
+		damage: damage
 	}
 
 	let textureUrl: string
@@ -88,19 +115,35 @@ export async function itemToUrl(item: Item): Promise<string> {
 		textureUrl = await skyblockAssets.getTextureUrl({
 			id: item.vanillaId,
 			nbt: itemNbt,
-			pack: 'packshq'
+			pack: 'packshq',
+			
 		})
 	
 	if (!textureUrl) {
+		console.log(damage)
 		console.log(item)
+		console.log(originalItem)
 	}
 
 	itemToUrlCache.set(stringifiedItem, textureUrl)
 	return textureUrl
 }
 
-export function itemToUrlCached(item: Item): string {
+export function itemToUrlCached(item: Item|string): string {
 	if (!item) return null
+	if (typeof item === 'string') {
+		const itemId = vanillaDamages[item] ?? item
+		item = {
+			count: 1,
+			display: {
+				glint: false,
+				lore: null,
+				name: null
+			},
+			id: null,
+			vanillaId: itemId.startsWith('minecraft:') ? itemId : 'minecraft:' + itemId,
+		}
+	}
 
 	const stringifiedItem = JSON.stringify(item)
 	return itemToUrlCache.get(stringifiedItem)

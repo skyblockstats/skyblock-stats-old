@@ -1,4 +1,4 @@
-import { baseApi, cacheInventories, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile, itemToUrlCached } from './hypixel'
+import { baseApi, cacheInventories, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile, itemToUrl, itemToUrlCached } from './hypixel'
 import { clean, cleanNumber, formattingCodeToHtml } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
 import serveStatic from 'serve-static'
@@ -62,6 +62,13 @@ app.get('/leaderboards/:name', async(req, res) => {
 
 app.get('/leaderboards', async(req, res) => {
 	const data = await fetchLeaderboards()
+
+	const promises = []
+	for (const leaderboardName of data.collection) {
+		promises.push(itemToUrl(leaderboardName.slice(11)))
+	}
+	await Promise.all(promises)
+
 	res.render('leaderboards.njk', { data })
 })
 
