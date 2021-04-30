@@ -29,7 +29,8 @@ async function fetchApi(path) {
 			agent: () => httpsAgent,
 			headers: {
 				key: process.env.key
-			}
+			},
+			
 		}
 	)
 	return await fetchResponse.json()
@@ -38,8 +39,11 @@ async function fetchApi(path) {
 /**
  * Fetch a player
  * @param user A username or UUID
+ * @param basic Whether it should only return very basic information about the user
  */
-export async function fetchPlayer(user: string): Promise<CleanUser> {
+export async function fetchPlayer(user: string, basic?: boolean): Promise<CleanUser> {
+	if (basic)
+		return await fetchApi(`player/${user}?basic=true`)
 	return await fetchApi(`player/${user}`)
 }
 
@@ -117,7 +121,7 @@ export async function cacheInventories(inventories: Inventories, packName?: stri
 }
 
 
-interface CleanUser {
+export interface CleanUser {
 	player: CleanPlayer
 	profiles?: CleanProfile[]
 	activeProfile?: string

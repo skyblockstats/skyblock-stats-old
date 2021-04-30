@@ -1,10 +1,11 @@
-import { baseApi, cacheInventories, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile, itemToUrlCached } from './hypixel'
-import { clean, cleanNumber, formattingCodeToHtml } from './util'
+import { baseApi, cacheInventories, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile, itemToUrlCached, CleanUser } from './hypixel'
+import { clean, cleanNumber, formattingCodeToHtml, shuffle } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
-import express, { Request } from 'express'
+import express from 'express'
 import serveStatic from 'serve-static'
 import * as nunjucks from 'nunjucks'
 import bodyParser from 'body-parser'
+import { promises as fs } from 'fs'
 
 const app = express()
 
@@ -33,10 +34,22 @@ env.addFilter('clean', clean)
 env.addFilter('formattingCodeToHtml', formattingCodeToHtml)
 
 
+let donators = []
+
+async function initDonators() {
+	const donatorsFileRaw = await fs.readFile('src/donators.txt', { encoding: 'ascii'})
+	const donatorUuids = donatorsFileRaw.split('\n').filter(u => u).map(u => u.split(' ')[0])
+	const promises: Promise<CleanUser>[] = []
+	for (const donatorUuid of shuffle(donatorUuids)) {
+		promises.push(fetchPlayer(donatorUuid, true))
+	}
+	donators = await Promise.all(promises)
+}
+initDonators()
 
 
 app.get('/', (req, res) => {
-	res.render('index.njk', {})
+	res.render('index.njk', { donators })
 })
 
 app.get('/player/:user', async(req, res) => {

@@ -29,6 +29,7 @@ const express_1 = __importDefault(require("express"));
 const serve_static_1 = __importDefault(require("serve-static"));
 const nunjucks = __importStar(require("nunjucks"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const fs_1 = require("fs");
 const app = express_1.default();
 const env = nunjucks.configure('src/views', {
     autoescape: true,
@@ -47,8 +48,19 @@ env.addFilter('startsWith', (string, substring) => string.startsWith(substring))
 env.addFilter('cleannumber', util_1.cleanNumber);
 env.addFilter('clean', util_1.clean);
 env.addFilter('formattingCodeToHtml', util_1.formattingCodeToHtml);
+let donators = [];
+async function initDonators() {
+    const donatorsFileRaw = await fs_1.promises.readFile('src/donators.txt', { encoding: 'ascii' });
+    const donatorUuids = donatorsFileRaw.split('\n').filter(u => u).map(u => u.split(' ')[0]);
+    const promises = [];
+    for (const donatorUuid of util_1.shuffle(donatorUuids)) {
+        promises.push(hypixel_1.fetchPlayer(donatorUuid, true));
+    }
+    donators = await Promise.all(promises);
+}
+initDonators();
 app.get('/', (req, res) => {
-    res.render('index.njk', {});
+    res.render('index.njk', { donators });
 });
 app.get('/player/:user', async (req, res) => {
     const data = await hypixel_1.fetchPlayer(req.params.user);

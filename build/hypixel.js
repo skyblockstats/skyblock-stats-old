@@ -47,15 +47,18 @@ async function fetchApi(path) {
         agent: () => httpsAgent,
         headers: {
             key: process.env.key
-        }
+        },
     });
     return await fetchResponse.json();
 }
 /**
  * Fetch a player
  * @param user A username or UUID
+ * @param basic Whether it should only return very basic information about the user
  */
-async function fetchPlayer(user) {
+async function fetchPlayer(user, basic) {
+    if (basic)
+        return await fetchApi(`player/${user}?basic=true`);
     return await fetchApi(`player/${user}`);
 }
 exports.fetchPlayer = fetchPlayer;
