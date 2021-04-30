@@ -68,6 +68,11 @@ app.get('/leaderboards/:name', async (req, res) => {
 });
 app.get('/leaderboards', async (req, res) => {
     const data = await hypixel_1.fetchLeaderboards();
+    const promises = [];
+    for (const leaderboardName of data.collection) {
+        promises.push(hypixel_1.itemToUrl(leaderboardName.slice(11)));
+    }
+    await Promise.all(promises);
     res.render('leaderboards.njk', { data });
 });
 app.get('/leaderboard', async (req, res) => {

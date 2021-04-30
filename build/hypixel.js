@@ -26,6 +26,7 @@ exports.INVENTORIES = exports.cacheInventories = exports.itemToUrlCached = expor
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
 const https_1 = require("https");
+const vanilla_damages_json_1 = __importDefault(require("skyblock-assets/data/vanilla_damages.json"));
 // import { Agent } from 'http'
 const skyblockAssets = __importStar(require("skyblock-assets"));
 if (!process.env.key)
@@ -82,6 +83,28 @@ const itemToUrlCache = new node_cache_1.default({
     useClones: false,
 });
 async function itemToUrl(item) {
+    var _a;
+    let damage = null;
+    const originalItem = item;
+    if (typeof item === 'string') {
+        let itemId = (_a = vanilla_damages_json_1.default[item]) !== null && _a !== void 0 ? _a : item;
+        if (itemId.startsWith('minecraft:'))
+            itemId = itemId.slice('minecraft:'.length);
+        if (itemId.includes(':')) {
+            damage = parseInt(itemId.split(':')[1]);
+            itemId = itemId.split(':')[0];
+        }
+        item = {
+            count: 1,
+            display: {
+                glint: false,
+                lore: null,
+                name: null
+            },
+            id: null,
+            vanillaId: `minecraft:${itemId}`
+        };
+    }
     const stringifiedItem = JSON.stringify(item);
     if (itemToUrlCache.has(stringifiedItem))
         return itemToUrlCache.get(stringifiedItem);
@@ -91,7 +114,8 @@ async function itemToUrl(item) {
         },
         ExtraAttributes: {
             id: item.id,
-        }
+        },
+        damage: damage
     };
     let textureUrl;
     if (item.head_texture)
@@ -100,18 +124,58 @@ async function itemToUrl(item) {
         textureUrl = await skyblockAssets.getTextureUrl({
             id: item.vanillaId,
             nbt: itemNbt,
-            pack: 'packshq'
+            pack: 'packshq',
         });
     if (!textureUrl) {
+        console.log(item.vanillaId, damage);
         console.log(item);
+        console.log(originalItem);
     }
     itemToUrlCache.set(stringifiedItem, textureUrl);
     return textureUrl;
 }
 exports.itemToUrl = itemToUrl;
+const skyblockItems = {
+    'ink_sac': { id: 'dye', damage: 0 },
+    'cocoa_beans': { 'id': 'dye', damage: 3 },
+    'lapis_lazuli': { 'id': 'dye', damage: 4 },
+    'lily_pad': { 'id': 'waterlily' },
+    'melon_slice': { 'id': 'melon' },
+    'mithril_ore': {
+        'id': 'prismarine_crystals',
+        nbt: {
+            ExtraAttributes: { id: 'MITHRIL_ORE' },
+            display: {
+                // TODO: is this the correct name?
+                Name: 'Mithril Ore'
+            },
+        }
+    },
+};
 function itemToUrlCached(item) {
+    var _a;
     if (!item)
         return null;
+    if (typeof item === 'string') {
+        let itemId = (_a = vanilla_damages_json_1.default[item]) !== null && _a !== void 0 ? _a : item;
+        let damage = null;
+        if (itemId.startsWith('minecraft:'))
+            itemId = itemId.slice('minecraft:'.length);
+        if (itemId.includes(':')) {
+            damage = parseInt(itemId.split(':')[1]);
+            itemId = itemId.split(':')[0];
+        }
+        item = {
+            count: 1,
+            display: {
+                glint: false,
+                lore: null,
+                name: null
+            },
+            id: null,
+            vanillaId: `minecraft:${itemId}`
+        };
+    }
     const stringifiedItem = JSON.stringify(item);
     return itemToUrlCache.get(stringifiedItem);
 }

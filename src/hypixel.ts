@@ -78,8 +78,8 @@ export async function itemToUrl(item: Item|string): Promise<string> {
 		let itemId: string = vanillaDamages[item] ?? item
 		if (itemId.startsWith('minecraft:')) itemId = itemId.slice('minecraft:'.length)
 		if (itemId.includes(':')) {
-			itemId = itemId.split(':')[0]
 			damage = parseInt(itemId.split(':')[1])
+			itemId = itemId.split(':')[0]
 		}
 		item = {
 			count: 1,
@@ -116,11 +116,10 @@ export async function itemToUrl(item: Item|string): Promise<string> {
 			id: item.vanillaId,
 			nbt: itemNbt,
 			pack: 'packshq',
-			
 		})
 	
 	if (!textureUrl) {
-		console.log(damage)
+		console.log(item.vanillaId, damage)
 		console.log(item)
 		console.log(originalItem)
 	}
@@ -129,10 +128,34 @@ export async function itemToUrl(item: Item|string): Promise<string> {
 	return textureUrl
 }
 
+const skyblockItems = {
+	'ink_sac': { id: 'dye', damage: 0 },
+	'cocoa_beans': { 'id': 'dye', damage: 3 },
+	'lapis_lazuli': { 'id': 'dye', damage: 4 },
+	'lily_pad': { 'id': 'waterlily' },
+	'melon_slice': { 'id': 'melon' },
+	'mithril_ore': {
+		'id': 'prismarine_crystals',
+		nbt: {
+			ExtraAttributes: { id: 'MITHRIL_ORE' },
+			display: {
+				// TODO: is this the correct name?
+				Name: 'Mithril Ore'
+			},
+		}
+	},
+}
+
 export function itemToUrlCached(item: Item|string): string {
 	if (!item) return null
 	if (typeof item === 'string') {
-		const itemId = vanillaDamages[item] ?? item
+		let itemId: string = vanillaDamages[item] ?? item
+		let damage: number = null
+		if (itemId.startsWith('minecraft:')) itemId = itemId.slice('minecraft:'.length)
+		if (itemId.includes(':')) {
+			damage = parseInt(itemId.split(':')[1])
+			itemId = itemId.split(':')[0]
+		}
 		item = {
 			count: 1,
 			display: {
@@ -141,7 +164,7 @@ export function itemToUrlCached(item: Item|string): string {
 				name: null
 			},
 			id: null,
-			vanillaId: itemId.startsWith('minecraft:') ? itemId : 'minecraft:' + itemId,
+			vanillaId: `minecraft:${itemId}`
 		}
 	}
 
@@ -446,4 +469,5 @@ export interface CleanFullProfileBasicMembers extends CleanProfile {
     minions: CleanMinion[]
 	minion_count: number
 }
+
 
