@@ -13,7 +13,7 @@
 {%- for inventoryName in displayingInventories -%}
 	{%- set inventoryContents = data.member.inventories[inventoryName] -%}
 	<div id="{{ inventoryName }}" class="inventory-content{% if loop.first %} inventory-content-active{% endif %}">
-		{{- render.inventory(inventoryContents, name=inventoryName) -}}
+		{{- render.inventory(inventoryContents, name=inventoryName, pack=pack) -}}
 	</div>
 {%- endfor -%}
 

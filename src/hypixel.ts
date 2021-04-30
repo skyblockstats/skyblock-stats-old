@@ -67,8 +67,8 @@ const itemToUrlCache = new NodeCache({
 	useClones: false,
 })
 
-export async function itemToUrl(item: Item): Promise<string> {
-	const stringifiedItem = JSON.stringify(item)
+export async function itemToUrl(item: Item, packName?: string): Promise<string> {
+	const stringifiedItem = (packName || 'packshq') + JSON.stringify(item)
 	if (itemToUrlCache.has(stringifiedItem))
 		return itemToUrlCache.get(stringifiedItem)
 	const itemNbt: skyblockAssets.NBT = {
@@ -88,31 +88,31 @@ export async function itemToUrl(item: Item): Promise<string> {
 		textureUrl = await skyblockAssets.getTextureUrl({
 			id: item.vanillaId,
 			nbt: itemNbt,
-			pack: 'packshq'
+			pack: packName || 'packshq'
 		})
 	
 	if (!textureUrl) {
-		console.log(item)
+		console.log('no texture', item)
 	}
 
 	itemToUrlCache.set(stringifiedItem, textureUrl)
 	return textureUrl
 }
 
-export function itemToUrlCached(item: Item): string {
+export function itemToUrlCached(item: Item, packName?: string): string {
 	if (!item) return null
 
-	const stringifiedItem = JSON.stringify(item)
+	const stringifiedItem = (packName || 'packshq') + JSON.stringify(item)
 	return itemToUrlCache.get(stringifiedItem)
 }
 
 /** Get all the items in an inventories object to cache them */
-export async function cacheInventories(inventories: Inventories) {
+export async function cacheInventories(inventories: Inventories, packName?: string) {
 	const promises: Promise<any>[] = []
 	for (const inventoryItems of Object.values(inventories ?? {}))
 		for (const inventoryItem of inventoryItems)
 			if (inventoryItem)
-				promises.push(itemToUrl(inventoryItem))
+				promises.push(itemToUrl(inventoryItem, packName))
 	await Promise.all(promises)
 }
 
