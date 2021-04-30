@@ -1,10 +1,10 @@
 import { baseApi, cacheInventories, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile, itemToUrlCached } from './hypixel'
 import { clean, cleanNumber, formattingCodeToHtml } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
+import express, { Request } from 'express'
 import serveStatic from 'serve-static'
 import * as nunjucks from 'nunjucks'
 import bodyParser from 'body-parser'
-import express from 'express'
 
 const app = express()
 
@@ -17,8 +17,8 @@ const env = nunjucks.configure('src/views', {
 env.addExtension('WithExtension', new WithExtension())
 env.addGlobal('BASE_API', baseApi)
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
-env.addFilter('itemToUrl', (item) => {
-	return itemToUrlCached(item)
+env.addFilter('itemToUrl', (item, packName: string) => {
+	return itemToUrlCached(item, packName)
 })
 env.addFilter('append', (arr: any[], item: any) => arr.concat(item))
 
@@ -47,8 +47,8 @@ app.get('/player/:user', async(req, res) => {
 
 app.get('/player/:user/:profile', async(req, res) => {
 	const data = await fetchProfile(req.params.user, req.params.profile)
-	await cacheInventories(data.member.inventories)
-	res.render('member.njk', { data })
+	await cacheInventories(data.member.inventories, req.query.pack as string)
+	res.render('member.njk', { data, pack: req.query.pack })
 })
 
 app.get('/leaderboard/:name', async(req, res) => {
