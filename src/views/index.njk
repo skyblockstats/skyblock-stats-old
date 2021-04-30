@@ -1,3 +1,5 @@
+{% import "render.njk" as render %}
+
 {% extends "base.njk" %}
 
 {% block main -%}
@@ -18,5 +20,13 @@
 		<li><a href="https://skyblock-npcs.matdoes.dev">NPC Skin Stealer</a></li>
 	</ul>
 </div>
+
+<h2>Donators</h2>
+Thank you to these people for donating!
+<ul>
+{% for donator in donators|shuffle %}
+	<li>{{ render.username(donator.player, headType='2d', hyperlinkToProfile=true) }}</li>
+{% endfor %}
+</ul>
 
 {%- endblock %}

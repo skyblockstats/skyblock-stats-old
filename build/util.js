@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clean = exports.cleanNumber = exports.formattingCodeToHtml = void 0;
+exports.shuffle = exports.clean = exports.cleanNumber = exports.formattingCodeToHtml = void 0;
 const colorCodes = {
     '0': '#000000',
     '1': '#0000be',
@@ -127,3 +127,11 @@ function clean(thing) {
     }
 }
 exports.clean = clean;
+function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+exports.shuffle = shuffle;
