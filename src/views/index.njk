@@ -24,7 +24,7 @@
 <h2>Donators</h2>
 Thank you to these people for donating!
 <ul>
-{% for donator in donators %}
+{% for donator in donators|shuffle %}
 	<li>{{ render.username(donator.player, headType='2d', hyperlinkToProfile=true) }}</li>
 {% endfor %}
 </ul>

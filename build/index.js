@@ -48,12 +48,13 @@ env.addFilter('startsWith', (string, substring) => string.startsWith(substring))
 env.addFilter('cleannumber', util_1.cleanNumber);
 env.addFilter('clean', util_1.clean);
 env.addFilter('formattingCodeToHtml', util_1.formattingCodeToHtml);
+env.addFilter('shuffle', util_1.shuffle);
 let donators = [];
 async function initDonators() {
     const donatorsFileRaw = await fs_1.promises.readFile('src/donators.txt', { encoding: 'ascii' });
     const donatorUuids = donatorsFileRaw.split('\n').filter(u => u).map(u => u.split(' ')[0]);
     const promises = [];
-    for (const donatorUuid of util_1.shuffle(donatorUuids)) {
+    for (const donatorUuid of donatorUuids) {
         promises.push(hypixel_1.fetchPlayer(donatorUuid, true));
     }
     donators = await Promise.all(promises);

@@ -33,6 +33,8 @@ env.addFilter('clean', clean)
 
 env.addFilter('formattingCodeToHtml', formattingCodeToHtml)
 
+env.addFilter('shuffle', shuffle)
+
 
 let donators = []
 
@@ -40,7 +42,7 @@ async function initDonators() {
 	const donatorsFileRaw = await fs.readFile('src/donators.txt', { encoding: 'ascii'})
 	const donatorUuids = donatorsFileRaw.split('\n').filter(u => u).map(u => u.split(' ')[0])
 	const promises: Promise<CleanUser>[] = []
-	for (const donatorUuid of shuffle(donatorUuids)) {
+	for (const donatorUuid of donatorUuids) {
 		promises.push(fetchPlayer(donatorUuid, true))
 	}
 	donators = await Promise.all(promises)
