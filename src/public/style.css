@@ -239,6 +239,8 @@ h2.sectionTitle {
 	font-size: 32px;
 	width: 1.2em;
 	height: 1.2em;
+	transition-property: font-size;
+	transition-duration: 500ms
 }
 .item-slot {
 	border: 1px solid #888;
@@ -347,3 +349,13 @@ img.item-custom-head {
 	opacity: .4
 }
 
+@media only screen and (max-width: 490px) {
+	#inventories .item {
+		font-size: 24px
+	}
+}
+@media only screen and (max-width: 370px) {
+	#inventories .item {
+		font-size: 16px
+	}
+}
