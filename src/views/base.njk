@@ -65,6 +65,15 @@ document.addEventListener('DOMContentLoaded', () => {
 				tooltipEl.style.userSelect = null
 				tooltipEl.style.pointerEvents = null
 			}
+			const loreHtml = itemEl.dataset.loreHtml
+				.replace(/&lt;/g, '<')
+				.replace(/&gt;/g, '>')
+				.replace(/&quot;/g, '"')
+			const nameHtml = itemEl.dataset.nameHtml
+				.replace(/&lt;/g, '<')
+				.replace(/&gt;/g, '>')
+				.replace(/&quot;/g, '"')
+			tooltipEl.innerHTML = `<p class="item-lore-name">${nameHtml}</p><p class="item-lore-text">${loreHtml}</p>`
 		})
 
 		document.addEventListener('mousedown', (e) => {
@@ -73,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				tooltipEl.style.userSelect = null
 				tooltipEl.style.pointerEvents = null
 				tooltipEl.style.display = 'none'
+				
 			}
 		})
 	}
