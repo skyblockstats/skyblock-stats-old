@@ -17,7 +17,8 @@
 body {
 	font-family: sans-serif;
 	color: var(--theme-main-text);
-	background-color: var(--theme-main-background)
+	background-color: var(--theme-main-background);
+	margin: 0;
 }
 html {
 	scroll-behavior: smooth
@@ -358,4 +359,31 @@ img.item-custom-head {
 	#inventories .item {
 		font-size: 16px
 	}
+}
+
+#main-header {
+	background-color: var(--theme-background);
+	box-shadow: 0 0 1em rgba(0, 0, 0, .8)
+}
+
+header {
+	padding: .5rem 10%;
+}
+header .user-form {
+	margin: 0;
+	display: inline-block
+}
+header .enter-username-button {
+	box-shadow: none
+}
+
+.back-arrow {
+	float: left;
+	transition: stroke 200ms;
+	stroke: var(--theme-darker-text);
+	margin-top: .4em;
+	margin-right: 1em;
+}
+.back-arrow:hover {
+	stroke: var(--theme-main-text)
 }
