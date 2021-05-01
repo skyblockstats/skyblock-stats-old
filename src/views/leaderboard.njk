@@ -3,6 +3,8 @@
 
 {% block metatitle %}{% block title %}{{ data.name|clean }} - SkyBlock Leaderboards{% endblock %}{% endblock %}
 
+{% block backArrowHref %}/leaderboards{% endblock %}
+
 {%- block main -%}
 	<h1>{{ data.name|clean }}</h1>
 
