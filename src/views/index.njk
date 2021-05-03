@@ -1,4 +1,8 @@
+{% import "render.njk" as render %}
+
 {% extends "base.njk" %}
+
+{%- block headerContainer -%}{#- this removes the header from the index page -#}{%- endblock -%}
 
 {% block main -%}
 <a href="https://github.com/skyblockstats"><img src="/github-mark-light.png" class="github-mark"></a>
@@ -18,5 +22,13 @@
 		<li><a href="https://skyblock-npcs.matdoes.dev">NPC Skin Stealer</a></li>
 	</ul>
 </div>
+
+<h2>Donators</h2>
+Thank you to these people for donating!
+<ul>
+{% for donator in donators|shuffle %}
+	<li>{{ render.username(donator.player, headType='2d', hyperlinkToProfile=true) }}</li>
+{% endfor %}
+</ul>
 
 {%- endblock %}

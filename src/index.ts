@@ -6,14 +6,17 @@ import {
 	itemToUrlCached,
 	fetchProfile,
 	fetchPlayer,
+  CleanUser,
 	baseApi,
 } from './hypixel'
-import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals } from './util'
+import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle } from './util'
+import { baseApi, cacheInventories, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile, itemToUrlCached, CleanUser } from './hypixel'
 import WithExtension from '@allmarkedup/nunjucks-with'
+import express from 'express'
 import serveStatic from 'serve-static'
 import * as nunjucks from 'nunjucks'
 import bodyParser from 'body-parser'
-import express from 'express'
+import { promises as fs } from 'fs'
 
 const app = express()
 
@@ -27,10 +30,11 @@ env.addExtension('WithExtension', new WithExtension())
 env.addGlobal('BASE_API', baseApi)
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
 
+
 env.addGlobal('getConstants', () => skyblockConstantValues)
 
-env.addFilter('itemToUrl', (item) => {
-	return itemToUrlCached(item)
+env.addFilter('itemToUrl', (item, packName: string) => {
+	return itemToUrlCached(item, packName)
 })
 env.addFilter('append', (arr: any[], item: any) => arr.concat(item))
 
@@ -46,9 +50,24 @@ env.addFilter('formattingCodeToHtml', formattingCodeToHtml)
 
 env.addFilter('romanNumerals', toRomanNumerals)
 
+env.addFilter('shuffle', shuffle)
+
+
+let donators = []
+
+async function initDonators() {
+	const donatorsFileRaw = await fs.readFile('src/donators.txt', { encoding: 'ascii'})
+	const donatorUuids = donatorsFileRaw.split('\n').filter(u => u).map(u => u.split(' ')[0])
+	const promises: Promise<CleanUser>[] = []
+	for (const donatorUuid of donatorUuids) {
+		promises.push(fetchPlayer(donatorUuid, true))
+	}
+	donators = await Promise.all(promises)
+}
+initDonators()
 
 app.get('/', (req, res) => {
-	res.render('index.njk', {})
+	res.render('index.njk', { donators })
 })
 
 app.get('/player/:user', async(req, res) => {
@@ -59,8 +78,8 @@ app.get('/player/:user', async(req, res) => {
 
 app.get('/player/:user/:profile', async(req, res) => {
 	const data = await fetchProfile(req.params.user, req.params.profile)
-	await cacheInventories(data.member.inventories)
-	res.render('member.njk', { data })
+	await cacheInventories(data.member.inventories, req.query.pack as string)
+	res.render('member.njk', { data, pack: req.query.pack })
 })
 
 app.get('/leaderboard/:name', async(req, res) => {

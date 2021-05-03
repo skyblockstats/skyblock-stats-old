@@ -25,10 +25,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const hypixel_1 = require("./hypixel");
 const util_1 = require("./util");
 const nunjucks_with_1 = __importDefault(require("@allmarkedup/nunjucks-with"));
+const express_1 = __importDefault(require("express"));
 const serve_static_1 = __importDefault(require("serve-static"));
 const nunjucks = __importStar(require("nunjucks"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const express_1 = __importDefault(require("express"));
+const fs_1 = require("fs");
 const app = express_1.default();
 const env = nunjucks.configure('src/views', {
     autoescape: true,
@@ -39,8 +40,8 @@ env.addExtension('WithExtension', new nunjucks_with_1.default());
 env.addGlobal('BASE_API', hypixel_1.baseApi);
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000);
 env.addGlobal('getConstants', () => hypixel_1.skyblockConstantValues);
-env.addFilter('itemToUrl', (item) => {
-    return hypixel_1.itemToUrlCached(item);
+env.addFilter('itemToUrl', (item, packName) => {
+    return hypixel_1.itemToUrlCached(item, packName);
 });
 env.addFilter('append', (arr, item) => arr.concat(item));
 env.addFilter('slice', (arr, start, end) => arr.slice(start, end));
@@ -49,8 +50,20 @@ env.addFilter('cleannumber', util_1.cleanNumber);
 env.addFilter('clean', util_1.clean);
 env.addFilter('formattingCodeToHtml', util_1.formattingCodeToHtml);
 env.addFilter('romanNumerals', util_1.toRomanNumerals);
+env.addFilter('shuffle', util_1.shuffle);
+let donators = [];
+async function initDonators() {
+    const donatorsFileRaw = await fs_1.promises.readFile('src/donators.txt', { encoding: 'ascii' });
+    const donatorUuids = donatorsFileRaw.split('\n').filter(u => u).map(u => u.split(' ')[0]);
+    const promises = [];
+    for (const donatorUuid of donatorUuids) {
+        promises.push(hypixel_1.fetchPlayer(donatorUuid, true));
+    }
+    donators = await Promise.all(promises);
+}
+initDonators();
 app.get('/', (req, res) => {
-    res.render('index.njk', {});
+    res.render('index.njk', { donators });
 });
 app.get('/player/:user', async (req, res) => {
     const data = await hypixel_1.fetchPlayer(req.params.user);
@@ -58,8 +71,8 @@ app.get('/player/:user', async (req, res) => {
 });
 app.get('/player/:user/:profile', async (req, res) => {
     const data = await hypixel_1.fetchProfile(req.params.user, req.params.profile);
-    await hypixel_1.cacheInventories(data.member.inventories);
-    res.render('member.njk', { data });
+    await hypixel_1.cacheInventories(data.member.inventories, req.query.pack);
+    res.render('member.njk', { data, pack: req.query.pack });
 });
 app.get('/leaderboard/:name', async (req, res) => {
     const data = await hypixel_1.fetchLeaderboard(req.params.name);

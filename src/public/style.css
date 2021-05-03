@@ -17,7 +17,8 @@
 body {
 	font-family: sans-serif;
 	color: var(--theme-main-text);
-	background-color: var(--theme-main-background)
+	background-color: var(--theme-main-background);
+	margin: 0;
 }
 html {
 	scroll-behavior: smooth
@@ -239,6 +240,8 @@ h2.sectionTitle {
 	font-size: 32px;
 	width: 1.2em;
 	height: 1.2em;
+	transition-property: font-size;
+	transition-duration: 500ms
 }
 .item-slot {
 	border: 1px solid #888;
@@ -276,6 +279,7 @@ h2.sectionTitle {
 	margin-bottom: 1em;
 	overflow: hidden;
 	border-radius: 1em;
+	max-width: max-content;
 }
 .inventory-tab {
 	background-color: var(--theme-lighter-background);
@@ -362,4 +366,41 @@ tr {
 }
 .main-text {
 	color: var(--theme-main-text)
+
+@media only screen and (max-width: 490px) {
+	#inventories .item {
+		font-size: 24px
+	}
+}
+@media only screen and (max-width: 370px) {
+	#inventories .item {
+		font-size: 16px
+	}
+}
+
+#main-header {
+	background-color: var(--theme-background);
+	box-shadow: 0 0 1em rgba(0, 0, 0, .8)
+}
+
+header {
+	padding: .5rem 10%;
+}
+header .user-form {
+	margin: 0;
+	display: inline-block
+}
+header .enter-username-button {
+	box-shadow: none
+}
+
+.back-arrow {
+	float: left;
+	transition: stroke 200ms;
+	stroke: var(--theme-darker-text);
+	margin-top: .4em;
+	margin-right: 1em;
+}
+.back-arrow:hover {
+	stroke: var(--theme-main-text)
 }

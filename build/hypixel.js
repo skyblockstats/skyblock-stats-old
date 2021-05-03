@@ -48,7 +48,7 @@ async function fetchApi(path) {
         agent: () => httpsAgent,
         headers: {
             key: process.env.key
-        }
+        },
     });
     return await fetchResponse.json();
 }
@@ -60,8 +60,11 @@ updateConstants();
 /**
  * Fetch a player
  * @param user A username or UUID
+ * @param basic Whether it should only return very basic information about the user
  */
-async function fetchPlayer(user) {
+async function fetchPlayer(user, basic) {
+    if (basic)
+        return await fetchApi(`player/${user}?basic=true`);
     return await fetchApi(`player/${user}`);
 }
 exports.fetchPlayer = fetchPlayer;
@@ -87,8 +90,8 @@ const itemToUrlCache = new node_cache_1.default({
     checkperiod: 5,
     useClones: false,
 });
-async function itemToUrl(item) {
-    const stringifiedItem = JSON.stringify(item);
+async function itemToUrl(item, packName) {
+    const stringifiedItem = (packName || 'packshq') + JSON.stringify(item);
     if (itemToUrlCache.has(stringifiedItem))
         return itemToUrlCache.get(stringifiedItem);
     const itemNbt = {
@@ -106,29 +109,29 @@ async function itemToUrl(item) {
         textureUrl = await skyblockAssets.getTextureUrl({
             id: item.vanillaId,
             nbt: itemNbt,
-            pack: 'packshq'
+            pack: packName || 'packshq'
         });
     if (!textureUrl) {
-        console.log(item);
+        console.log('no texture', item);
     }
     itemToUrlCache.set(stringifiedItem, textureUrl);
     return textureUrl;
 }
 exports.itemToUrl = itemToUrl;
-function itemToUrlCached(item) {
+function itemToUrlCached(item, packName) {
     if (!item)
         return null;
-    const stringifiedItem = JSON.stringify(item);
+    const stringifiedItem = (packName || 'packshq') + JSON.stringify(item);
     return itemToUrlCache.get(stringifiedItem);
 }
 exports.itemToUrlCached = itemToUrlCached;
 /** Get all the items in an inventories object to cache them */
-async function cacheInventories(inventories) {
+async function cacheInventories(inventories, packName) {
     const promises = [];
     for (const inventoryItems of Object.values(inventories !== null && inventories !== void 0 ? inventories : {}))
         for (const inventoryItem of inventoryItems)
             if (inventoryItem)
-                promises.push(itemToUrl(inventoryItem));
+                promises.push(itemToUrl(inventoryItem, packName));
     await Promise.all(promises);
 }
 exports.cacheInventories = cacheInventories;

@@ -3,6 +3,8 @@
 
 {% block metatitle %}{% block title %}{{ data.member.username }}'s SkyBlock profile ({{ data.member.profileName }}) {% endblock %}{% endblock %}
 
+{% block backArrowHref %}/player/{{ data.member.username }}{% endblock %}
+
 {%- block head -%}
 {{- super() -}}
 <script>{% include 'toc.js' %}</script>
