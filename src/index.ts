@@ -1,5 +1,15 @@
-import { baseApi, cacheInventories, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile, itemToUrlCached, CleanUser } from './hypixel'
-import { clean, cleanNumber, formattingCodeToHtml, shuffle } from './util'
+import {
+	skyblockConstantValues,
+	fetchLeaderboards,
+	cacheInventories,
+	fetchLeaderboard,
+	itemToUrlCached,
+	fetchProfile,
+	fetchPlayer,
+	CleanUser,
+	baseApi,
+} from './hypixel'
+import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
 import express from 'express'
 import serveStatic from 'serve-static'
@@ -18,6 +28,10 @@ const env = nunjucks.configure('src/views', {
 env.addExtension('WithExtension', new WithExtension())
 env.addGlobal('BASE_API', baseApi)
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
+
+
+env.addGlobal('getConstants', () => skyblockConstantValues)
+
 env.addFilter('itemToUrl', (item, packName: string) => {
 	return itemToUrlCached(item, packName)
 })
@@ -32,6 +46,8 @@ env.addFilter('cleannumber', cleanNumber)
 env.addFilter('clean', clean)
 
 env.addFilter('formattingCodeToHtml', formattingCodeToHtml)
+
+env.addFilter('romanNumerals', toRomanNumerals)
 
 env.addFilter('shuffle', shuffle)
 
@@ -48,7 +64,6 @@ async function initDonators() {
 	donators = await Promise.all(promises)
 }
 initDonators()
-
 
 app.get('/', (req, res) => {
 	res.render('index.njk', { donators })

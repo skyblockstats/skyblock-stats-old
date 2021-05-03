@@ -39,6 +39,7 @@ const env = nunjucks.configure('src/views', {
 env.addExtension('WithExtension', new nunjucks_with_1.default());
 env.addGlobal('BASE_API', hypixel_1.baseApi);
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000);
+env.addGlobal('getConstants', () => hypixel_1.skyblockConstantValues);
 env.addFilter('itemToUrl', (item, packName) => {
     return hypixel_1.itemToUrlCached(item, packName);
 });
@@ -48,6 +49,7 @@ env.addFilter('startsWith', (string, substring) => string.startsWith(substring))
 env.addFilter('cleannumber', util_1.cleanNumber);
 env.addFilter('clean', util_1.clean);
 env.addFilter('formattingCodeToHtml', util_1.formattingCodeToHtml);
+env.addFilter('romanNumerals', util_1.toRomanNumerals);
 env.addFilter('shuffle', util_1.shuffle);
 let donators = [];
 async function initDonators() {
