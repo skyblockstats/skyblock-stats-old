@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.INVENTORIES = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.baseApi = void 0;
+exports.INVENTORIES = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
 const https_1 = require("https");
@@ -37,6 +37,7 @@ exports.baseApi = 'https://skyblock-api2.matdoes.dev'; // TODO: change this to s
 const httpsAgent = new https_1.Agent({
     keepAlive: true
 });
+exports.skyblockConstantValues = null;
 /**
  * Fetch skyblock-api
  * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
@@ -51,6 +52,11 @@ async function fetchApi(path) {
     });
     return await fetchResponse.json();
 }
+async function updateConstants() {
+    exports.skyblockConstantValues = await fetchApi('constants');
+}
+setInterval(updateConstants, 60 * 60 * 1000); // update every hour
+updateConstants();
 /**
  * Fetch a player
  * @param user A username or UUID

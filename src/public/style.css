@@ -346,3 +346,20 @@ img.item-custom-head {
 	opacity: .4
 }
 
+tr {
+	text-align: left
+}
+
+.minions-table-locked {
+	opacity: .2
+}
+.minions-table-unlocked {
+	color: #3e3
+}
+
+.darker-text {
+	color: var(--theme-darker-text)
+}
+.main-text {
+	color: var(--theme-main-text)
+}

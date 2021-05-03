@@ -1,5 +1,14 @@
-import { baseApi, cacheInventories, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile, itemToUrlCached } from './hypixel'
-import { clean, cleanNumber, formattingCodeToHtml } from './util'
+import {
+	skyblockConstantValues,
+	fetchLeaderboards,
+	cacheInventories,
+	fetchLeaderboard,
+	itemToUrlCached,
+	fetchProfile,
+	fetchPlayer,
+	baseApi,
+} from './hypixel'
+import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
 import serveStatic from 'serve-static'
 import * as nunjucks from 'nunjucks'
@@ -17,6 +26,9 @@ const env = nunjucks.configure('src/views', {
 env.addExtension('WithExtension', new WithExtension())
 env.addGlobal('BASE_API', baseApi)
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
+
+env.addGlobal('getConstants', () => skyblockConstantValues)
+
 env.addFilter('itemToUrl', (item) => {
 	return itemToUrlCached(item)
 })
@@ -32,7 +44,7 @@ env.addFilter('clean', clean)
 
 env.addFilter('formattingCodeToHtml', formattingCodeToHtml)
 
-
+env.addFilter('romanNumerals', toRomanNumerals)
 
 
 app.get('/', (req, res) => {

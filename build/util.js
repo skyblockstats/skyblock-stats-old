@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clean = exports.cleanNumber = exports.formattingCodeToHtml = void 0;
+exports.toRomanNumerals = exports.clean = exports.cleanNumber = exports.formattingCodeToHtml = void 0;
 const colorCodes = {
     '0': '#000000',
     '1': '#0000be',
@@ -127,3 +127,7 @@ function clean(thing) {
     }
 }
 exports.clean = clean;
+function toRomanNumerals(number) {
+    return ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'][number];
+}
+exports.toRomanNumerals = toRomanNumerals;

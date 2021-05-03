@@ -123,3 +123,7 @@ export function clean(thing: string | number) {
 			.replace(/_/g, ' ')
 	}
 }
+
+export function toRomanNumerals(number: number) {
+	return ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'][number]
+}
