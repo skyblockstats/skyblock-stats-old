@@ -27,7 +27,6 @@ html {
 /* content is uglier when its max width */
 main {
 	margin: 1em auto;
-	min-height: calc(100vh - 5rem);
 	width: 80%;
 }
 
