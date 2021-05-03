@@ -77,6 +77,8 @@ app.get('/player/:user', async(req, res) => {
 
 app.get('/player/:user/:profile', async(req, res) => {
 	const data = await fetchProfile(req.params.user, req.params.profile)
+	if (req.query.simple !== undefined)
+		return res.render('member-simple.njk', { data })
 	await cacheInventories(data.member.inventories, req.query.pack as string)
 	res.render('member.njk', { data, pack: req.query.pack })
 })
