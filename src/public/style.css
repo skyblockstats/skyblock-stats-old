@@ -366,6 +366,7 @@ tr {
 }
 .main-text {
 	color: var(--theme-main-text)
+}
 
 @media only screen and (max-width: 490px) {
 	#inventories .item {

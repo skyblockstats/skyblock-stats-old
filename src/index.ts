@@ -6,11 +6,10 @@ import {
 	itemToUrlCached,
 	fetchProfile,
 	fetchPlayer,
-  CleanUser,
+	CleanUser,
 	baseApi,
 } from './hypixel'
 import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle } from './util'
-import { baseApi, cacheInventories, fetchLeaderboard, fetchLeaderboards, fetchPlayer, fetchProfile, itemToUrlCached, CleanUser } from './hypixel'
 import WithExtension from '@allmarkedup/nunjucks-with'
 import express from 'express'
 import serveStatic from 'serve-static'

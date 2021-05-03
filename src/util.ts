@@ -126,6 +126,7 @@ export function clean(thing: string | number) {
 
 export function toRomanNumerals(number: number) {
 	return ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'][number]
+}
 
 export function shuffle<T>(a: T[]): T[] {
     for (let i = a.length - 1; i > 0; i--) {
