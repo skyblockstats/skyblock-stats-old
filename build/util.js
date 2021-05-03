@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shuffle = exports.clean = exports.cleanNumber = exports.formattingCodeToHtml = void 0;
+exports.shuffle = exports.toRomanNumerals = exports.clean = exports.cleanNumber = exports.formattingCodeToHtml = void 0;
 const colorCodes = {
     '0': '#000000',
     '1': '#0000be',
@@ -127,6 +127,10 @@ function clean(thing) {
     }
 }
 exports.clean = clean;
+function toRomanNumerals(number) {
+    return ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'][number];
+}
+exports.toRomanNumerals = toRomanNumerals;
 function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));

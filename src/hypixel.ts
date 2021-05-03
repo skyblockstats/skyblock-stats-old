@@ -17,6 +17,8 @@ const httpsAgent = new Agent({
 	keepAlive: true
 })
 
+export let skyblockConstantValues = null
+
 /**
  * Fetch skyblock-api
  * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
@@ -35,6 +37,13 @@ async function fetchApi(path) {
 	)
 	return await fetchResponse.json()
 }
+
+async function updateConstants() {
+	skyblockConstantValues = await fetchApi('constants')
+}
+
+setInterval(updateConstants, 60 * 60 * 1000) // update every hour
+updateConstants()
 
 /**
  * Fetch a player
