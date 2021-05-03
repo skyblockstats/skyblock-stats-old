@@ -71,6 +71,8 @@ app.get('/player/:user', async (req, res) => {
 });
 app.get('/player/:user/:profile', async (req, res) => {
     const data = await hypixel_1.fetchProfile(req.params.user, req.params.profile);
+    if (req.query.simple !== undefined)
+        return res.render('member-simple.njk', { data });
     await hypixel_1.cacheInventories(data.member.inventories, req.query.pack);
     res.render('member.njk', { data, pack: req.query.pack });
 });
