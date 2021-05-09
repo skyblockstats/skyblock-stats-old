@@ -65,6 +65,9 @@ initDonators();
 app.get('/', (req, res) => {
     res.render('index.njk', { donators });
 });
+app.get('/chat', (req, res) => {
+    res.render('fakechat.njk');
+});
 app.get('/player/:user', async (req, res) => {
     const data = await hypixel_1.fetchPlayer(req.params.user);
     res.render('profiles.njk', { data });

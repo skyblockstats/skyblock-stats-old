@@ -1,0 +1,113 @@
+{% extends "base.njk" %}
+{% block title %}Hypixel fake chat generator{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+input {
+  border: 1px solid rgba(255,255,255,.2);
+}
+button {
+  background-color: #222;
+  border: 1px solid rgba(255,255,255,.2);
+  color: #aaa
+}
+select, input, button {
+	display: block;
+  margin-bottom: .5em
+}
+#transparent-background {
+	display: inline-block;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+const dataInputEl = document.getElementById('data')
+const modesEl = document.getElementById('modes')
+const generateButtonEl = document.getElementById('generate')
+const userEl = document.getElementById('ign')
+const outputImageEl = document.getElementById('outputImage')
+const transparentBackgroundEl = document.getElementById('transparent-background')
+
+function isUsingDataValue() {
+	const value = modesEl.value
+	if (['fr', 'f', 'fdeny', 'gdisband', 'pinvite'].includes(value)) {
+		return false
+	} else {
+		return true
+	}
+}
+
+function isUsingUserValue() {
+	const value = modesEl.value
+	if (['custom'].includes(value)) {
+		return false
+	} else {
+		return true
+	}
+}
+
+
+modesEl.addEventListener('change', () => {
+	const value = modesEl.value
+	const usesDataValue = isUsingDataValue()
+	const usesUserValue = isUsingUserValue()
+	// Hide data <input>
+	if (['fr', 'f', 'fdeny', 'gdisband', 'pinvite'].includes(value)) {
+		dataInputEl.style.display = 'none'
+	} else {
+		dataInputEl.style.display = null
+	}
+	if (['custom'].includes(value)) {
+		userEl.style.display = 'none'
+	} else {
+		userEl.style.display = null
+	}
+})
+generateButtonEl.addEventListener('click', () => {
+	const usesDataValue = isUsingDataValue()
+	const usesUserValue = isUsingUserValue()
+	const mode = modesEl.value
+	var url = 'https://fake-chat.matdoes.dev/render.png?'
+	console.log(userEl.innerText)
+	url = url + `m=${mode}`
+	if (usesUserValue)
+		url = url + `&u=${userEl.value}`
+	if (usesDataValue)
+		url = url + '&d=' + encodeURIComponent(dataInputEl.value)
+	if (transparentBackgroundEl.checked)
+		url = url + '&t=1'
+		
+	console.log(url)
+	outputImageEl.src = url
+	outputImageEl.style.display = 'none'
+	outputImageEl.onload = () => {
+		outputImageEl.style.display = 'block'
+	}
+})
+})
+		</script>
+		{% endblock %}
+{% block main %}
+<h1>Hypixel fake chat generator</h1>
+	<select id="modes">
+		<option value="chat">Public chat</option>
+		<option value="dm">Private message</option>
+		<option value="fr">Friend request</option>
+		<option value="f">Friend accept</option>
+		<option value="fdeny">Friend deny</option>
+		<option value="gchat">Guild chat</option>
+		<option value="gdisband">Guild disband</option>
+		<option value="pchat">Party chat</option>
+		<option value="pinvite">Party invite</option>
+		<option value="custom">Custom</option>
+	</select>
+	<input id="ign" placeholder="Enter user"></input>
+	<input id="data" placeholder="Enter message"></input>
+	<label>
+		<input type="checkbox" id="transparent-background"> Transparent background
+	</label>
+	<button id="generate">Generate image</button>
+	<img src="" id="outputImage" style="display:none">
+{% endblock %}
