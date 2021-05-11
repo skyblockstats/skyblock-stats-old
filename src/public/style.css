@@ -425,3 +425,19 @@ header .enter-username-button {
 #infobox p {
 	margin: 0 0 .25em 0;
 }
+
+@media only screen and (max-width: 600px) {
+	#infobox {
+		position: relative;
+		right: -2em;
+		margin-top: 0
+	}
+}
+@media only screen and (max-width: 550px) {
+	#infobox {
+		position: unset;
+		box-shadow: none;
+		float: none;
+		border: 1px solid var(--theme-lighter-background);
+	}
+}
