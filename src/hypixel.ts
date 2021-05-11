@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 import NodeCache from 'node-cache'
-import { Agent } from 'https'
-// import { Agent } from 'http'
+// import { Agent } from 'https'
+import { Agent } from 'http'
 
 import * as skyblockAssets from 'skyblock-assets'
 
@@ -9,11 +9,11 @@ if (!process.env.key)
 	// if there's no key in env, run dotenv
 	require('dotenv').config()
 
-export const baseApi = 'https://skyblock-api2.matdoes.dev' // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
-// export const baseApi = 'http://localhost:8080'
+// export const baseApi = 'https://skyblock-api2.matdoes.dev' // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
+export const baseApi = 'http://localhost:8080'
 
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
-const httpsAgent = new Agent({
+export const httpsAgent = new Agent({
 	keepAlive: true
 })
 
@@ -23,17 +23,14 @@ export let skyblockConstantValues = null
  * Fetch skyblock-api
  * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
  */
-async function fetchApi(path, retry: boolean=true) {
+ async function fetchApi(path, retry: boolean=true) {
 	const fetchUrl = `${baseApi}/${path}`
 	try {
 		const fetchResponse = await fetch(
 			fetchUrl,
 			{
 				agent: () => httpsAgent,
-				headers: {
-					key: process.env.key
-				},
-				
+				headers: { key: process.env.key },
 			}
 		)
 		return await fetchResponse.json()
@@ -42,6 +39,39 @@ async function fetchApi(path, retry: boolean=true) {
 			// wait 5 seconds and retry
 			await new Promise(resolve => setTimeout(resolve, 5000))
 			return await fetchApi(path, false)
+		} else {
+			throw err
+		}
+	}
+}
+
+/**
+ * Post to skyblock-api
+ * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
+ * @param data The data (as json) that should be posted
+ */
+ async function postApi(path, data: any, retry: boolean=true) {
+	const fetchUrl = `${baseApi}/${path}`
+	console.log('posting', data)
+	try {
+		const fetchResponse = await fetch(
+			fetchUrl,
+			{
+				agent: () => httpsAgent,
+				headers: {
+					key: process.env.key,
+					'content-type': 'application/json'
+				},
+				method: 'POST',
+				body: JSON.stringify(data)
+			}
+		)
+		return await fetchResponse.json()
+	} catch (err) {
+		if (retry) {
+			// wait 5 seconds and retry
+			await new Promise(resolve => setTimeout(resolve, 5000))
+			return await postApi(path, data, false)
 		} else {
 			throw err
 		}
@@ -137,6 +167,13 @@ export async function cacheInventories(inventories: Inventories, packName?: stri
 			if (inventoryItem)
 				promises.push(itemToUrl(inventoryItem, packName))
 	await Promise.all(promises)
+}
+
+
+export async function createSession(code: string) {
+	return await postApi(`accounts/createsession`, {
+		code
+	})
 }
 
 

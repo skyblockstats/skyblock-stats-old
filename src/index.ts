@@ -8,6 +8,8 @@ import {
 	fetchPlayer,
 	CleanUser,
 	baseApi,
+	httpsAgent,
+	createSession,
 } from './hypixel'
 import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
@@ -16,6 +18,7 @@ import serveStatic from 'serve-static'
 import * as nunjucks from 'nunjucks'
 import bodyParser from 'body-parser'
 import { promises as fs } from 'fs'
+import fetch from 'node-fetch'
 
 const app = express()
 
@@ -100,8 +103,27 @@ app.get('/leaderboards', async(req, res) => {
 	res.render('leaderboards.njk', { data })
 })
 
+
 app.get('/leaderboard', async(req, res) => {
 	res.redirect('/leaderboards')
+})
+
+const DISCORD_CLIENT_ID = '656634948148527107'
+
+app.get('/login', async(req, res) => {
+	res.redirect(`https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=http${req.secure ? 's' : ''}://${req.headers.host}%2Floggedin&response_type=code&scope=identify`)
+})
+
+
+app.get('/loggedin', async(req, res) => {
+	console.log(req.query.code)
+	const response = await createSession(req.query.code as string)
+	console.log(response)
+	if (response.ok) {
+		res.cookie('sid', response.session_id)
+		res.redirect('/profile')
+	} else
+		res.redirect('/login')
 })
 
 // we use bodyparser to be able to get data from req.body
