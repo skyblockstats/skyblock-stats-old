@@ -22,19 +22,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.INVENTORIES = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.baseApi = void 0;
+exports.INVENTORIES = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.httpsAgent = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
-const https_1 = require("https");
-// import { Agent } from 'http'
+// import { Agent } from 'https'
+const http_1 = require("http");
 const skyblockAssets = __importStar(require("skyblock-assets"));
 if (!process.env.key)
     // if there's no key in env, run dotenv
     require('dotenv').config();
-exports.baseApi = 'https://skyblock-api2.matdoes.dev'; // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
-// export const baseApi = 'http://localhost:8080'
+// export const baseApi = 'https://skyblock-api2.matdoes.dev' // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
+exports.baseApi = 'http://localhost:8080';
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
-const httpsAgent = new https_1.Agent({
+exports.httpsAgent = new http_1.Agent({
     keepAlive: true
 });
 exports.skyblockConstantValues = null;
@@ -46,10 +46,8 @@ async function fetchApi(path, retry = true) {
     const fetchUrl = `${exports.baseApi}/${path}`;
     try {
         const fetchResponse = await node_fetch_1.default(fetchUrl, {
-            agent: () => httpsAgent,
-            headers: {
-                key: process.env.key
-            },
+            agent: () => exports.httpsAgent,
+            headers: { key: process.env.key },
         });
         return await fetchResponse.json();
     }
@@ -58,6 +56,37 @@ async function fetchApi(path, retry = true) {
             // wait 5 seconds and retry
             await new Promise(resolve => setTimeout(resolve, 5000));
             return await fetchApi(path, false);
+        }
+        else {
+            throw err;
+        }
+    }
+}
+/**
+ * Post to skyblock-api
+ * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
+ * @param data The data (as json) that should be posted
+ */
+async function postApi(path, data, retry = true) {
+    const fetchUrl = `${exports.baseApi}/${path}`;
+    console.log('posting', data);
+    try {
+        const fetchResponse = await node_fetch_1.default(fetchUrl, {
+            agent: () => exports.httpsAgent,
+            headers: {
+                key: process.env.key,
+                'content-type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        return await fetchResponse.json();
+    }
+    catch (err) {
+        if (retry) {
+            // wait 5 seconds and retry
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            return await postApi(path, data, false);
         }
         else {
             throw err;
@@ -147,6 +176,12 @@ async function cacheInventories(inventories, packName) {
     await Promise.all(promises);
 }
 exports.cacheInventories = cacheInventories;
+async function createSession(code) {
+    return await postApi(`accounts/createsession`, {
+        code
+    });
+}
+exports.createSession = createSession;
 exports.INVENTORIES = {
     armor: 'inv_armor',
     inventory: 'inv_contents',

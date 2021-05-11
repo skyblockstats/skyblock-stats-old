@@ -116,9 +116,7 @@ app.get('/login', async(req, res) => {
 
 
 app.get('/loggedin', async(req, res) => {
-	console.log(req.query.code)
 	const response = await createSession(req.query.code as string)
-	console.log(response)
 	if (response.ok) {
 		res.cookie('sid', response.session_id)
 		res.redirect('/profile')
