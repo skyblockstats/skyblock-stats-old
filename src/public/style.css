@@ -8,14 +8,22 @@
 	--theme-transparent-border: rgba(128,128,128,.3)
 }
 
+/* minecraft font */
 @font-face {
 	font-family: Minecraft;
 	src: url(https://cdn.matdoes.dev/fonts/Minecraft.otf);
-	font-display: swap
+	font-display: swap;
+}
+
+/* minecraft font */
+@font-face {
+	font-family: Twemoji;
+	src: url(https://cdn.matdoes.dev/fonts/twemoji.ttf);
+	font-display: swap;
 }
 
 body {
-	font-family: sans-serif;
+	font-family: Twemoji, sans-serif;
 	color: var(--theme-main-text);
 	background-color: var(--theme-main-background);
 	margin: 0;
@@ -28,13 +36,6 @@ html {
 main {
 	margin: 1em auto;
 	width: 80%;
-}
-
-/* minecraft font */
-@font-face {
-	font-family: Minecraft;
-	src: url(//cdn.matdoes.dev/fonts/Minecraft.otf);
-	font-display: swap
 }
 
 /* makes random height and stuff look less broken */
@@ -89,7 +90,7 @@ a {
 h1 {
 	font-size: 2.5em
 }
-h3 {
+h2, h3 {
 	margin-top: 0;
 	margin-bottom: .2em
 }
@@ -126,6 +127,11 @@ button {
 	/* usernames have the minecraft font */
 	font-family: Minecraft, sans-serif;
 	/* rreduce the size of the text because the font is too big */
+	font-size: .8em;
+}
+
+.username-rank-prefix {
+	font-family: Minecraft, sans-serif;
 	font-size: .8em;
 }
 
@@ -403,4 +409,19 @@ header .enter-username-button {
 }
 .back-arrow:hover {
 	stroke: var(--theme-main-text)
+}
+
+#infobox {
+	float: right;
+	max-width: 30%;
+	background-color: rgba(20,20,20,.4);
+	padding: 1em;
+	margin-top: 2em;
+	min-width: 20em;
+	border-radius: .5em;
+	box-shadow: 0 0 1em #000;
+}
+
+#infobox p {
+	margin: 0 0 .25em 0;
 }

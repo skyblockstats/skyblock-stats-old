@@ -22,6 +22,9 @@
 		'minions',
 		'leaderboards'
 	] -%}
+	
+	{%- include 'sections/infobox.njk' -%}
+
 	<ul id="toc"><h3>Contents</h3></ul>
 
 	<div>
@@ -29,13 +32,13 @@
 			{%- if data.member.inventories.armor -%}
 				<section id="armor"{% if data.member.inventories.inventory %} class="armor-float"{% endif %}>
 					<h2>Armor</h2>
-					{%- include "sections/armor.njk" -%}
+					{%- include 'sections/armor.njk' -%}
 				</section>
 			{%- endif -%}
 			{%- if data.member.inventories.inventory -%}
 				<section id="inventories">
 					<h2>Inventories</h2>
-					{%- include "sections/inventories.njk" -%}
+					{%- include 'sections/inventories.njk' -%}
 				</section>
 			{%- endif -%}
 			{%- asyncAll category in categories -%}
@@ -44,7 +47,7 @@
 					{#- we need to use with so the include passes context -#}
 					{% with { data: data, category: category } %}
 						{#- include the category from the sections folder -#}
-						{%- include "sections/" + category + ".njk" -%}
+						{%- include 'sections/' + category + '.njk' -%}
 					{% endwith %}
 				</section>
 			{%- endall -%}

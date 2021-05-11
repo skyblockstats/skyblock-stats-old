@@ -29,7 +29,6 @@ env.addExtension('WithExtension', new WithExtension())
 env.addGlobal('BASE_API', baseApi)
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
 
-
 env.addGlobal('getConstants', () => skyblockConstantValues)
 
 env.addFilter('itemToUrl', (item, packName: string) => {

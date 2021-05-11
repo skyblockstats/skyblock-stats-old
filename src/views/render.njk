@@ -1,8 +1,9 @@
-{%- macro username(player, headType=none, hyperlinkToProfile=false) -%}
+{%- macro username(player, headType=none, hyperlinkToProfile=false, prefix=false) -%}
 	{%- if hyperlinkToProfile %}<a href="/player/{{ player.username }}">{% endif -%}
 		{%- if headType === '3d' %}{{ head3d(player, isPartOfUsername=true) -}}
 		{%- elif headType === '2d' %}{{ head2d(player, isPartOfUsername=true) -}}
 		{%- endif -%}
+		{%- if prefix -%}<span class="username-rank-prefix">{{ player.rank.colored|formattingCodeToHtml|safe }} </span>{%- endif -%}
 		<span class="username" style="color: {{ player.rank.color }}">{{ player.username }}</span>
 	{%- if hyperlinkToProfile %}</a>{% endif -%}
 {%- endmacro -%}
