@@ -23,19 +23,29 @@ export let skyblockConstantValues = null
  * Fetch skyblock-api
  * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
  */
-async function fetchApi(path) {
+async function fetchApi(path, retry: boolean=true) {
 	const fetchUrl = `${baseApi}/${path}`
-	const fetchResponse = await fetch(
-		fetchUrl,
-		{
-			agent: () => httpsAgent,
-			headers: {
-				key: process.env.key
-			},
-			
+	try {
+		const fetchResponse = await fetch(
+			fetchUrl,
+			{
+				agent: () => httpsAgent,
+				headers: {
+					key: process.env.key
+				},
+				
+			}
+		)
+		return await fetchResponse.json()
+	} catch (err) {
+		if (retry) {
+			// wait 5 seconds and retry
+			await new Promise(resolve => setTimeout(resolve, 5000))
+			return await fetchApi(path, false)
+		} else {
+			throw err
 		}
-	)
-	return await fetchResponse.json()
+	}
 }
 
 async function updateConstants() {
