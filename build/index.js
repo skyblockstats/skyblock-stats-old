@@ -93,6 +93,21 @@ app.get('/leaderboards', async (req, res) => {
 app.get('/leaderboard', async (req, res) => {
     res.redirect('/leaderboards');
 });
+const DISCORD_CLIENT_ID = '656634948148527107';
+app.get('/login', async (req, res) => {
+    res.redirect(`https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=http${req.secure ? 's' : ''}://${req.headers.host}%2Floggedin&response_type=code&scope=identify`);
+});
+app.get('/loggedin', async (req, res) => {
+    console.log(req.query.code);
+    const response = await hypixel_1.createSession(req.query.code);
+    console.log(response);
+    if (response.ok) {
+        res.cookie('sid', response.session_id);
+        res.redirect('/profile');
+    }
+    else
+        res.redirect('/login');
+});
 // we use bodyparser to be able to get data from req.body
 const urlencodedParser = body_parser_1.default.urlencoded({ extended: false });
 // redirect post requests from /player to /player/:user
