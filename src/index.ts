@@ -113,6 +113,22 @@ app.post('/player', urlencodedParser, (req, res) => {
 })
 
 
+app.get('/profiles/:user', async(req, res) => {
+	res.redirect(`/player/${req.params.user}`)
+})
+app.get('/profile/:user/:profile', async(req, res) => {
+	res.redirect(`/player/${req.params.user}/${req.params.profile}`)
+})
+app.get('/chat.png', async(req, res) => {
+	const query: Record<string, string> = {}
+	for (const key of Object.keys(req.query)) {
+		query[key] = req.query[key].toString()
+	}
+	const queryString = new URLSearchParams(query).toString()
+	res.redirect(`https://fake-chat.matdoes.dev/render.png?${queryString}`)
+})
+
+
 // we use serveStatic so it caches
 app.use(serveStatic('src/public'))
 
