@@ -441,3 +441,18 @@ header .enter-username-button {
 		border: 1px solid var(--theme-lighter-background);
 	}
 }
+
+#login-button {
+	position: absolute;
+	right: .5em;
+	top: .5em;
+	border: 1px solid var(--theme-lighter-background);
+	padding: .5em;
+	transition-property: border, background-color;
+	transition-duration: 200ms;
+	border-radius: .5em
+}
+#login-button:hover {
+	background-color: var(--theme-lighter-background);
+	border-color: var(--theme-lightest-background);
+}
