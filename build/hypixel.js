@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.INVENTORIES = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.httpsAgent = exports.baseApi = void 0;
+exports.INVENTORIES = exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.httpsAgent = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
 // import { Agent } from 'https'
@@ -177,11 +177,18 @@ async function cacheInventories(inventories, packName) {
 }
 exports.cacheInventories = cacheInventories;
 async function createSession(code) {
-    return await postApi(`accounts/createsession`, {
-        code
-    });
+    return await postApi(`accounts/createsession`, { code });
 }
 exports.createSession = createSession;
+async function fetchSession(sessionId) {
+    return await postApi(`accounts/session`, { uuid: sessionId });
+}
+exports.fetchSession = fetchSession;
+async function updateAccount(data) {
+    // this is checked with the key env variable, so it's mostly secure
+    return await postApi(`accounts/update`, data);
+}
+exports.updateAccount = updateAccount;
 exports.INVENTORIES = {
     armor: 'inv_armor',
     inventory: 'inv_contents',

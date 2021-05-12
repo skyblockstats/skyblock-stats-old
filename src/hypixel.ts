@@ -171,11 +171,22 @@ export async function cacheInventories(inventories: Inventories, packName?: stri
 
 
 export async function createSession(code: string) {
-	return await postApi(`accounts/createsession`, {
-		code
-	})
+	return await postApi(`accounts/createsession`, { code })
+}
+export async function fetchSession(sessionId: string) {
+	return await postApi(`accounts/session`, { uuid: sessionId })
 }
 
+export async function updateAccount(data: AccountSchema) {
+	// this is checked with the key env variable, so it's mostly secure
+	return await postApi(`accounts/update`, data)
+}
+
+interface AccountSchema {
+	_id?: string
+	discordId: string
+	minecraftUuid?: string
+}
 
 export interface CleanUser {
 	player: CleanPlayer

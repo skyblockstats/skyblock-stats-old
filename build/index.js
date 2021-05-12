@@ -30,7 +30,10 @@ const serve_static_1 = __importDefault(require("serve-static"));
 const nunjucks = __importStar(require("nunjucks"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const fs_1 = require("fs");
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const app = express_1.default();
+app.use(cookie_parser_1.default());
+app.use(express_1.default.json());
 const env = nunjucks.configure('src/views', {
     autoescape: true,
     express: app,
@@ -101,13 +104,42 @@ app.get('/loggedin', async (req, res) => {
     const response = await hypixel_1.createSession(req.query.code);
     if (response.ok) {
         res.cookie('sid', response.session_id);
-        res.redirect('/profile');
+        res.redirect('/verify');
     }
     else
         res.redirect('/login');
 });
+app.get('/verify', async (req, res) => {
+    if (!req.cookies.sid)
+        return res.redirect('/login');
+    res.render('account/verify.njk');
+});
 // we use bodyparser to be able to get data from req.body
 const urlencodedParser = body_parser_1.default.urlencoded({ extended: false });
+app.post('/verify', urlencodedParser, async (req, res) => {
+    var _a, _b;
+    if (!req.cookies.sid)
+        return res.redirect('/login');
+    if (!req.body.ign)
+        return res.redirect('/verify');
+    const session = await hypixel_1.fetchSession(req.cookies.sid);
+    if (!session)
+        return res.redirect('/login');
+    const username = req.body.ign;
+    const player = await hypixel_1.fetchPlayer(username, true);
+    const hypixelDiscordName = (_b = (_a = player === null || player === void 0 ? void 0 : player.player) === null || _a === void 0 ? void 0 : _a.socials) === null || _b === void 0 ? void 0 : _b.discord;
+    if (!hypixelDiscordName)
+        return res.render('account/verify.njk', { error: 'Please link your Discord in Hypixel by doing /profile -> Social media -> Discord' });
+    const actualDiscordName = session.discord_user.name;
+    const actualDiscordIdDiscrim = session.discord_user.id + '#' + session.discord_user.name.split('#')[1];
+    if (!(hypixelDiscordName === actualDiscordName || hypixelDiscordName === actualDiscordIdDiscrim))
+        return res.render('account/verify.njk', { error: `You\'re linked to ${hypixelDiscordName} on Hypixel, change this to ${actualDiscordName} by doing /profile -> Social media -> Discord` });
+    await hypixel_1.updateAccount({
+        discordId: session.discord_user.id,
+        minecraftUuid: player.player.uuid
+    });
+    res.redirect('/profile');
+});
 // redirect post requests from /player to /player/:user
 app.post('/player', urlencodedParser, (req, res) => {
     res.redirect('/player/' + req.body['user-search']);
