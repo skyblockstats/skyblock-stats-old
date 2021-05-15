@@ -69,7 +69,6 @@ async function fetchApi(path, retry = true) {
  */
 async function postApi(path, data, retry = true) {
     const fetchUrl = `${exports.baseApi}/${path}`;
-    console.log('posting', data);
     try {
         const fetchResponse = await node_fetch_1.default(fetchUrl, {
             agent: () => exports.httpsAgent,

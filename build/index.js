@@ -129,16 +129,21 @@ app.post('/verify', urlencodedParser, async (req, res) => {
     const player = await hypixel_1.fetchPlayer(username, true);
     const hypixelDiscordName = (_b = (_a = player === null || player === void 0 ? void 0 : player.player) === null || _a === void 0 ? void 0 : _a.socials) === null || _b === void 0 ? void 0 : _b.discord;
     if (!hypixelDiscordName)
-        return res.render('account/verify.njk', { error: 'Please link your Discord in Hypixel by doing /profile -> Social media -> Discord' });
+        return res.render('account/verify.njk', { error: 'Please link your Discord in Hypixel by doing /profile -> Social media -> Discord. If you just changed it, wait a few minutes and try again.' });
     const actualDiscordName = session.discord_user.name;
     const actualDiscordIdDiscrim = session.discord_user.id + '#' + session.discord_user.name.split('#')[1];
     if (!(hypixelDiscordName === actualDiscordName || hypixelDiscordName === actualDiscordIdDiscrim))
-        return res.render('account/verify.njk', { error: `You\'re linked to ${hypixelDiscordName} on Hypixel, change this to ${actualDiscordName} by doing /profile -> Social media -> Discord` });
+        return res.render('account/verify.njk', { error: `You\'re linked to ${hypixelDiscordName} on Hypixel, change this to ${actualDiscordName} by doing /profile -> Social media -> Discord. If you just changed it, wait a few minutes and try again.` });
     await hypixel_1.updateAccount({
         discordId: session.discord_user.id,
         minecraftUuid: player.player.uuid
     });
     res.redirect('/profile');
+});
+app.get('/profile', async (req, res) => {
+    if (!req.cookies.sid)
+        return res.redirect('/login');
+    res.render('account/profile.njk');
 });
 // redirect post requests from /player to /player/:user
 app.post('/player', urlencodedParser, (req, res) => {

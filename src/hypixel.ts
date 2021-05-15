@@ -52,7 +52,6 @@ export let skyblockConstantValues = null
  */
  async function postApi(path, data: any, retry: boolean=true) {
 	const fetchUrl = `${baseApi}/${path}`
-	console.log('posting', data)
 	try {
 		const fetchResponse = await fetch(
 			fetchUrl,
