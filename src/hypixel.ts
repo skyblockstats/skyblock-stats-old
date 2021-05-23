@@ -27,7 +27,7 @@ async function fetchApi(path, retry: boolean=true) {
 	const fetchUrl = `${baseApi}/${path}`
 	try {
 		const fetchResponse = await fetch(
-			fetchUrl,
+			encodeURI(fetchUrl),
 			{
 				agent: () => httpsAgent,
 				headers: {

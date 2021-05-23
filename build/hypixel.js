@@ -45,7 +45,7 @@ exports.skyblockConstantValues = null;
 async function fetchApi(path, retry = true) {
     const fetchUrl = `${exports.baseApi}/${path}`;
     try {
-        const fetchResponse = await node_fetch_1.default(fetchUrl, {
+        const fetchResponse = await node_fetch_1.default(encodeURI(fetchUrl), {
             agent: () => httpsAgent,
             headers: {
                 key: process.env.key
