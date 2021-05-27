@@ -101,8 +101,8 @@ export async function fetchPlayer(user: string, basic?: boolean): Promise<CleanU
  * @param user A username or UUID
  * @profile A profile name or UUID
  */
-export async function fetchProfile(user: string, profile: string): Promise<CleanMemberProfile> {
-	return await fetchApi(`player/${user}/${profile}`)
+export async function fetchProfile(user: string, profile: string, customization: boolean=false): Promise<CleanMemberProfile> {
+	return await fetchApi(`player/${user}/${profile}?customization=${customization}`,)
 }
 
 export async function fetchLeaderboard(name: string) {
@@ -181,11 +181,6 @@ export async function updateAccount(data: AccountSchema) {
 	return await postApi(`accounts/update`, data)
 }
 
-interface AccountSchema {
-	_id?: string
-	discordId: string
-	minecraftUuid?: string
-}
 
 export interface CleanUser {
 	player: CleanPlayer
@@ -194,15 +189,10 @@ export interface CleanUser {
 	online?: boolean
 }
 
-export interface CleanProfile extends CleanBasicProfile {
-    members?: CleanBasicMember[]
-}
-
-export interface CleanFullProfile extends CleanProfile {
-    members: CleanMember[]
-    bank: Bank
-    minions: CleanMinion[]
-	minion_count: number
+interface CleanMemberProfile {
+	member: CleanMemberProfilePlayer
+	profile: CleanFullProfileBasicMembers
+	customization: AccountCustomization
 }
 
 interface Item {
@@ -224,85 +214,7 @@ interface Item {
 	head_texture?: string
 }
 
-interface CleanPlayer extends CleanBasicPlayer {
-    rank: CleanRank
-    socials: CleanSocialMedia
-    profiles?: CleanBasicProfile[]
-    first_join: number
-}
-
-export interface CleanBasicProfile {
-    uuid: string
-
-    // the name depends on the user, so its sometimes not included
-    name?: string
-}
-
-
-export interface CleanBasicMember {
-    uuid: string
-    username: string
-    last_save: number
-    first_join: number
-    rank: CleanRank
-}
-
-export interface CleanMember extends CleanBasicMember {
-    purse: number
-    stats: StatItem[]
-    rawHypixelStats?: { [ key: string ]: number }
-    minions: CleanMinion[]
-	fairy_souls: FairySouls
-    inventories: Inventories
-    objectives: Objective[]
-    skills: Skill[]
-    visited_zones: Zone[]
-    collections: Collection[]
-    slayers: SlayerData
-}
-
-export interface Bank {
-	balance: number
-	history: any[]
-}
-
-export interface CleanMinion {
-    name: string,
-    levels: boolean[]
-}
-
-export interface CleanBasicPlayer {
-    uuid: string
-    username: string
-}
-
-export interface CleanRank {
-	name: string,
-	color: string | null,
-	colored: string | null,
-}
-
-export interface CleanSocialMedia {
-	discord: string | null
-	forums: string | null
-}
-
-export interface StatItem {
-	rawName: string
-	value: number
-	categorizedName: string
-	category: string
-	unit: string
-}
-
-export interface FairySouls {
-	total: number
-	/** The number of fairy souls that haven't been exchanged yet */
-	unexchanged: number
-	exchanges: number
-}
-
-export const INVENTORIES = {
+const INVENTORIES = {
 	armor: 'inv_armor',
 	inventory: 'inv_contents',
 	ender_chest: 'ender_chest_contents',
@@ -316,19 +228,137 @@ export const INVENTORIES = {
 
 export type Inventories = { [name in keyof typeof INVENTORIES ]: Item[] }
 
-export interface Objective {
+interface AccountSchema {
+	_id?: string
+	discordId: string
+	minecraftUuid?: string
+	customization?: AccountCustomization
+}
+
+interface CleanPlayer extends CleanBasicPlayer {
+    rank: CleanRank
+    socials: CleanSocialMedia
+    profiles?: CleanBasicProfile[]
+    first_join: number
+}
+
+interface CleanProfile extends CleanBasicProfile {
+    members?: CleanBasicMember[]
+}
+
+interface CleanMemberProfilePlayer extends CleanPlayer {
+	// The profile name may be different for each player, so we put it here
+	profileName: string
+	first_join: number
+	last_save: number
+	bank?: Bank
+	purse?: number
+	stats?: StatItem[]
+	rawHypixelStats?: { [ key: string ]: number }
+	minions?: CleanMinion[]
+	fairy_souls?: FairySouls
+	inventories?: Inventories
+	objectives?: Objective[]
+	skills?: Skill[]
+	visited_zones?: Zone[]
+	collections?: Collection[]
+	slayers?: SlayerData
+}
+
+interface CleanFullProfileBasicMembers extends CleanProfile {
+    members: CleanBasicMember[]
+    bank: Bank
+    minions: CleanMinion[]
+	minion_count: number
+}
+
+interface AccountCustomization {
+	backgroundUrl?: string
+	pack?: string
+}
+
+interface CleanBasicPlayer {
+    uuid: string
+    username: string
+}
+
+interface CleanRank {
+	name: string,
+	color: string | null,
+	colored: string | null,
+}
+
+interface CleanSocialMedia {
+	discord: string | null
+	forums: string | null
+}
+
+interface CleanBasicProfile {
+    uuid: string
+
+    // the name depends on the user, so its sometimes not included
+    name?: string
+}
+
+interface CleanBasicMember {
+	uuid: string
+	username: string
+	last_save: number
+	first_join: number
+	rank: CleanRank
+}
+
+interface Bank {
+	balance: number
+	history: any[]
+}
+
+interface StatItem {
+	rawName: string
+	value: number
+	categorizedName: string
+	category: string
+	unit: string
+}
+
+interface CleanMinion {
+    name: string,
+    levels: boolean[]
+}
+
+interface FairySouls {
+	total: number
+	/** The number of fairy souls that haven't been exchanged yet */
+	unexchanged: number
+	exchanges: number
+}
+
+interface Objective {
 	name: string
 	completed: boolean
 }
 
-export interface Skill {
+interface Skill {
 	name: string
 	xp: number
 }
 
-export interface Zone {
+interface Zone {
 	name: string
 	visited: boolean
+}
+
+interface Collection {
+	name: string
+	xp: number
+	level: number
+	category: CollectionCategory
+}
+
+interface SlayerData {
+	xp: number
+	kills: number
+	bosses: Slayer[]
 }
 
 const COLLECTIONS = {
@@ -407,34 +437,7 @@ const COLLECTIONS = {
 
 type CollectionCategory = keyof typeof COLLECTIONS
 
-export interface Collection {
-	name: string
-	xp: number
-	level: number
-	category: CollectionCategory
-}
-
-export interface SlayerData {
-	xp: number
-	kills: number
-	bosses: Slayer[]
-}
-
-const SLAYER_NAMES = {
-	spider: 'tarantula',
-	zombie: 'revenant',
-	wolf: 'sven'
-} as const
-
-type ApiSlayerName = keyof typeof SLAYER_NAMES
-type SlayerName = (typeof SLAYER_NAMES)[ApiSlayerName]
-
-interface SlayerTier {
-	tier: number,
-	kills: number
-}
-
-export interface Slayer {
+interface Slayer {
 	name: SlayerName
 	raw_name: string
 	xp: number
@@ -442,35 +445,17 @@ export interface Slayer {
 	tiers: SlayerTier[]
 }
 
-export interface CleanMemberProfile {
-    member: CleanMemberProfilePlayer
-    profile: CleanFullProfileBasicMembers
-}
 
-export interface CleanMemberProfilePlayer extends CleanPlayer {
-    // The profile name may be different for each player, so we put it here
-    profileName: string
-    first_join: number
-    last_save: number
-    bank?: Bank
-    purse?: number
-    stats?: StatItem[]
-    rawHypixelStats?: { [ key: string ]: number }
-    minions?: CleanMinion[]
-	fairy_souls?: FairySouls
-    inventories?: Inventories
-    objectives?: Objective[]
-    skills?: Skill[]
-    visited_zones?: Zone[]
-    collections?: Collection[]
-    slayers?: SlayerData
-}
+const SLAYER_NAMES = {
+	spider: 'tarantula',
+	zombie: 'revenant',
+	wolf: 'sven'
+} as const
 
+type SlayerName = (typeof SLAYER_NAMES)[keyof typeof SLAYER_NAMES]
 
-export interface CleanFullProfileBasicMembers extends CleanProfile {
-    members: CleanBasicMember[]
-    bank: Bank
-    minions: CleanMinion[]
-	minion_count: number
+interface SlayerTier {
+	tier: number,
+	kills: number
 }
 

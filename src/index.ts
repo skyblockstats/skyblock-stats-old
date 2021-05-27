@@ -4,14 +4,13 @@ import {
 	cacheInventories,
 	fetchLeaderboard,
 	itemToUrlCached,
+	createSession,
+	updateAccount,
+	fetchSession,
 	fetchProfile,
 	fetchPlayer,
 	CleanUser,
 	baseApi,
-	httpsAgent,
-	createSession,
-	fetchSession,
-	updateAccount,
 } from './hypixel'
 import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
@@ -87,11 +86,12 @@ app.get('/player/:user', async(req, res) => {
 
 
 app.get('/player/:user/:profile', async(req, res) => {
-	const data = await fetchProfile(req.params.user, req.params.profile)
+	const data = await fetchProfile(req.params.user, req.params.profile, true)
+	const pack = req.query.pack as string ?? data?.customization?.pack
 	if (req.query.simple !== undefined)
 		return res.render('member-simple.njk', { data })
-	await cacheInventories(data.member.inventories, req.query.pack as string)
-	res.render('member.njk', { data, pack: req.query.pack })
+	await cacheInventories(data.member.inventories, pack)
+	res.render('member.njk', { data, pack })
 })
 
 app.get('/leaderboard/:name', async(req, res) => {

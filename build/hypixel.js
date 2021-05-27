@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.INVENTORIES = exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.httpsAgent = exports.baseApi = void 0;
+exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.httpsAgent = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
 // import { Agent } from 'https'
@@ -113,8 +113,8 @@ exports.fetchPlayer = fetchPlayer;
  * @param user A username or UUID
  * @profile A profile name or UUID
  */
-async function fetchProfile(user, profile) {
-    return await fetchApi(`player/${user}/${profile}`);
+async function fetchProfile(user, profile, customization = false) {
+    return await fetchApi(`player/${user}/${profile}?customization=${customization}`);
 }
 exports.fetchProfile = fetchProfile;
 async function fetchLeaderboard(name) {
@@ -188,7 +188,7 @@ async function updateAccount(data) {
     return await postApi(`accounts/update`, data);
 }
 exports.updateAccount = updateAccount;
-exports.INVENTORIES = {
+const INVENTORIES = {
     armor: 'inv_armor',
     inventory: 'inv_contents',
     ender_chest: 'ender_chest_contents',
