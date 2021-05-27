@@ -174,10 +174,10 @@ app.post('/profile', urlencodedParser, async (req, res) => {
         return res.redirect('/login');
     const backgroundName = req.body['background'];
     // prevent people from putting non-existent backgrounds
-    if (backgroundNames && !backgroundNames.includes(backgroundName))
+    if (backgroundName && !backgroundNames.includes(backgroundName))
         return res.send('That background doesn\'t exist. ');
     const backgroundUrl = backgroundName ? `/backgrounds/${backgroundName}` : undefined;
-    const customization = {};
+    const customization = session.account.customization;
     if (req.body.pack)
         customization.pack = req.body.pack;
     if (backgroundUrl)
