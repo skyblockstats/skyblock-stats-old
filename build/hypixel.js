@@ -45,8 +45,33 @@ exports.skyblockConstantValues = null;
 async function fetchApi(path, retry = true) {
     const fetchUrl = `${exports.baseApi}/${path}`;
     try {
+        const fetchResponse = await node_fetch_1.default(fetchUrl, {
+            agent: () => exports.httpsAgent,
+            headers: { key: process.env.key },
+        });
+        return await fetchResponse.json();
+    }
+    catch (err) {
+        if (retry) {
+            // wait 5 seconds and retry
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            return await fetchApi(path, false);
+        }
+        else {
+            throw err;
+        }
+    }
+}
+/**
+ * Post to skyblock-api
+ * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
+ * @param data The data (as json) that should be posted
+ */
+async function postApi(path, data, retry = true) {
+    const fetchUrl = `${exports.baseApi}/${path}`;
+    try {
         const fetchResponse = await node_fetch_1.default(encodeURI(fetchUrl), {
-            agent: () => httpsAgent,
+            agent: () => exports.httpsAgent,
             headers: {
                 key: process.env.key,
                 'content-type': 'application/json'
