@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 import NodeCache from 'node-cache'
-// import { Agent } from 'https'
-import { Agent } from 'http'
+import { Agent } from 'https'
+// import { Agent } from 'http'
 
 import * as skyblockAssets from 'skyblock-assets'
 

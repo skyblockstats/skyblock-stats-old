@@ -25,8 +25,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.httpsAgent = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
-// import { Agent } from 'https'
-const http_1 = require("http");
+const https_1 = require("https");
+// import { Agent } from 'http'
 const skyblockAssets = __importStar(require("skyblock-assets"));
 if (!process.env.key)
     // if there's no key in env, run dotenv
@@ -34,7 +34,7 @@ if (!process.env.key)
 exports.baseApi = 'https://skyblock-api.matdoes.dev';
 // export const baseApi = 'http://localhost:8080'
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
-exports.httpsAgent = new http_1.Agent({
+exports.httpsAgent = new https_1.Agent({
     keepAlive: true
 });
 exports.skyblockConstantValues = null;
