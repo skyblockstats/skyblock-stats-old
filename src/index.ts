@@ -11,6 +11,7 @@ import {
 	fetchPlayer,
 	CleanUser,
 	baseApi,
+	AccountCustomization,
 } from './hypixel'
 import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
@@ -182,13 +183,18 @@ app.post('/verify', urlencodedParser, async(req, res) => {
 	res.redirect('/profile')
 })
 
+let backgroundNames: string[]
+fs.readdir('src/public/backgrounds').then(names => {
+	backgroundNames = names
+})
+
 app.get('/profile', async(req, res) => {
 	if (!req.cookies.sid) return res.redirect('/login')
 	const session = await fetchSession(req.cookies.sid)
 	if (!session) return res.redirect('/login')
 
 	const player = await fetchPlayer(session.account.minecraftUuid)
-	res.render('account/profile.njk', { player, customization: session.account.customization })
+	res.render('account/profile.njk', { player, customization: session.account.customization, backgroundNames })
 })
 
 app.post('/profile', urlencodedParser, async(req, res) => {
@@ -196,12 +202,23 @@ app.post('/profile', urlencodedParser, async(req, res) => {
 	const session = await fetchSession(req.cookies.sid)
 	if (!session) return res.redirect('/login')
 
-	const pack = req.body['pack']
+	const backgroundName: string = req.body['background']
+
+	// prevent people from putting non-existent backgrounds
+	if (backgroundNames && !backgroundNames.includes(backgroundName))
+		return res.send('That background doesn\'t exist. ')
+
+	const backgroundUrl = backgroundName ? `/backgrounds/${backgroundName}` : undefined
+
+	const customization: AccountCustomization = {}
+	if (req.body.pack)
+		customization.pack = req.body.pack
+	if (backgroundUrl)
+		customization.backgroundUrl = backgroundUrl
+
 	await updateAccount({
 		discordId: session.account.discordId,
-		customization: {
-			pack
-		}
+		customization
 	})
 	res.redirect('/profile')
 })

@@ -153,6 +153,10 @@ app.post('/verify', urlencodedParser, async (req, res) => {
     });
     res.redirect('/profile');
 });
+let backgroundNames;
+fs_1.promises.readdir('src/public/backgrounds').then(names => {
+    backgroundNames = names;
+});
 app.get('/profile', async (req, res) => {
     if (!req.cookies.sid)
         return res.redirect('/login');
@@ -160,7 +164,7 @@ app.get('/profile', async (req, res) => {
     if (!session)
         return res.redirect('/login');
     const player = await hypixel_1.fetchPlayer(session.account.minecraftUuid);
-    res.render('account/profile.njk', { player, customization: session.account.customization });
+    res.render('account/profile.njk', { player, customization: session.account.customization, backgroundNames });
 });
 app.post('/profile', urlencodedParser, async (req, res) => {
     if (!req.cookies.sid)
@@ -168,12 +172,19 @@ app.post('/profile', urlencodedParser, async (req, res) => {
     const session = await hypixel_1.fetchSession(req.cookies.sid);
     if (!session)
         return res.redirect('/login');
-    const pack = req.body['pack'];
+    const backgroundName = req.body['background'];
+    // prevent people from putting non-existent backgrounds
+    if (backgroundNames && !backgroundNames.includes(backgroundName))
+        return res.send('That background doesn\'t exist. ');
+    const backgroundUrl = backgroundName ? `/backgrounds/${backgroundName}` : undefined;
+    const customization = {};
+    if (req.body.pack)
+        customization.pack = req.body.pack;
+    if (backgroundUrl)
+        customization.backgroundUrl = backgroundUrl;
     await hypixel_1.updateAccount({
         discordId: session.account.discordId,
-        customization: {
-            pack
-        }
+        customization
     });
     res.redirect('/profile');
 });

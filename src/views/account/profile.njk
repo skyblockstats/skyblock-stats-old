@@ -2,14 +2,14 @@
 
 {% block main %}
 
-<h1>Edit Profile</h1>
+<h1 id="edit-profile-title">Edit Profile</h1>
 <noscript>
 <p>Please enable JavaScript or selecting stuff here won't work.</p>
 </noscript>
 
 <a href="/profile/{{ player.player.username }}">View profile</a>
 
-<div>
+<div id="edit-profile-things">
     <form id="pack-selector-form" action="/profile" method="post">
         <label for="pack-selector">Pack: </label>
         <select name="pack" id="pack-selector">
@@ -22,13 +22,32 @@
         </select>
     </form>
     <script>
-const packSelectorEl = document.getElementById('pack-selector')
-const packSelectorFormEl = document.getElementById('pack-selector-form')
-packSelectorEl.addEventListener('change', e => {
-    packSelectorFormEl.submit()
-})
-
-</script>
+    const packSelectorEl = document.getElementById('pack-selector')
+    const packSelectorFormEl = document.getElementById('pack-selector-form')
+    packSelectorEl.addEventListener('change', e => {
+        packSelectorFormEl.submit()
+    })
+    </script>
+    <form id="background-selector-form" action="/profile" method="post">
+        <div id="background-selector">
+        {% for backgroundName in backgroundNames %}
+            <span style="background-image: url(/backgrounds/{{ backgroundName }})" loading="lazy" data-background="{{ backgroundName }}"></span>
+        {% endfor %}
+        </div>
+        <input type="hidden" name="background" value="" id="background-hidden-input">
+    </form>
+    <script>
+    const backgroundSelectorEl = document.getElementById('background-selector')
+    const backgroundSelectorsEls = backgroundSelectorEl.getElementsByTagName('span')
+    const backgroundSelectorFormEl = document.getElementById('background-selector-form')
+    const backgroundHiddenInputEl = document.getElementById('background-hidden-input')
+    for (const backgroundSelectorsEl of backgroundSelectorsEls) {
+        backgroundSelectorsEl.addEventListener('click', e => {
+            backgroundHiddenInputEl.value = backgroundSelectorsEl.dataset.background
+            backgroundSelectorFormEl.submit()
+        })
+    }
+    </script>
 </div>
 
 {% endblock %}

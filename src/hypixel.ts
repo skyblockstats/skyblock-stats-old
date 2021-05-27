@@ -273,7 +273,7 @@ interface CleanFullProfileBasicMembers extends CleanProfile {
 	minion_count: number
 }
 
-interface AccountCustomization {
+export interface AccountCustomization {
 	backgroundUrl?: string
 	pack?: string
 }
