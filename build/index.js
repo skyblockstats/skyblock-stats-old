@@ -76,13 +76,14 @@ app.get('/player/:user', async (req, res) => {
     res.render('profiles.njk', { data });
 });
 app.get('/player/:user/:profile', async (req, res) => {
-    var _a, _b;
+    var _a, _b, _c;
     const data = await hypixel_1.fetchProfile(req.params.user, req.params.profile, true);
     const pack = (_a = req.query.pack) !== null && _a !== void 0 ? _a : (_b = data === null || data === void 0 ? void 0 : data.customization) === null || _b === void 0 ? void 0 : _b.pack;
+    const backgroundUrl = (_c = data === null || data === void 0 ? void 0 : data.customization) === null || _c === void 0 ? void 0 : _c.backgroundUrl;
     if (req.query.simple !== undefined)
         return res.render('member-simple.njk', { data });
     await hypixel_1.cacheInventories(data.member.inventories, pack);
-    res.render('member.njk', { data, pack });
+    res.render('member.njk', { data, pack, backgroundUrl });
 });
 app.get('/leaderboard/:name', async (req, res) => {
     const data = await hypixel_1.fetchLeaderboard(req.params.name);
