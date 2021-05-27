@@ -3,5 +3,32 @@
 {% block main %}
 
 <h1>Edit Profile</h1>
+<noscript>
+<p>Please enable JavaScript or selecting stuff here won't work.</p>
+</noscript>
+
+<a href="/profile/{{ player.player.username }}">View profile</a>
+
+<div>
+    <form id="pack-selector-form" action="/profile" method="post">
+        <label for="pack-selector">Pack: </label>
+        <select name="pack" id="pack-selector">
+            <option value="packshq"{% if customization.pack == 'packshq' %} selected{% endif %}>PacksHQ</option>
+            <option value="furfsky"{% if customization.pack == 'furfsky' %} selected{% endif %}>Furfsky</option>
+            <option value="furfsky_reborn"{% if customization.pack == 'furfsky_reborn' %} selected{% endif %}>Furfsky Reborn</option>
+            <option value="ectoplasm"{% if customization.pack == 'ectoplasm' %} selected{% endif %}>Ectoplasm</option>
+            <option value="rnbw"{% if customization.pack == 'rnbw' %} selected{% endif %}>RNBW</option>
+            <option value="vanilla"{% if customization.pack == 'vanilla' %} selected{% endif %}>Vanilla</option>
+        </select>
+    </form>
+    <script>
+const packSelectorEl = document.getElementById('pack-selector')
+const packSelectorFormEl = document.getElementById('pack-selector-form')
+packSelectorEl.addEventListener('change', e => {
+    packSelectorFormEl.submit()
+})
+
+</script>
+</div>
 
 {% endblock %}

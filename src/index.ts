@@ -84,6 +84,17 @@ app.get('/player/:user', async(req, res) => {
 	res.render('profiles.njk', { data })
 })
 
+app.get('/profile/:user', async(req, res) => {
+	const player = await fetchPlayer(req.params.user)
+	if (player && player.activeProfile) {
+		const activeProfileId = player.activeProfile
+		const activeProfileName = player.profiles.find((profile) => profile.uuid === activeProfileId)
+		if (activeProfileName?.name)
+			return res.redirect(`/player/${player.player.username}/${activeProfileName?.name}`)
+	}
+	return res.status(404).send('Not found')
+})
+
 
 app.get('/player/:user/:profile', async(req, res) => {
 	const data = await fetchProfile(req.params.user, req.params.profile, true)
@@ -154,8 +165,8 @@ app.post('/verify', urlencodedParser, async(req, res) => {
 	if (!hypixelDiscordName)
 		return res.render('account/verify.njk', { error: 'Please link your Discord in Hypixel by doing /profile -> Social media -> Discord. If you just changed it, wait a few minutes and try again.' })
 
-	const actualDiscordName = session.discord_user.name
-	const actualDiscordIdDiscrim = session.discord_user.id + '#' + session.discord_user.name.split('#')[1]
+	const actualDiscordName = session.session.discord_user.name
+	const actualDiscordIdDiscrim = session.session.discord_user.id + '#' + session.session.discord_user.name.split('#')[1]
 
 	if (!(hypixelDiscordName === actualDiscordName || hypixelDiscordName === actualDiscordIdDiscrim))
 		return res.render(
@@ -164,7 +175,7 @@ app.post('/verify', urlencodedParser, async(req, res) => {
 		)
 
 	await updateAccount({
-		discordId: session.discord_user.id,
+		discordId: session.session.discord_user.id,
 		minecraftUuid: player.player.uuid
 	})
 
@@ -173,7 +184,26 @@ app.post('/verify', urlencodedParser, async(req, res) => {
 
 app.get('/profile', async(req, res) => {
 	if (!req.cookies.sid) return res.redirect('/login')
-	res.render('account/profile.njk')
+	const session = await fetchSession(req.cookies.sid)
+	if (!session) return res.redirect('/login')
+
+	const player = await fetchPlayer(session.account.minecraftUuid)
+	res.render('account/profile.njk', { player, customization: session.account.customization })
+})
+
+app.post('/profile', urlencodedParser, async(req, res) => {
+	if (!req.cookies.sid) return res.redirect('/login')
+	const session = await fetchSession(req.cookies.sid)
+	if (!session) return res.redirect('/login')
+
+	const pack = req.body['pack']
+	await updateAccount({
+		discordId: session.account.discordId,
+		customization: {
+			pack
+		}
+	})
+	res.redirect('/profile')
 })
 
 

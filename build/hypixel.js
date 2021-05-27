@@ -101,17 +101,17 @@ updateConstants();
  * Fetch a player
  * @param user A username or UUID
  * @param basic Whether it should only return very basic information about the user
+ * @param customization Whether it should return extra customization data like the player's selected pack and background
  */
-async function fetchPlayer(user, basic) {
-    if (basic)
-        return await fetchApi(`player/${user}?basic=true`);
-    return await fetchApi(`player/${user}`);
+async function fetchPlayer(user, basic = false, customization = false) {
+    return await fetchApi(`player/${user}?basic=${basic}&customization=${customization}`);
 }
 exports.fetchPlayer = fetchPlayer;
 /**
  * Fetch a profile
  * @param user A username or UUID
- * @profile A profile name or UUID
+ * @param profile A profile name or UUID
+ * @param customization Whether it should return extra customization data like the player's selected pack and background
  */
 async function fetchProfile(user, profile, customization = false) {
     return await fetchApi(`player/${user}/${profile}?customization=${customization}`);

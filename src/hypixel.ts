@@ -88,18 +88,18 @@ updateConstants()
  * Fetch a player
  * @param user A username or UUID
  * @param basic Whether it should only return very basic information about the user
+ * @param customization Whether it should return extra customization data like the player's selected pack and background
  */
-export async function fetchPlayer(user: string, basic?: boolean): Promise<CleanUser> {
-	if (basic)
-		return await fetchApi(`player/${user}?basic=true`)
-	return await fetchApi(`player/${user}`)
+export async function fetchPlayer(user: string, basic: boolean=false, customization: boolean=false): Promise<CleanUser> {
+	return await fetchApi(`player/${user}?basic=${basic}&customization=${customization}`)
 }
 
 
 /**
  * Fetch a profile
  * @param user A username or UUID
- * @profile A profile name or UUID
+ * @param profile A profile name or UUID
+ * @param customization Whether it should return extra customization data like the player's selected pack and background
  */
 export async function fetchProfile(user: string, profile: string, customization: boolean=false): Promise<CleanMemberProfile> {
 	return await fetchApi(`player/${user}/${profile}?customization=${customization}`,)
@@ -172,7 +172,7 @@ export async function cacheInventories(inventories: Inventories, packName?: stri
 export async function createSession(code: string) {
 	return await postApi(`accounts/createsession`, { code })
 }
-export async function fetchSession(sessionId: string) {
+export async function fetchSession(sessionId: string): Promise<{ session: SessionSchema, account: AccountSchema }> {
 	return await postApi(`accounts/session`, { uuid: sessionId })
 }
 
@@ -187,6 +187,7 @@ export interface CleanUser {
 	profiles?: CleanProfile[]
 	activeProfile?: string
 	online?: boolean
+	customization?: AccountCustomization
 }
 
 interface CleanMemberProfile {
@@ -459,3 +460,12 @@ interface SlayerTier {
 	kills: number
 }
 
+interface SessionSchema {
+	_id?: string
+	refresh_token: string
+	discord_user: {
+		id: string
+		name: string
+	}
+	lastUpdated: Date
+}
