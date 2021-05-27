@@ -8,6 +8,17 @@
 {%- block head -%}
 {{- super() -}}
 <script>{% include 'toc.js' %}</script>
+{% if backgroundUrl %}
+<style>
+body {
+	background-image: url('{{ backgroundUrl }}');
+	background-position: center;
+	background-size: cover;
+	background-repeat: none;
+	background-attachment: fixed
+}
+</style>
+{% endif %}
 {%- endblock -%}
 
 {%- block main -%}

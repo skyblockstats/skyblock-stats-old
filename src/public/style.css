@@ -441,3 +441,43 @@ header .enter-username-button {
 		border: 1px solid var(--theme-lighter-background);
 	}
 }
+
+#login-button {
+	position: absolute;
+	right: .5em;
+	top: .5em;
+	border: 1px solid var(--theme-lighter-background);
+	padding: .5em;
+	transition-property: border, background-color;
+	transition-duration: 200ms;
+	border-radius: .5em;
+	color: var(--theme-main-text)
+}
+#login-button:hover {
+	background-color: var(--theme-lighter-background);
+	border-color: var(--theme-lightest-background);
+}
+#edit-profile-things {
+	margin-top: 2em
+}
+#edit-profile-title {
+	margin-bottom: 0
+}
+#background-selector {
+	display: flex;
+	flex-wrap: wrap
+}
+#background-selector > span {
+	display: inline-block;
+	height: 10em;
+	width: 18em;
+	background-position: center;
+	background-size: 110%;
+	margin: .5em;
+	border-radius: 1em;
+	transition: background-size 500ms;
+	cursor: pointer
+}
+#background-selector > span:hover {
+	background-size: 125%;
+}

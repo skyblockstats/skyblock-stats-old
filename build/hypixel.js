@@ -22,11 +22,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.INVENTORIES = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.baseApi = void 0;
+exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.httpsAgent = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
-const https_1 = require("https");
-// import { Agent } from 'http'
+// import { Agent } from 'https'
+const http_1 = require("http");
 const skyblockAssets = __importStar(require("skyblock-assets"));
 if (!process.env.key)
     // if there's no key in env, run dotenv
@@ -34,7 +34,7 @@ if (!process.env.key)
 exports.baseApi = 'https://skyblock-api.matdoes.dev';
 // export const baseApi = 'http://localhost:8080'
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
-const httpsAgent = new https_1.Agent({
+exports.httpsAgent = new http_1.Agent({
     keepAlive: true
 });
 exports.skyblockConstantValues = null;
@@ -45,11 +45,9 @@ exports.skyblockConstantValues = null;
 async function fetchApi(path, retry = true) {
     const fetchUrl = `${exports.baseApi}/${path}`;
     try {
-        const fetchResponse = await node_fetch_1.default(encodeURI(fetchUrl), {
-            agent: () => httpsAgent,
-            headers: {
-                key: process.env.key
-            },
+        const fetchResponse = await node_fetch_1.default(fetchUrl, {
+            agent: () => exports.httpsAgent,
+            headers: { key: process.env.key },
         });
         return await fetchResponse.json();
     }
@@ -58,6 +56,36 @@ async function fetchApi(path, retry = true) {
             // wait 5 seconds and retry
             await new Promise(resolve => setTimeout(resolve, 5000));
             return await fetchApi(path, false);
+        }
+        else {
+            throw err;
+        }
+    }
+}
+/**
+ * Post to skyblock-api
+ * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
+ * @param data The data (as json) that should be posted
+ */
+async function postApi(path, data, retry = true) {
+    const fetchUrl = `${exports.baseApi}/${path}`;
+    try {
+        const fetchResponse = await node_fetch_1.default(encodeURI(fetchUrl), {
+            agent: () => exports.httpsAgent,
+            headers: {
+                key: process.env.key,
+                'content-type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        return await fetchResponse.json();
+    }
+    catch (err) {
+        if (retry) {
+            // wait 5 seconds and retry
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            return await postApi(path, data, false);
         }
         else {
             throw err;
@@ -73,20 +101,20 @@ updateConstants();
  * Fetch a player
  * @param user A username or UUID
  * @param basic Whether it should only return very basic information about the user
+ * @param customization Whether it should return extra customization data like the player's selected pack and background
  */
-async function fetchPlayer(user, basic) {
-    if (basic)
-        return await fetchApi(`player/${user}?basic=true`);
-    return await fetchApi(`player/${user}`);
+async function fetchPlayer(user, basic = false, customization = false) {
+    return await fetchApi(`player/${user}?basic=${basic}&customization=${customization}`);
 }
 exports.fetchPlayer = fetchPlayer;
 /**
  * Fetch a profile
  * @param user A username or UUID
- * @profile A profile name or UUID
+ * @param profile A profile name or UUID
+ * @param customization Whether it should return extra customization data like the player's selected pack and background
  */
-async function fetchProfile(user, profile) {
-    return await fetchApi(`player/${user}/${profile}`);
+async function fetchProfile(user, profile, customization = false) {
+    return await fetchApi(`player/${user}/${profile}?customization=${customization}`);
 }
 exports.fetchProfile = fetchProfile;
 async function fetchLeaderboard(name) {
@@ -147,7 +175,20 @@ async function cacheInventories(inventories, packName) {
     await Promise.all(promises);
 }
 exports.cacheInventories = cacheInventories;
-exports.INVENTORIES = {
+async function createSession(code) {
+    return await postApi(`accounts/createsession`, { code });
+}
+exports.createSession = createSession;
+async function fetchSession(sessionId) {
+    return await postApi(`accounts/session`, { uuid: sessionId });
+}
+exports.fetchSession = fetchSession;
+async function updateAccount(data) {
+    // this is checked with the key env variable, so it's mostly secure
+    return await postApi(`accounts/update`, data);
+}
+exports.updateAccount = updateAccount;
+const INVENTORIES = {
     armor: 'inv_armor',
     inventory: 'inv_contents',
     ender_chest: 'ender_chest_contents',

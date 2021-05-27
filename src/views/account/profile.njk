@@ -1,0 +1,53 @@
+{% extends 'base.njk' %}
+
+{% block main %}
+
+<h1 id="edit-profile-title">Edit Profile</h1>
+<noscript>
+<p>Please enable JavaScript or selecting stuff here won't work.</p>
+</noscript>
+
+<a href="/profile/{{ player.player.username }}">View profile</a>
+
+<div id="edit-profile-things">
+    <form id="pack-selector-form" action="/profile" method="post">
+        <label for="pack-selector">Pack: </label>
+        <select name="pack" id="pack-selector">
+            <option value="packshq"{% if customization.pack == 'packshq' %} selected{% endif %}>PacksHQ</option>
+            <option value="furfsky"{% if customization.pack == 'furfsky' %} selected{% endif %}>Furfsky</option>
+            <option value="furfsky_reborn"{% if customization.pack == 'furfsky_reborn' %} selected{% endif %}>Furfsky Reborn</option>
+            <option value="ectoplasm"{% if customization.pack == 'ectoplasm' %} selected{% endif %}>Ectoplasm</option>
+            <option value="rnbw"{% if customization.pack == 'rnbw' %} selected{% endif %}>RNBW</option>
+            <option value="vanilla"{% if customization.pack == 'vanilla' %} selected{% endif %}>Vanilla</option>
+        </select>
+    </form>
+    <script>
+    const packSelectorEl = document.getElementById('pack-selector')
+    const packSelectorFormEl = document.getElementById('pack-selector-form')
+    packSelectorEl.addEventListener('change', e => {
+        packSelectorFormEl.submit()
+    })
+    </script>
+    <form id="background-selector-form" action="/profile" method="post">
+        <div id="background-selector">
+        {% for backgroundName in backgroundNames %}
+            <span style="background-image: url(/backgrounds/{{ backgroundName }})" loading="lazy" data-background="{{ backgroundName }}"></span>
+        {% endfor %}
+        </div>
+        <input type="hidden" name="background" value="" id="background-hidden-input">
+    </form>
+    <script>
+    const backgroundSelectorEl = document.getElementById('background-selector')
+    const backgroundSelectorsEls = backgroundSelectorEl.getElementsByTagName('span')
+    const backgroundSelectorFormEl = document.getElementById('background-selector-form')
+    const backgroundHiddenInputEl = document.getElementById('background-hidden-input')
+    for (const backgroundSelectorsEl of backgroundSelectorsEls) {
+        backgroundSelectorsEl.addEventListener('click', e => {
+            backgroundHiddenInputEl.value = backgroundSelectorsEl.dataset.background
+            backgroundSelectorFormEl.submit()
+        })
+    }
+    </script>
+</div>
+
+{% endblock %}
