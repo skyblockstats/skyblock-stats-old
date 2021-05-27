@@ -66,7 +66,7 @@ async function initDonators() {
 }
 initDonators();
 app.get('/', (req, res) => {
-    res.render('index.njk', { donators });
+    res.render('index.njk', { donators, loggedIn: req.cookies.sid !== undefined });
 });
 app.get('/chat', (req, res) => {
     res.render('fakechat.njk');
