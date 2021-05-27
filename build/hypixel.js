@@ -31,8 +31,8 @@ const skyblockAssets = __importStar(require("skyblock-assets"));
 if (!process.env.key)
     // if there's no key in env, run dotenv
     require('dotenv').config();
-// export const baseApi = 'https://skyblock-api2.matdoes.dev' // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
-exports.baseApi = 'http://localhost:8080';
+exports.baseApi = 'https://skyblock-api.matdoes.dev'; // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
+// export const baseApi = 'http://localhost:8080'
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
 exports.httpsAgent = new http_1.Agent({
     keepAlive: true
