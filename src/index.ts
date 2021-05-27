@@ -99,6 +99,8 @@ app.get('/profile/:user', async(req, res) => {
 
 app.get('/player/:user/:profile', async(req, res) => {
 	const data = await fetchProfile(req.params.user, req.params.profile, true)
+	if (!data)
+		return res.status(404).send('Not found')
 	const pack = req.query.pack as string ?? data?.customization?.pack
 	const backgroundUrl = data?.customization?.backgroundUrl
 	if (req.query.simple !== undefined)

@@ -88,6 +88,8 @@ app.get('/profile/:user', async (req, res) => {
 app.get('/player/:user/:profile', async (req, res) => {
     var _a, _b, _c;
     const data = await hypixel_1.fetchProfile(req.params.user, req.params.profile, true);
+    if (!data)
+        return res.status(404).send('Not found');
     const pack = (_a = req.query.pack) !== null && _a !== void 0 ? _a : (_b = data === null || data === void 0 ? void 0 : data.customization) === null || _b === void 0 ? void 0 : _b.pack;
     const backgroundUrl = (_c = data === null || data === void 0 ? void 0 : data.customization) === null || _c === void 0 ? void 0 : _c.backgroundUrl;
     if (req.query.simple !== undefined)
