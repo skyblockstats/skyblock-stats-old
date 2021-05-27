@@ -192,6 +192,20 @@ app.post('/profile', urlencodedParser, async (req, res) => {
 app.post('/player', urlencodedParser, (req, res) => {
     res.redirect('/player/' + req.body['user-search']);
 });
+app.get('/profiles/:user', async (req, res) => {
+    res.redirect(`/player/${req.params.user}`);
+});
+app.get('/profile/:user/:profile', async (req, res) => {
+    res.redirect(`/player/${req.params.user}/${req.params.profile}`);
+});
+app.get('/chat.png', async (req, res) => {
+    const query = {};
+    for (const key of Object.keys(req.query)) {
+        query[key] = req.query[key].toString();
+    }
+    const queryString = new URLSearchParams(query).toString();
+    res.redirect(`https://fake-chat.matdoes.dev/render.png?${queryString}`);
+});
 // we use serveStatic so it caches
 app.use(serve_static_1.default('src/public'));
 // this should always be the last route!

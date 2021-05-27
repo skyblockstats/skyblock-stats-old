@@ -9,7 +9,7 @@ if (!process.env.key)
 	// if there's no key in env, run dotenv
 	require('dotenv').config()
 
-export const baseApi = 'https://skyblock-api.matdoes.dev' // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
+export const baseApi = 'https://skyblock-api.matdoes.dev'
 // export const baseApi = 'http://localhost:8080'
 
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
@@ -54,7 +54,7 @@ export let skyblockConstantValues = null
 	const fetchUrl = `${baseApi}/${path}`
 	try {
 		const fetchResponse = await fetch(
-			fetchUrl,
+			encodeURI(fetchUrl),
 			{
 				agent: () => httpsAgent,
 				headers: {
