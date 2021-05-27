@@ -111,7 +111,7 @@ app.get('/leaderboard', async (req, res) => {
 });
 const DISCORD_CLIENT_ID = '656634948148527107';
 app.get('/login', async (req, res) => {
-    res.redirect(`https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=http${req.secure ? 's' : ''}://${req.headers.host}%2Floggedin&response_type=code&scope=identify`);
+    res.redirect(`https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=https://${req.headers.host}%2Floggedin&response_type=code&scope=identify`);
 });
 app.get('/loggedin', async (req, res) => {
     const response = await hypixel_1.createSession(req.query.code);
