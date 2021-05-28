@@ -3,6 +3,21 @@
 
 {% block metatitle %}{% block title %}{{ data.player.username }}'s SkyBlock profiles{% endblock %}{% endblock %}
 
+{%- block head -%}
+{{- super() -}}
+{% if data.customization and data.customization.backgroundUrl %}
+<style>
+body {
+	background-image: url('{{ data.customization.backgroundUrl }}');
+	background-position: center;
+	background-size: cover;
+	background-repeat: none;
+	background-attachment: fixed
+}
+</style>
+{% endif %}
+{% endblock %}
+
 {%- block main -%}
 	<h1>{{ render.username(data.player, headType='3d') }}'s profiles</h1>
 

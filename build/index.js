@@ -72,7 +72,7 @@ app.get('/chat', (req, res) => {
     res.render('fakechat.njk');
 });
 app.get('/player/:user', async (req, res) => {
-    const data = await hypixel_1.fetchPlayer(req.params.user);
+    const data = await hypixel_1.fetchPlayer(req.params.user, false, true);
     res.render('profiles.njk', { data });
 });
 app.get('/profile/:user', async (req, res) => {

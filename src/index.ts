@@ -81,7 +81,7 @@ app.get('/chat', (req, res) => {
 })
 
 app.get('/player/:user', async(req, res) => {
-	const data = await fetchPlayer(req.params.user)
+	const data = await fetchPlayer(req.params.user, false, true)
 	res.render('profiles.njk', { data })
 })
 
