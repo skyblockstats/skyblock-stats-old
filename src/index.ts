@@ -212,7 +212,7 @@ app.post('/profile', urlencodedParser, async(req, res) => {
 
 	const backgroundUrl = backgroundName ? `/backgrounds/${backgroundName}` : undefined
 
-	const customization: AccountCustomization = session.account.customization
+	const customization: AccountCustomization = session.account.customization || {}
 	if (req.body.pack)
 		customization.pack = req.body.pack
 	if (backgroundUrl)

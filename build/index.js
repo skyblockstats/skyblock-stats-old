@@ -179,7 +179,7 @@ app.post('/profile', urlencodedParser, async (req, res) => {
     if (backgroundName && !backgroundNames.includes(backgroundName))
         return res.send('That background doesn\'t exist. ');
     const backgroundUrl = backgroundName ? `/backgrounds/${backgroundName}` : undefined;
-    const customization = session.account.customization;
+    const customization = session.account.customization || {};
     if (req.body.pack)
         customization.pack = req.body.pack;
     if (backgroundUrl)
