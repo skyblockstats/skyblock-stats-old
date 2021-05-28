@@ -25,12 +25,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const hypixel_1 = require("./hypixel");
 const util_1 = require("./util");
 const nunjucks_with_1 = __importDefault(require("@allmarkedup/nunjucks-with"));
-const express_1 = __importDefault(require("express"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const serve_static_1 = __importDefault(require("serve-static"));
 const nunjucks = __importStar(require("nunjucks"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const fs_1 = require("fs");
-const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const express_1 = __importDefault(require("express"));
+const fsSync = __importStar(require("fs"));
+const crypto_1 = __importDefault(require("crypto"));
 const app = express_1.default();
 app.use(cookie_parser_1.default());
 app.use(express_1.default.json());
@@ -42,6 +44,11 @@ const env = nunjucks.configure('src/views', {
 env.addExtension('WithExtension', new nunjucks_with_1.default());
 env.addGlobal('BASE_API', hypixel_1.baseApi);
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000);
+const hash = crypto_1.default.createHash('sha1');
+hash.setEncoding('hex');
+hash.write(fsSync.readFileSync('src/public/style.css'));
+hash.end();
+env.addGlobal('styleFileHash', hash.read());
 env.addGlobal('getConstants', () => hypixel_1.skyblockConstantValues);
 env.addFilter('itemToUrl', (item, packName) => {
     return hypixel_1.itemToUrlCached(item, packName);

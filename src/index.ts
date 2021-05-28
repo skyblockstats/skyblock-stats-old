@@ -15,12 +15,14 @@ import {
 } from './hypixel'
 import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle, removeFormattingCode } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
-import express from 'express'
+import cookieParser from 'cookie-parser'
 import serveStatic from 'serve-static'
 import * as nunjucks from 'nunjucks'
 import bodyParser from 'body-parser'
 import { promises as fs } from 'fs'
-import cookieParser from 'cookie-parser'
+import express from 'express'
+import * as fsSync from 'fs'
+import crypto from 'crypto'
 
 const app = express()
 
@@ -36,6 +38,13 @@ const env = nunjucks.configure('src/views', {
 env.addExtension('WithExtension', new WithExtension())
 env.addGlobal('BASE_API', baseApi)
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
+
+const hash = crypto.createHash('sha1')
+hash.setEncoding('hex')
+hash.write(fsSync.readFileSync('src/public/style.css'))
+hash.end()
+
+env.addGlobal('styleFileHash', hash.read())
 
 env.addGlobal('getConstants', () => skyblockConstantValues)
 
