@@ -70,7 +70,9 @@ export function formattingCodeToHtml(formatted: string): string {
 	return htmlOutput
 }
 
-
+export function removeFormattingCode(formatted: string): string {
+	return formatted.replace(new RegExp(colorCodeCharacter + '.', 'g'), '')
+}
 
 function moveStringToEnd(word: string, thing: string) {
 	if (thing.startsWith(`${word}_`))

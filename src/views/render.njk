@@ -30,7 +30,7 @@
 		{%- if data -%}
 			{%- set imageUrl = data|itemToUrl(pack) -%}
 			{%- if imageUrl -%}
-				<img loading="lazy" src="{{ imageUrl }}"{% if imageUrl|startsWith('https://mc-heads.net/head/') %} class="item-custom-head"{% endif %}>
+				<img loading="lazy" src="{{ imageUrl }}" alt="{{ data.display.name|removeFormattingCode }}"{% if imageUrl|startsWith('https://mc-heads.net/head/') %} class="item-custom-head"{% endif %}>
 			{%- endif -%}
 			{%- if data.count != 1 %}<span class="item-count">{{ data.count }}</span>{% endif -%}
 		{%- endif -%}

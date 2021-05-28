@@ -13,7 +13,7 @@ import {
 	baseApi,
 	AccountCustomization,
 } from './hypixel'
-import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle } from './util'
+import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle, removeFormattingCode } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
 import express from 'express'
 import serveStatic from 'serve-static'
@@ -53,6 +53,8 @@ env.addFilter('cleannumber', cleanNumber)
 env.addFilter('clean', clean)
 
 env.addFilter('formattingCodeToHtml', formattingCodeToHtml)
+
+env.addFilter('removeFormattingCode', removeFormattingCode)
 
 env.addFilter('romanNumerals', toRomanNumerals)
 

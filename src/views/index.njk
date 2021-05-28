@@ -5,7 +5,7 @@
 {%- block headerContainer -%}{#- this removes the header from the index page -#}{%- endblock -%}
 
 {% block main -%}
-<a href="https://github.com/skyblockstats"><img src="/github-mark-light.png" class="github-mark"></a>
+<a href="https://github.com/skyblockstats"><img src="/github-mark-light.png" class="github-mark" alt="GitHub mark"></a>
 {% if loggedIn %}<a href="/profile" id="login-button">Edit profile</a>{% else %}<a href="/login" id="login-button">Log in</a>{% endif %}
 <h1 id="main-title">SkyBlock Stats</h1>
 <form action="/player" method="post" class="user-form">

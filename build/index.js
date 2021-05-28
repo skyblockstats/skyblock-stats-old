@@ -52,6 +52,7 @@ env.addFilter('startsWith', (string, substring) => string.startsWith(substring))
 env.addFilter('cleannumber', util_1.cleanNumber);
 env.addFilter('clean', util_1.clean);
 env.addFilter('formattingCodeToHtml', util_1.formattingCodeToHtml);
+env.addFilter('removeFormattingCode', util_1.removeFormattingCode);
 env.addFilter('romanNumerals', util_1.toRomanNumerals);
 env.addFilter('shuffle', util_1.shuffle);
 let donators = [];
