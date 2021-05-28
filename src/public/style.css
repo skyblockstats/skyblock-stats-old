@@ -404,7 +404,8 @@ header .user-form {
 	display: inline-block
 }
 header .enter-username-button {
-	box-shadow: none
+	box-shadow: none;
+	display: inline-block;
 }
 
 .back-arrow {
