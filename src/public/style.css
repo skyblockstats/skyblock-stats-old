@@ -105,8 +105,9 @@ button {
 .enter-username-button, .view-profiles-button {
 	/* add a slight shadow on the form in the index page */
 	box-shadow: 0 0 1em #000;
-	max-width: calc(100vw - 6em);
-	transition: max-width 0
+}
+.enter-username-button {
+	max-width: calc(90vw - 8em);
 }
 
 /* the main "SkyBlock stats" title */
@@ -487,4 +488,10 @@ header .enter-username-button {
 }
 #background-selector > span:hover {
 	background-size: 125%;
+}
+
+@media only screen and (max-width: 500px) {
+	main {
+		margin-top: 3em
+	}
 }
