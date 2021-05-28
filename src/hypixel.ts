@@ -22,8 +22,9 @@ export let skyblockConstantValues = null
 /**
  * Fetch skyblock-api
  * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
+ * @param retry How many times it'll retry the request before failing
  */
- async function fetchApi(path, retry: boolean=true) {
+ async function fetchApi(path, retry: number=3) {
 	const fetchUrl = `${baseApi}/${path}`
 	try {
 		const fetchResponse = await fetch(
@@ -35,10 +36,10 @@ export let skyblockConstantValues = null
 		)
 		return await fetchResponse.json()
 	} catch (err) {
-		if (retry) {
+		if (retry > 0) {
 			// wait 5 seconds and retry
 			await new Promise(resolve => setTimeout(resolve, 5000))
-			return await fetchApi(path, false)
+			return await fetchApi(path, retry - 1)
 		} else {
 			throw err
 		}

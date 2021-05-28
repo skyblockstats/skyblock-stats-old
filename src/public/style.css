@@ -11,11 +11,10 @@
 /* minecraft font */
 @font-face {
 	font-family: Minecraft;
-	src: url(https://cdn.matdoes.dev/fonts/Minecraft.otf);
+	src: url(https://cdn.matdoes.dev/fonts/Minecraft.ttf);
 	font-display: swap;
 }
 
-/* minecraft font */
 @font-face {
 	font-family: Twemoji;
 	src: url(https://cdn.matdoes.dev/fonts/twemoji.ttf);
@@ -88,7 +87,8 @@ a {
 
 
 h1 {
-	font-size: 2.5em
+	font-size: 2.5em;
+	overflow-wrap: anywhere
 }
 h2, h3 {
 	margin-top: 0;
@@ -104,7 +104,9 @@ button {
 
 .enter-username-button, .view-profiles-button {
 	/* add a slight shadow on the form in the index page */
-	box-shadow: 0 0 1em #000
+	box-shadow: 0 0 1em #000;
+	max-width: calc(100vw - 5.5em);
+	transition: max-width 0
 }
 
 /* the main "SkyBlock stats" title */
@@ -128,11 +130,13 @@ button {
 	font-family: Minecraft, sans-serif;
 	/* rreduce the size of the text because the font is too big */
 	font-size: .8em;
+	overflow-wrap: anywhere
 }
 
 .username-rank-prefix {
 	font-family: Minecraft, sans-serif;
 	font-size: .8em;
+	overflow-wrap: anywhere
 }
 
 .profile-name {
@@ -161,6 +165,9 @@ button {
 	color: #0e0
 }
 
+.head {
+	user-select: none
+}
 
 .head2d {
 	/* pixelated rendering on 2d heads */
@@ -413,11 +420,11 @@ header .enter-username-button {
 
 #infobox {
 	float: right;
-	max-width: 30%;
+	max-width: 95%;
 	background-color: rgba(20,20,20,.4);
 	padding: 1em;
 	margin-top: 2em;
-	min-width: 20em;
+	width: 20em;
 	border-radius: .5em;
 	box-shadow: 0 0 1em #000;
 }
