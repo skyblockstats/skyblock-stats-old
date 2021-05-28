@@ -3,13 +3,24 @@
 
 {% block metatitle %}{% block title %}{{ data.name|clean }} - SkyBlock Leaderboards{% endblock %}{% endblock %}
 
+{% block backArrowHref %}/leaderboards{% endblock %}
+
 {%- block main -%}
 	<h1>{{ data.name|clean }}</h1>
 
 	<ol class="leaderboard-profile-list">
 	{%- for leaderboardItem in data.list -%}
 		<li class="leaderboard-profile-list-item">
-			<span>{{ leaderboardItem.value|cleannumber(data.unit or data.name|clean|lower) }} </span> {{ render.username(leaderboardItem.player, headType='2d', hyperlinkToProfile=true) -}}
+			<span>{{ leaderboardItem.value|cleannumber(data.unit or data.name|clean|lower) }} </span> 
+			{%- if leaderboardItem.player -%}
+				{{ render.username(leaderboardItem.player, headType='2d', hyperlinkToProfile=true) -}}
+			{%- elif leaderboardItem.players -%}
+				{%- for player in leaderboardItem.players -%}
+					<span>{{- render.username(player, headType='2d', hyperlinkToProfile=true) }} </span>
+				{%- endfor -%}
+			{%- else -%}
+				Unknown player
+			{%- endif -%}
 		</li>
 	{%- endfor -%}
 	<ol>

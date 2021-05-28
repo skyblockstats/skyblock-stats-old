@@ -8,16 +8,24 @@
 	--theme-transparent-border: rgba(128,128,128,.3)
 }
 
+/* minecraft font */
 @font-face {
 	font-family: Minecraft;
-	src: url(https://cdn.matdoes.dev/fonts/Minecraft.otf);
-	font-display: swap
+	src: url(https://cdn.matdoes.dev/fonts/Minecraft.ttf);
+	font-display: swap;
+}
+
+@font-face {
+	font-family: Twemoji;
+	src: url(https://cdn.matdoes.dev/fonts/twemoji.ttf);
+	font-display: swap;
 }
 
 body {
-	font-family: sans-serif;
+	font-family: Twemoji, sans-serif;
 	color: var(--theme-main-text);
-	background-color: var(--theme-main-background)
+	background-color: var(--theme-main-background);
+	margin: 0;
 }
 html {
 	scroll-behavior: smooth
@@ -26,15 +34,7 @@ html {
 /* content is uglier when its max width */
 main {
 	margin: 1em auto;
-	min-height: calc(100vh - 5rem);
 	width: 80%;
-}
-
-/* minecraft font */
-@font-face {
-	font-family: Minecraft;
-	src: url(//cdn.matdoes.dev/fonts/Minecraft.otf);
-	font-display: swap
 }
 
 /* makes random height and stuff look less broken */
@@ -87,9 +87,10 @@ a {
 
 
 h1 {
-	font-size: 2.5em
+	font-size: 2.5em;
+	overflow-wrap: anywhere
 }
-h3 {
+h2, h3 {
 	margin-top: 0;
 	margin-bottom: .2em
 }
@@ -103,7 +104,9 @@ button {
 
 .enter-username-button, .view-profiles-button {
 	/* add a slight shadow on the form in the index page */
-	box-shadow: 0 0 1em #000
+	box-shadow: 0 0 1em #000;
+	max-width: calc(100vw - 5.5em);
+	transition: max-width 0
 }
 
 /* the main "SkyBlock stats" title */
@@ -127,6 +130,13 @@ button {
 	font-family: Minecraft, sans-serif;
 	/* rreduce the size of the text because the font is too big */
 	font-size: .8em;
+	overflow-wrap: anywhere
+}
+
+.username-rank-prefix {
+	font-family: Minecraft, sans-serif;
+	font-size: .8em;
+	overflow-wrap: anywhere
 }
 
 .profile-name {
@@ -155,6 +165,9 @@ button {
 	color: #0e0
 }
 
+.head {
+	user-select: none
+}
 
 .head2d {
 	/* pixelated rendering on 2d heads */
@@ -239,6 +252,8 @@ h2.sectionTitle {
 	font-size: 32px;
 	width: 1.2em;
 	height: 1.2em;
+	transition-property: font-size;
+	transition-duration: 500ms
 }
 .item-slot {
 	border: 1px solid #888;
@@ -276,6 +291,7 @@ h2.sectionTitle {
 	margin-bottom: 1em;
 	overflow: hidden;
 	border-radius: 1em;
+	max-width: max-content;
 }
 .inventory-tab {
 	background-color: var(--theme-lighter-background);
@@ -351,4 +367,131 @@ img.item-custom-head {
 	padding-left: 1.2em;
 	position: relative;
 	right: 1.2em;
+}
+
+tr {
+	text-align: left
+}
+
+.minions-table-locked {
+	opacity: .2
+}
+.minions-table-unlocked {
+	color: #3e3
+}
+
+.darker-text {
+	color: var(--theme-darker-text)
+}
+.main-text {
+	color: var(--theme-main-text)
+}
+
+@media only screen and (max-width: 490px) {
+	#inventories .item {
+		font-size: 24px
+	}
+}
+@media only screen and (max-width: 370px) {
+	#inventories .item {
+		font-size: 16px
+	}
+}
+
+#main-header {
+	background-color: var(--theme-background);
+	box-shadow: 0 0 1em rgba(0, 0, 0, .8)
+}
+
+header {
+	padding: .5rem 10%;
+}
+header .user-form {
+	margin: 0;
+	display: inline-block
+}
+header .enter-username-button {
+	box-shadow: none
+}
+
+.back-arrow {
+	float: left;
+	transition: stroke 200ms;
+	stroke: var(--theme-darker-text);
+	margin-top: .4em;
+	margin-right: 1em;
+}
+.back-arrow:hover {
+	stroke: var(--theme-main-text)
+}
+
+#infobox {
+	float: right;
+	max-width: 95%;
+	background-color: rgba(20,20,20,.4);
+	padding: 1em;
+	margin-top: 2em;
+	width: 20em;
+	border-radius: .5em;
+	box-shadow: 0 0 1em #000;
+}
+
+#infobox p {
+	margin: 0 0 .25em 0;
+}
+
+@media only screen and (max-width: 600px) {
+	#infobox {
+		position: relative;
+		right: -2em;
+		margin-top: 0
+	}
+}
+@media only screen and (max-width: 550px) {
+	#infobox {
+		position: unset;
+		box-shadow: none;
+		float: none;
+		border: 1px solid var(--theme-lighter-background);
+	}
+}
+
+#login-button {
+	position: absolute;
+	right: .5em;
+	top: .5em;
+	border: 1px solid var(--theme-lighter-background);
+	padding: .5em;
+	transition-property: border, background-color;
+	transition-duration: 200ms;
+	border-radius: .5em;
+	color: var(--theme-main-text)
+}
+#login-button:hover {
+	background-color: var(--theme-lighter-background);
+	border-color: var(--theme-lightest-background);
+}
+#edit-profile-things {
+	margin-top: 2em
+}
+#edit-profile-title {
+	margin-bottom: 0
+}
+#background-selector {
+	display: flex;
+	flex-wrap: wrap
+}
+#background-selector > span {
+	display: inline-block;
+	height: 10em;
+	width: 18em;
+	background-position: center;
+	background-size: 110%;
+	margin: .5em;
+	border-radius: 1em;
+	transition: background-size 500ms;
+	cursor: pointer
+}
+#background-selector > span:hover {
+	background-size: 125%;
 }

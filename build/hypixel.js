@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.INVENTORIES = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.baseApi = void 0;
+exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.httpsAgent = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
 const https_1 = require("https");
@@ -32,41 +32,91 @@ const skyblockAssets = __importStar(require("skyblock-assets"));
 if (!process.env.key)
     // if there's no key in env, run dotenv
     require('dotenv').config();
-exports.baseApi = 'https://skyblock-api2.matdoes.dev'; // TODO: change this to skyblock-api.matdoes.dev once it replaces the old one
+exports.baseApi = 'https://skyblock-api.matdoes.dev';
 // export const baseApi = 'http://localhost:8080'
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
-const httpsAgent = new https_1.Agent({
+exports.httpsAgent = new https_1.Agent({
     keepAlive: true
 });
+exports.skyblockConstantValues = null;
 /**
  * Fetch skyblock-api
  * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
+ * @param retry How many times it'll retry the request before failing
  */
-async function fetchApi(path) {
+async function fetchApi(path, retry = 3) {
     const fetchUrl = `${exports.baseApi}/${path}`;
-    const fetchResponse = await node_fetch_1.default(fetchUrl, {
-        agent: () => httpsAgent,
-        headers: {
-            key: process.env.key
+    try {
+        const fetchResponse = await node_fetch_1.default(fetchUrl, {
+            agent: () => exports.httpsAgent,
+            headers: { key: process.env.key },
+        });
+        return await fetchResponse.json();
+    }
+    catch (err) {
+        if (retry > 0) {
+            // wait 5 seconds and retry
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            return await fetchApi(path, retry - 1);
         }
-    });
-    return await fetchResponse.json();
+        else {
+            throw err;
+        }
+    }
 }
+/**
+ * Post to skyblock-api
+ * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
+ * @param data The data (as json) that should be posted
+ */
+async function postApi(path, data, retry = true) {
+    const fetchUrl = `${exports.baseApi}/${path}`;
+    try {
+        const fetchResponse = await node_fetch_1.default(encodeURI(fetchUrl), {
+            agent: () => exports.httpsAgent,
+            headers: {
+                key: process.env.key,
+                'content-type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        return await fetchResponse.json();
+    }
+    catch (err) {
+        if (retry) {
+            // wait 5 seconds and retry
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            return await postApi(path, data, false);
+        }
+        else {
+            throw err;
+        }
+    }
+}
+async function updateConstants() {
+    exports.skyblockConstantValues = await fetchApi('constants');
+}
+setInterval(updateConstants, 60 * 60 * 1000); // update every hour
+updateConstants();
 /**
  * Fetch a player
  * @param user A username or UUID
+ * @param basic Whether it should only return very basic information about the user
+ * @param customization Whether it should return extra customization data like the player's selected pack and background
  */
-async function fetchPlayer(user) {
-    return await fetchApi(`player/${user}`);
+async function fetchPlayer(user, basic = false, customization = false) {
+    return await fetchApi(`player/${user}?basic=${basic}&customization=${customization}`);
 }
 exports.fetchPlayer = fetchPlayer;
 /**
  * Fetch a profile
  * @param user A username or UUID
- * @profile A profile name or UUID
+ * @param profile A profile name or UUID
+ * @param customization Whether it should return extra customization data like the player's selected pack and background
  */
-async function fetchProfile(user, profile) {
-    return await fetchApi(`player/${user}/${profile}`);
+async function fetchProfile(user, profile, customization = false) {
+    return await fetchApi(`player/${user}/${profile}?customization=${customization}`);
 }
 exports.fetchProfile = fetchProfile;
 async function fetchLeaderboard(name) {
@@ -82,30 +132,8 @@ const itemToUrlCache = new node_cache_1.default({
     checkperiod: 5,
     useClones: false,
 });
-async function itemToUrl(item) {
-    var _a;
-    let damage = null;
-    const originalItem = item;
-    if (typeof item === 'string') {
-        let itemId = (_a = vanilla_damages_json_1.default[item]) !== null && _a !== void 0 ? _a : item;
-        if (itemId.startsWith('minecraft:'))
-            itemId = itemId.slice('minecraft:'.length);
-        if (itemId.includes(':')) {
-            damage = parseInt(itemId.split(':')[1]);
-            itemId = itemId.split(':')[0];
-        }
-        item = {
-            count: 1,
-            display: {
-                glint: false,
-                lore: null,
-                name: null
-            },
-            id: null,
-            vanillaId: `minecraft:${itemId}`
-        };
-    }
-    const stringifiedItem = JSON.stringify(item);
+async function itemToUrl(item, packName) {
+    const stringifiedItem = (packName || 'packshq') + JSON.stringify(item);
     if (itemToUrlCache.has(stringifiedItem))
         return itemToUrlCache.get(stringifiedItem);
     const itemNbt = {
@@ -124,12 +152,10 @@ async function itemToUrl(item) {
         textureUrl = await skyblockAssets.getTextureUrl({
             id: item.vanillaId,
             nbt: itemNbt,
-            pack: 'packshq',
+            pack: packName || 'packshq'
         });
     if (!textureUrl) {
-        console.log(item.vanillaId, damage);
-        console.log(item);
-        console.log(originalItem);
+        console.log('no texture', item);
     }
     itemToUrlCache.set(stringifiedItem, textureUrl);
     return textureUrl;
@@ -152,7 +178,7 @@ const skyblockItems = {
         }
     },
 };
-function itemToUrlCached(item) {
+function itemToUrlCached(item, packName) {
     var _a;
     if (!item)
         return null;
@@ -176,21 +202,34 @@ function itemToUrlCached(item) {
             vanillaId: `minecraft:${itemId}`
         };
     }
-    const stringifiedItem = JSON.stringify(item);
+    const stringifiedItem = (packName || 'packshq') + JSON.stringify(item);
     return itemToUrlCache.get(stringifiedItem);
 }
 exports.itemToUrlCached = itemToUrlCached;
 /** Get all the items in an inventories object to cache them */
-async function cacheInventories(inventories) {
+async function cacheInventories(inventories, packName) {
     const promises = [];
     for (const inventoryItems of Object.values(inventories !== null && inventories !== void 0 ? inventories : {}))
         for (const inventoryItem of inventoryItems)
             if (inventoryItem)
-                promises.push(itemToUrl(inventoryItem));
+                promises.push(itemToUrl(inventoryItem, packName));
     await Promise.all(promises);
 }
 exports.cacheInventories = cacheInventories;
-exports.INVENTORIES = {
+async function createSession(code) {
+    return await postApi(`accounts/createsession`, { code });
+}
+exports.createSession = createSession;
+async function fetchSession(sessionId) {
+    return await postApi(`accounts/session`, { uuid: sessionId });
+}
+exports.fetchSession = fetchSession;
+async function updateAccount(data) {
+    // this is checked with the key env variable, so it's mostly secure
+    return await postApi(`accounts/update`, data);
+}
+exports.updateAccount = updateAccount;
+const INVENTORIES = {
     armor: 'inv_armor',
     inventory: 'inv_contents',
     ender_chest: 'ender_chest_contents',

@@ -70,7 +70,9 @@ export function formattingCodeToHtml(formatted: string): string {
 	return htmlOutput
 }
 
-
+export function removeFormattingCode(formatted: string): string {
+	return formatted.replace(new RegExp(colorCodeCharacter + '.', 'g'), '')
+}
 
 function moveStringToEnd(word: string, thing: string) {
 	if (thing.startsWith(`${word}_`))
@@ -122,4 +124,16 @@ export function clean(thing: string | number) {
 			.replace(/^./, thing[0].toUpperCase())
 			.replace(/_/g, ' ')
 	}
+}
+
+export function toRomanNumerals(number: number) {
+	return ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'][number]
+}
+
+export function shuffle<T>(a: T[]): T[] {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[a[i], a[j]] = [a[j], a[i]]
+    }
+    return a
 }

@@ -1,0 +1,12 @@
+{% extends 'base.njk' %}
+
+{% block main %}
+
+<h1>Enter your username to verify your account</h1>
+{%- if error %}<p>{{ error }}</p>{% endif -%}
+<form method="post" action="/verify">
+<input placeholder="Username or uuid" name="ign">
+<button>Enter</button>
+</form>
+
+{% endblock %}

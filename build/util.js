@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clean = exports.cleanNumber = exports.formattingCodeToHtml = void 0;
+exports.shuffle = exports.toRomanNumerals = exports.clean = exports.cleanNumber = exports.removeFormattingCode = exports.formattingCodeToHtml = void 0;
 const colorCodes = {
     '0': '#000000',
     '1': '#0000be',
@@ -72,6 +72,10 @@ function formattingCodeToHtml(formatted) {
     return htmlOutput;
 }
 exports.formattingCodeToHtml = formattingCodeToHtml;
+function removeFormattingCode(formatted) {
+    return formatted.replace(new RegExp(colorCodeCharacter + '.', 'g'), '');
+}
+exports.removeFormattingCode = removeFormattingCode;
 function moveStringToEnd(word, thing) {
     if (thing.startsWith(`${word}_`))
         thing = thing.substr(`${word}_`.length) + `_${word}`;
@@ -127,3 +131,15 @@ function clean(thing) {
     }
 }
 exports.clean = clean;
+function toRomanNumerals(number) {
+    return ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'][number];
+}
+exports.toRomanNumerals = toRomanNumerals;
+function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+exports.shuffle = shuffle;

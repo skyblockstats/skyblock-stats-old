@@ -1,8 +1,9 @@
-{%- macro username(player, headType=none, hyperlinkToProfile=false) -%}
+{%- macro username(player, headType=none, hyperlinkToProfile=false, prefix=false) -%}
 	{%- if hyperlinkToProfile %}<a href="/player/{{ player.username }}">{% endif -%}
 		{%- if headType === '3d' %}{{ head3d(player, isPartOfUsername=true) -}}
 		{%- elif headType === '2d' %}{{ head2d(player, isPartOfUsername=true) -}}
 		{%- endif -%}
+		{%- if prefix -%}<span class="username-rank-prefix">{{ player.rank.colored|formattingCodeToHtml|safe }} </span>{%- endif -%}
 		<span class="username" style="color: {{ player.rank.color }}">{{ player.username }}</span>
 	{%- if hyperlinkToProfile %}</a>{% endif -%}
 {%- endmacro -%}
@@ -16,7 +17,7 @@
 {%- endmacro -%}
 
 
-{%- macro item(data, slot=true) -%}
+{%- macro item(data, slot=true, pack='') -%}
 	{%- if data -%}
 		{%- set itemLoreHtml -%}
 			{%- for line in data.display.lore -%}
@@ -27,16 +28,16 @@
 	{%- endif -%}
 	<span class="item{% if slot %} item-slot{% endif %}"{% if data %} data-lore-html="{{- itemLoreHtml -}}" data-name-html="{{- itemNameHtml -}}"{% endif %}>
 		{%- if data -%}
-			{%- set imageUrl = data|itemToUrl -%}
+			{%- set imageUrl = data|itemToUrl(pack) -%}
 			{%- if imageUrl -%}
-				<img loading="lazy" src="{{ imageUrl }}"{% if imageUrl|startsWith('https://mc-heads.net/head/') %} class="item-custom-head"{% endif %}>
+				<img loading="lazy" src="{{ imageUrl }}" alt="{{ data.display.name|removeFormattingCode }}"{% if imageUrl|startsWith('https://mc-heads.net/head/') %} class="item-custom-head"{% endif %}>
 			{%- endif -%}
 			{%- if data.count != 1 %}<span class="item-count">{{ data.count }}</span>{% endif -%}
 		{%- endif -%}
 	</span>
 {%- endmacro -%}
 
-{%- macro inventory(items, name='') -%}
+{%- macro inventory(items, name='', pack='') -%}
 	<div{% if name %} class="inventory-container-{{ name }}"{% endif %}>
 		{%- if name == 'inventory' -%}
 			{%- set items = items|slice(9)|append(items|slice(0, 9)) -%}
@@ -45,7 +46,7 @@
 		{%- for itemData in items -%}
 			{%- if loop.index0 > 0 and loop.index0 % 9 == 0 %}</div>{%- endif -%}
 			{%- if loop.index0 % 9 == 0 %}<div>{%- endif -%}
-			{{- item(itemData, slot=true) -}}
+			{{- item(itemData, slot=true, pack=pack) -}}
 		{%- endfor -%}
 		</div>
 	</div>

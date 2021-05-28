@@ -1,5 +1,5 @@
 <noscript><p>Enable JavaScript, nerd</p></noscript>
-<ul id="member-leaderboard-spots">Loading...</ul>
+<ul id="member-leaderboard-spots">Loading..</ul>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -57,6 +57,7 @@ function clean(thing) {
 }
 
 async function loadLeaderboards(entries) {
+	leaderboardsEl.textContent = 'Loading...'
 	// if we've already seen the leaderboards, return
 	if (!leaderboardsUnseen || entries.length === 0 || !entries[0].isIntersecting) return
 	console.log(entries)
