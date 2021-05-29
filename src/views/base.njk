@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	let tooltipLocked = false
 
 	document.addEventListener('mousemove', (e) => {
-		if (!tooltipLocked) {
+		if (!tooltipLocked && tooltipEl.style.display !== 'none') {
 			tooltipEl.style.top = e.pageY + 'px'
 			tooltipEl.style.left = e.pageX + 'px'
 		}
@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				tooltipEl.style.userSelect = null
 				tooltipEl.style.pointerEvents = null
 				tooltipEl.style.display = 'none'
-				
 			}
 		})
 	}
