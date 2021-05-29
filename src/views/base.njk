@@ -31,8 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		// if the item doesn't have lore or a name, that must mean it's air
 		if (!itemEl.dataset.loreHtml && !itemEl.dataset.nameHtml) continue
 
-		itemEl.addEventListener('mouseover', () => {
+		itemEl.addEventListener('mouseover', (e) => {
 			if (!tooltipLocked) {
+				tooltipEl.style.top = e.pageY + 'px'
+				tooltipEl.style.left = e.pageX + 'px'
 				const loreHtml = itemEl.dataset.loreHtml
 					.replace(/&lt;/g, '<')
 					.replace(/&gt;/g, '>')
