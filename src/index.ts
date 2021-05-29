@@ -69,6 +69,7 @@ env.addFilter('romanNumerals', toRomanNumerals)
 
 env.addFilter('shuffle', shuffle)
 
+env.addFilter('isString', o => typeof o === 'string' )
 
 let donators = []
 

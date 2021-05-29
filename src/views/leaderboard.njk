@@ -13,7 +13,7 @@
 		<li class="leaderboard-profile-list-item">
 			<span>{{ leaderboardItem.value|cleannumber(data.unit or data.name|clean|lower) }} </span> 
 			{%- if leaderboardItem.player -%}
-				{{ render.username(leaderboardItem.player, headType='2d', hyperlinkToProfile=true) -}}
+				{{ render.username(leaderboardItem.player, headType='2d', hyperlinkToProfile=leaderboardItem.profileUuid) -}}
 			{%- elif leaderboardItem.players -%}
 				{%- for player in leaderboardItem.players -%}
 					<span>{{- render.username(player, headType='2d', hyperlinkToProfile=true) }} </span>

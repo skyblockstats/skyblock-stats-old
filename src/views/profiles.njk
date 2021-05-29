@@ -5,6 +5,7 @@
 
 {%- block head -%}
 {{- super() -}}
+<link rel="canonical" href="https://skyblock.matdoes.dev/player/{{ data.member.username }}">
 {% if data.customization and data.customization.backgroundUrl %}
 <style>
 body:before {

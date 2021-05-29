@@ -62,6 +62,7 @@ env.addFilter('formattingCodeToHtml', util_1.formattingCodeToHtml);
 env.addFilter('removeFormattingCode', util_1.removeFormattingCode);
 env.addFilter('romanNumerals', util_1.toRomanNumerals);
 env.addFilter('shuffle', util_1.shuffle);
+env.addFilter('isString', o => typeof o === 'string');
 let donators = [];
 async function initDonators() {
     const donatorsFileRaw = await fs_1.promises.readFile('src/donators.txt', { encoding: 'ascii' });
