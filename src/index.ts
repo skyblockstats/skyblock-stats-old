@@ -150,7 +150,7 @@ app.get('/login', async(req, res) => {
 app.get('/loggedin', async(req, res) => {
 	const response = await createSession(req.query.code as string)
 	if (response.ok) {
-		res.cookie('sid', response.session_id)
+		res.cookie('sid', response.session_id, { maxAge: 31536000000 })
 		res.redirect('/verify')
 	} else
 		res.redirect('/login')
