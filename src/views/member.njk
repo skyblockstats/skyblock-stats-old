@@ -29,6 +29,7 @@ body:before {
 {%- block main -%}
 	<h1>{{ render.username(data.member, headType='3d') }} ({{ data.member.profileName }})</h1>
 	{%- set categories = [
+		'skills',
 		'deaths',
 		'kills',
 		'auctions',

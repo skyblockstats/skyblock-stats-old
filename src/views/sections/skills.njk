@@ -1,0 +1,5 @@
+<ul>
+{%- for skill in data.member.skills | sort(true, true, 'value') -%}
+    <li>{{ skill.name|clean }}: {{ skill.xp }}</li>
+{%- endfor -%}
+</ul>
