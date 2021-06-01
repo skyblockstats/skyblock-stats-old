@@ -51,6 +51,7 @@ env.addGlobal('getConstants', () => skyblockConstantValues)
 env.addFilter('itemToUrl', (item, packName: string) => {
 	return itemToUrlCached(item, packName)
 })
+
 env.addFilter('append', (arr: any[], item: any) => arr.concat(item))
 
 env.addFilter('slice', (arr: any[], start?: number, end?: number) => arr.slice(start, end))

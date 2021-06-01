@@ -495,3 +495,17 @@ header .enter-username-button {
 		margin-top: 3em
 	}
 }
+
+.leaderboard-profile-list-item {
+	overflow-wrap: break-word
+}
+#leaderboard-profile-list {
+	margin-top: 1em
+}
+#leaderboard-title {
+	margin-bottom: 0
+}
+#leaderboard-info {
+	margin-top: .5em;
+	display: block
+}

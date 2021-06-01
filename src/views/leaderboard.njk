@@ -6,7 +6,8 @@
 {% block backArrowHref %}/leaderboards{% endblock %}
 
 {%- block main -%}
-	<h1>{{ data.name|clean }}</h1>
+	<h1 id="leaderboard-title">{{ data.name|clean }}</h1>
+	{%- if data.info %}<i id="leaderboard-info">{{ data.info|safe }}</i>{% endif -%}
 
 	<ol class="leaderboard-profile-list">
 	{%- for leaderboardItem in data.list -%}
