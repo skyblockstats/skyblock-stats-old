@@ -32,8 +32,7 @@ const skyblockAssets = __importStar(require("skyblock-assets"));
 if (!process.env.key)
     // if there's no key in env, run dotenv
     require('dotenv').config();
-// export const baseApi = 'https://skyblock-api.matdoes.dev'
-exports.baseApi = 'http://localhost:8080';
+exports.baseApi = 'https://skyblock-api.matdoes.dev';
 if (exports.baseApi.startsWith('https://'))
     exports.agent = new https_1.Agent({
         keepAlive: true
