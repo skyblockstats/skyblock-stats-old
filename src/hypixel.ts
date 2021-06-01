@@ -1,6 +1,7 @@
 import fetch from 'node-fetch'
 import NodeCache from 'node-cache'
 import { Agent } from 'https'
+import vanillaDamages from 'skyblock-assets/data/vanilla_damages.json'
 // import { Agent } from 'http'
 
 import * as skyblockAssets from 'skyblock-assets'
@@ -110,7 +111,7 @@ export async function fetchLeaderboard(name: string) {
 	return await fetchApi(`leaderboard/${name}`)
 }
 
-export async function fetchLeaderboards() {
+export async function fetchLeaderboards(): Promise<{ [category: string]: string[] }> {
 	return await fetchApi(`leaderboards`)
 }
 
@@ -121,16 +122,18 @@ const itemToUrlCache = new NodeCache({
 })
 
 export async function itemToUrl(item: Item, packName?: string): Promise<string> {
-	const stringifiedItem = (packName || 'packshq') + JSON.stringify(item)
+	const stringifiedItem = (packName ?? 'packshq') + JSON.stringify(item)
+
 	if (itemToUrlCache.has(stringifiedItem))
 		return itemToUrlCache.get(stringifiedItem)
+
 	const itemNbt: skyblockAssets.NBT = {
 		display: {
-			Name: item.display.name
+			Name: item.display?.name
 		},
 		ExtraAttributes: {
 			id: item.id,
-		}
+		},
 	}
 
 	let textureUrl: string
@@ -152,8 +155,67 @@ export async function itemToUrl(item: Item, packName?: string): Promise<string> 
 	return textureUrl
 }
 
+export async function skyblockItemToUrl(skyblockItemName: string) {
+	let item = skyblockItemNameToItem(skyblockItemName)
+	const itemTextureUrl = await itemToUrl(item, 'packshq')
+	return itemTextureUrl
+}
+
+export function skyblockItemNameToItem(skyblockItemName: string): Item {
+	let item: Item
+	if (Object.keys(skyblockItems).includes(skyblockItemName)) {
+		item = skyblockItems[skyblockItemName]
+	} else {
+		item = {
+			vanillaId: `minecraft:${skyblockItemName}`
+		}
+	}
+	return item
+}
+
+const skyblockItems: { [ itemName: string ]: Item } = {
+	ink_sac: { vanillaId: 'minecraft:dye' },
+	cocoa_beans: { vanillaId: 'minecraft:dye:3' },
+	lapis_lazuli: { vanillaId: 'minecraft:dye:4' },
+	lily_pad: { vanillaId: 'minecraft:waterlily' },
+	melon_slice: { vanillaId: 'minecraft:melon' },
+	mithril_ore: {
+		vanillaId: 'minecraft:prismarine_crystals',
+		display: { name: 'Mithril Ore' }
+	},
+	acacia_log: { vanillaId: 'minecraft:log2' },
+	birch_log: { vanillaId: 'minecraft:log:2' },
+	cod: { vanillaId: 'minecraft:fish' },
+	dark_oak_log: { vanillaId: 'minecraft:log:2' },
+	jungle_log: { vanillaId: 'minecraft:log:3' },
+	oak_log: { vanillaId: 'minecraft:log' },
+	pufferfish: { vanillaId: 'minecraft:fish:3' },
+	salmon: { vanillaId: 'minecraft:fish:1' },
+	spruce_log: { vanillaId: 'minecraft:log:1' },
+}
+
+
 export function itemToUrlCached(item: Item, packName?: string): string {
 	if (!item) return null
+	if (typeof item === 'string') {
+		let itemId: string = vanillaDamages[item] ?? item
+		let damage: number = null
+		if (itemId.startsWith('minecraft:')) itemId = itemId.slice('minecraft:'.length)
+		if (itemId.includes(':')) {
+			damage = parseInt(itemId.split(':')[1])
+			itemId = itemId.split(':')[0]
+		}
+		item = {
+			count: 1,
+			display: {
+				glint: false,
+				lore: null,
+				name: null
+			},
+			id: null,
+			vanillaId: `minecraft:${itemId}`
+		}
+	}
 
 	const stringifiedItem = (packName || 'packshq') + JSON.stringify(item)
 	return itemToUrlCache.get(stringifiedItem)
@@ -198,14 +260,14 @@ interface CleanMemberProfile {
 }
 
 interface Item {
-	id: string
-	count: number
+	id?: string
+	count?: number
 	vanillaId: string
 
-	display: {
-		name: string
-		lore: string[]
-		glint: boolean
+	display?: {
+		name?: string
+		lore?: string[]
+		glint?: boolean
 	}
 
 	reforge?: string
