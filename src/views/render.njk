@@ -1,5 +1,5 @@
 {%- macro username(player, headType=none, hyperlinkToProfile=false, prefix=false) -%}
-	{%- if hyperlinkToProfile %}<a href="/player/{{ player.username }}">{% endif -%}
+	{%- if hyperlinkToProfile %}<a href="/player/{{ player.username }}{% if hyperlinkToProfile|isString %}/{{ hyperlinkToProfile }}{% endif %}">{% endif -%}
 		{%- if headType === '3d' %}{{ head3d(player, isPartOfUsername=true) -}}
 		{%- elif headType === '2d' %}{{ head2d(player, isPartOfUsername=true) -}}
 		{%- endif -%}

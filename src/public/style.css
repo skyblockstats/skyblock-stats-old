@@ -105,8 +105,9 @@ button {
 .enter-username-button, .view-profiles-button {
 	/* add a slight shadow on the form in the index page */
 	box-shadow: 0 0 1em #000;
-	max-width: calc(100vw - 5.5em);
-	transition: max-width 0
+}
+.enter-username-button {
+	max-width: calc(90vw - 8em);
 }
 
 /* the main "SkyBlock stats" title */
@@ -411,7 +412,7 @@ header .user-form {
 	display: inline-block
 }
 header .enter-username-button {
-	box-shadow: none
+	box-shadow: none;
 }
 
 .back-arrow {
@@ -494,4 +495,24 @@ header .enter-username-button {
 }
 #background-selector > span:hover {
 	background-size: 125%;
+}
+
+@media only screen and (max-width: 500px) {
+	main {
+		margin-top: 3em
+	}
+}
+
+.leaderboard-profile-list-item {
+	overflow-wrap: break-word
+}
+#leaderboard-profile-list {
+	margin-top: 1em
+}
+#leaderboard-title {
+	margin-bottom: 0
+}
+#leaderboard-info {
+	margin-top: .5em;
+	display: block
 }
