@@ -13,6 +13,8 @@ import {
 	baseApi,
 	AccountCustomization,
 	itemToUrl,
+	skyblockItemToUrl,
+	skyblockItemNameToItem,
 } from './hypixel'
 import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle, removeFormattingCode } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
@@ -49,9 +51,8 @@ env.addGlobal('styleFileHash', hash.read())
 
 env.addGlobal('getConstants', () => skyblockConstantValues)
 
-env.addFilter('itemToUrl', (item, packName: string) => {
-	return itemToUrlCached(item, packName)
-})
+env.addFilter('itemToUrl', (item, packName: string) => itemToUrlCached(item, packName))
+env.addFilter('itemNameToUrl', (item, packName: string) => itemToUrlCached(skyblockItemNameToItem(item), packName))
 
 env.addFilter('append', (arr: any[], item: any) => arr.concat(item))
 
@@ -64,7 +65,6 @@ env.addFilter('cleannumber', cleanNumber)
 env.addFilter('clean', clean)
 
 env.addFilter('formattingCodeToHtml', formattingCodeToHtml)
-
 env.addFilter('removeFormattingCode', removeFormattingCode)
 
 env.addFilter('romanNumerals', toRomanNumerals)
@@ -137,7 +137,7 @@ app.get('/leaderboards', async(req, res) => {
 
 	const promises = []
 	for (const leaderboardName of data.collection) {
-		promises.push(itemToUrl(leaderboardName.slice(11)))
+		promises.push(skyblockItemToUrl(leaderboardName.slice(11)))
 	}
 	await Promise.all(promises)
 
@@ -288,3 +288,4 @@ app.get('/:user', async(req, res) => {
 
 
 app.listen(8081, () => console.log('App started :)'))
+
