@@ -1,6 +1,9 @@
 import {
 	skyblockConstantValues,
+	skyblockItemNameToItem,
+	AccountCustomization,
 	fetchLeaderboards,
+	skyblockItemToUrl,
 	cacheInventories,
 	fetchLeaderboard,
 	itemToUrlCached,
@@ -11,10 +14,6 @@ import {
 	fetchPlayer,
 	CleanUser,
 	baseApi,
-	AccountCustomization,
-	itemToUrl,
-	skyblockItemToUrl,
-	skyblockItemNameToItem,
 } from './hypixel'
 import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle, removeFormattingCode } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'

@@ -22,22 +22,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.skyblockItemNameToItem = exports.skyblockItemToUrl = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.httpsAgent = exports.baseApi = void 0;
+exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.skyblockItemNameToItem = exports.skyblockItemToUrl = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.agent = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
 const https_1 = require("https");
 const vanilla_damages_json_1 = __importDefault(require("skyblock-assets/data/vanilla_damages.json"));
-// import { Agent } from 'http'
+const http_1 = require("http");
 const skyblockAssets = __importStar(require("skyblock-assets"));
 if (!process.env.key)
     // if there's no key in env, run dotenv
     require('dotenv').config();
-exports.baseApi = 'https://skyblock-api.matdoes.dev';
-// export const baseApi = 'http://localhost:8080'
-// We need to create an agent to prevent memory leaks and to only do dns lookups once
-exports.httpsAgent = new https_1.Agent({
-    keepAlive: true
-});
+// export const baseApi = 'https://skyblock-api.matdoes.dev'
+exports.baseApi = 'http://localhost:8080';
+if (exports.baseApi.startsWith('https://'))
+    exports.agent = new https_1.Agent({
+        keepAlive: true
+    });
+else
+    exports.agent = new http_1.Agent({
+        keepAlive: true
+    });
 exports.skyblockConstantValues = null;
 /**
  * Fetch skyblock-api
@@ -48,7 +52,7 @@ async function fetchApi(path, retry = 3) {
     const fetchUrl = `${exports.baseApi}/${path}`;
     try {
         const fetchResponse = await node_fetch_1.default(fetchUrl, {
-            agent: () => exports.httpsAgent,
+            agent: () => exports.agent,
             headers: { key: process.env.key },
         });
         return await fetchResponse.json();
@@ -73,7 +77,7 @@ async function postApi(path, data, retry = true) {
     const fetchUrl = `${exports.baseApi}/${path}`;
     try {
         const fetchResponse = await node_fetch_1.default(encodeURI(fetchUrl), {
-            agent: () => exports.httpsAgent,
+            agent: () => exports.agent,
             headers: {
                 key: process.env.key,
                 'content-type': 'application/json'

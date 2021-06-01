@@ -1,8 +1,8 @@
 import fetch from 'node-fetch'
 import NodeCache from 'node-cache'
-import { Agent } from 'https'
+import { Agent as HttpsAgent } from 'https'
 import vanillaDamages from 'skyblock-assets/data/vanilla_damages.json'
-// import { Agent } from 'http'
+import { Agent as HttpAgent } from 'http'
 
 import * as skyblockAssets from 'skyblock-assets'
 
@@ -10,13 +10,19 @@ if (!process.env.key)
 	// if there's no key in env, run dotenv
 	require('dotenv').config()
 
-export const baseApi = 'https://skyblock-api.matdoes.dev'
-// export const baseApi = 'http://localhost:8080'
+// export const baseApi = 'https://skyblock-api.matdoes.dev'
+export const baseApi = 'http://localhost:8080'
 
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
-export const httpsAgent = new Agent({
-	keepAlive: true
-})
+export let agent: HttpAgent | HttpsAgent
+if (baseApi.startsWith('https://'))
+	agent = new HttpsAgent({
+		keepAlive: true
+	})
+else
+	agent = new HttpAgent({
+		keepAlive: true
+	})
 
 export let skyblockConstantValues = null
 
@@ -31,7 +37,7 @@ export let skyblockConstantValues = null
 		const fetchResponse = await fetch(
 			fetchUrl,
 			{
-				agent: () => httpsAgent,
+				agent: () => agent,
 				headers: { key: process.env.key },
 			}
 		)
@@ -58,7 +64,7 @@ export let skyblockConstantValues = null
 		const fetchResponse = await fetch(
 			encodeURI(fetchUrl),
 			{
-				agent: () => httpsAgent,
+				agent: () => agent,
 				headers: {
 					key: process.env.key,
 					'content-type': 'application/json'
