@@ -3,7 +3,7 @@
 
 {%- block head -%}
 {{- super() -}}
-<script>{% include 'toc.js' %}</script>
+<script>{% include 'collapsible.js' %}</script>
 {%- endblock -%}
 
 {% block metatitle %}{% block title %}Hypixel SkyBlock Leaderboards{% endblock %}{% endblock %}
@@ -11,7 +11,12 @@
 {%- block main -%}
 	<h1>Hypixel SkyBlock leaderboards</h1>
 
-	<ul id="toc"><h3>Contents</h3></ul>
+	<ul id="toc">
+		<h3>Contents</h3>
+		{%- for category, leaderboards in data -%}
+			<li><a href="#{{ category }}">{{ category|clean }}</a></li>
+		{%- endfor -%}
+	</ul>
 
 	<div id="categories">
 		{%- for category, leaderboards in data -%}
