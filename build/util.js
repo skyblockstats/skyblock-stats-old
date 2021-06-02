@@ -115,7 +115,7 @@ function cleanNumber(number, unit) {
         case 'date':
             return (new Date(number * 1000)).toUTCString();
     }
-    return number.toLocaleString() + ' ' + unit;
+    return number.toLocaleString() + (unit ? (' ' + unit) : '');
 }
 exports.cleanNumber = cleanNumber;
 function clean(thing) {
