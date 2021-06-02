@@ -11,8 +11,6 @@ const scrollToHash = () => {
 	}
 }
 document.addEventListener('DOMContentLoaded', () => {
-	const toc = document.getElementById('toc')
-
 	for (const sectionEl of document.getElementsByClassName('collapsible')) {
 		var collapsibleTitle = sectionEl.getElementsByTagName('h2')[0]
 		if (!collapsibleTitle)
@@ -23,16 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		const hashLink = sectionEl.id
 		collapsibleTitle.classList.add('sectionTitle')
 		sectionEl.classList.add('section')
-
-		// unless the element shouldn't be in the table of contents, put it there
-		if (!sectionEl.classList.contains('noTOC')) {
-			const newListItemEl = document.createElement('li')
-			const newAnchorEl = document.createElement('a')
-			newAnchorEl.href = '#' + hashLink
-			newAnchorEl.innerText = name
-			newListItemEl.append(newAnchorEl)
-			toc.append(newListItemEl)
-		}
 
 		if (!sectionEl.classList.contains('noCollapse')) {
 			const collapsiblePartEl = document.createElement('div')
