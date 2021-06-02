@@ -111,7 +111,7 @@ export function cleanNumber(number: number, unit?: string): string {
 		case 'date':
 			return (new Date(number * 1000)).toUTCString()
 	}
-	return number.toLocaleString() + ' ' + unit
+	return number.toLocaleString() + (unit ? (' ' + unit) : '')
 }
 
 export function clean(thing: string | number) {
