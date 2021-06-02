@@ -1,8 +1,8 @@
 <ul>
 {%- for skill in data.member.skills | sort(true, true, 'value') -%}
     <li>
-        <span class="tooltip" data-tooltip="{{ ((skill.levelXp/skill.levelXpRequired)*100)|round }}% to next level, {{ skill.levelXp|round|cleannumber }}/{{ skill.levelXpRequired|formatnumber(3) }} xp" tabindex="1">
-            {{ skill.name|clean }} <span class="skill-level{% if skill.level == maxLevel %} skill-maxed{% endif %}">{{ skill.level }}</span>
+        <span class="tooltip" data-tooltip="{% if skill.levelXpRequired != null %}{{ ((skill.levelXp/skill.levelXpRequired)*100)|round }}% to next level, {{ skill.levelXp|round|cleannumber }}/{{ skill.levelXpRequired|formatnumber(3) }} xp{% else %}{{ skill.levelXp|round|cleannumber }} extra xp{% endif %}" tabindex="1">
+            {{ skill.name|clean }} <span class="skill-level{% if skill.level == skill.maxLevel %} skill-maxed{% endif %}">{{ skill.level }}</span>
         </span>
     </li>
 {%- endfor -%}
