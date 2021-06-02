@@ -516,3 +516,44 @@ header .enter-username-button {
 	margin-top: .5em;
 	display: block
 }
+.skill-extra-info {
+	position: absolute;
+	opacity: .5;
+	left: 23em
+}
+.skill-level {
+	opacity: .9
+}
+.skill-maxed {
+	color: #0e0;
+	opacity: 1
+}
+.tooltip {
+	position: relative;
+	cursor: pointer
+}
+.tooltip::after {
+	left: 50%;
+	opacity: 0;
+	position: absolute;
+	z-index: -100;
+	background: #fffe;
+	border-radius: .25em;
+	bottom: 150%;
+	color: #111;
+	content: attr(data-tooltip);
+	margin-left: max(calc(-50% - 1em), -5em);
+	padding: .5em;
+	transition: all 200ms;
+	transform: scale(.6) translateY(50%);  
+	width: max-content;
+	text-align: center;
+	max-width: 10em;
+	cursor: auto
+}
+.tooltip:hover::after, .tooltip:focus::after {
+	opacity: 1;
+	transform: scale(1) translateY(0);
+	z-index: 100;
+	transition: all 200ms;
+}
