@@ -94,6 +94,7 @@ async function loadLeaderboards(entries) {
 const leaderboardsEl = document.getElementById('member-leaderboard-spots')
 
 let observer = new IntersectionObserver(loadLeaderboards, {
+	root: document.body,
 	rootMargin: '0px',
 	threshold: 0
 })
