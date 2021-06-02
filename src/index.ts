@@ -1,6 +1,9 @@
 import {
 	skyblockConstantValues,
+	skyblockItemNameToItem,
+	AccountCustomization,
 	fetchLeaderboards,
+	skyblockItemToUrl,
 	cacheInventories,
 	fetchLeaderboard,
 	itemToUrlCached,
@@ -11,7 +14,6 @@ import {
 	fetchPlayer,
 	CleanUser,
 	baseApi,
-	AccountCustomization,
 } from './hypixel'
 import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle, removeFormattingCode } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
@@ -48,9 +50,9 @@ env.addGlobal('styleFileHash', hash.read())
 
 env.addGlobal('getConstants', () => skyblockConstantValues)
 
-env.addFilter('itemToUrl', (item, packName: string) => {
-	return itemToUrlCached(item, packName)
-})
+env.addFilter('itemToUrl', (item, packName: string) => itemToUrlCached(item, packName))
+env.addFilter('itemNameToUrl', (item, packName: string) => itemToUrlCached(skyblockItemNameToItem(item), packName))
+
 env.addFilter('append', (arr: any[], item: any) => arr.concat(item))
 
 env.addFilter('slice', (arr: any[], start?: number, end?: number) => arr.slice(start, end))
@@ -62,13 +64,13 @@ env.addFilter('cleannumber', cleanNumber)
 env.addFilter('clean', clean)
 
 env.addFilter('formattingCodeToHtml', formattingCodeToHtml)
-
 env.addFilter('removeFormattingCode', removeFormattingCode)
 
 env.addFilter('romanNumerals', toRomanNumerals)
 
 env.addFilter('shuffle', shuffle)
 
+env.addFilter('isString', o => typeof o === 'string' )
 
 let donators = []
 
@@ -131,6 +133,13 @@ app.get('/leaderboards/:name', async(req, res) => {
 
 app.get('/leaderboards', async(req, res) => {
 	const data = await fetchLeaderboards()
+
+	const promises = []
+	for (const leaderboardName of data.collection) {
+		promises.push(skyblockItemToUrl(leaderboardName.slice(11)))
+	}
+	await Promise.all(promises)
+
 	res.render('leaderboards.njk', { data })
 })
 
@@ -149,7 +158,7 @@ app.get('/login', async(req, res) => {
 app.get('/loggedin', async(req, res) => {
 	const response = await createSession(req.query.code as string)
 	if (response.ok) {
-		res.cookie('sid', response.session_id)
+		res.cookie('sid', response.session_id, { maxAge: 31536000000 })
 		res.redirect('/verify')
 	} else
 		res.redirect('/login')
@@ -278,3 +287,4 @@ app.get('/:user', async(req, res) => {
 
 
 app.listen(8081, () => console.log('App started :)'))
+

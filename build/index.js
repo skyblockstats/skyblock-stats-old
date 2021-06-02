@@ -50,9 +50,8 @@ hash.write(fsSync.readFileSync('src/public/style.css'));
 hash.end();
 env.addGlobal('styleFileHash', hash.read());
 env.addGlobal('getConstants', () => hypixel_1.skyblockConstantValues);
-env.addFilter('itemToUrl', (item, packName) => {
-    return hypixel_1.itemToUrlCached(item, packName);
-});
+env.addFilter('itemToUrl', (item, packName) => hypixel_1.itemToUrlCached(item, packName));
+env.addFilter('itemNameToUrl', (item, packName) => hypixel_1.itemToUrlCached(hypixel_1.skyblockItemNameToItem(item), packName));
 env.addFilter('append', (arr, item) => arr.concat(item));
 env.addFilter('slice', (arr, start, end) => arr.slice(start, end));
 env.addFilter('startsWith', (string, substring) => string.startsWith(substring));
@@ -62,6 +61,7 @@ env.addFilter('formattingCodeToHtml', util_1.formattingCodeToHtml);
 env.addFilter('removeFormattingCode', util_1.removeFormattingCode);
 env.addFilter('romanNumerals', util_1.toRomanNumerals);
 env.addFilter('shuffle', util_1.shuffle);
+env.addFilter('isString', o => typeof o === 'string');
 let donators = [];
 async function initDonators() {
     const donatorsFileRaw = await fs_1.promises.readFile('src/donators.txt', { encoding: 'ascii' });
@@ -114,6 +114,11 @@ app.get('/leaderboards/:name', async (req, res) => {
 });
 app.get('/leaderboards', async (req, res) => {
     const data = await hypixel_1.fetchLeaderboards();
+    const promises = [];
+    for (const leaderboardName of data.collection) {
+        promises.push(hypixel_1.skyblockItemToUrl(leaderboardName.slice(11)));
+    }
+    await Promise.all(promises);
     res.render('leaderboards.njk', { data });
 });
 app.get('/leaderboard', async (req, res) => {
@@ -126,7 +131,7 @@ app.get('/login', async (req, res) => {
 app.get('/loggedin', async (req, res) => {
     const response = await hypixel_1.createSession(req.query.code);
     if (response.ok) {
-        res.cookie('sid', response.session_id);
+        res.cookie('sid', response.session_id, { maxAge: 31536000000 });
         res.redirect('/verify');
     }
     else

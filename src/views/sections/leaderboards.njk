@@ -3,7 +3,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-let leaderboardsUnseen = true
+let leaderboardsSeen = false
 
 function moveStringToEnd(word, thing) {
 	if (thing.startsWith(`${word}_`))
@@ -57,13 +57,12 @@ function clean(thing) {
 }
 
 async function loadLeaderboards(entries) {
-	leaderboardsEl.textContent = 'Loading...'
 	// if we've already seen the leaderboards, return
-	if (!leaderboardsUnseen || entries.length === 0 || !entries[0].isIntersecting) return
-	console.log(entries)
+	if (leaderboardsSeen || entries.length === 0 || !entries[0].isIntersecting) return
+	leaderboardsEl.textContent = 'Loading...'
 
 	console.log('good, loading leaderboards')
-	leaderboardsUnseen = false
+	leaderboardsSeen = true
 	const response = await fetch(`{{ BASE_API }}/player/{{ data.member.uuid }}/{{ data.profile.uuid }}/leaderboards`)
 	const playerLeaderboardSpots = await response.json()
 	console.log(playerLeaderboardSpots)

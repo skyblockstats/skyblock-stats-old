@@ -22,21 +22,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.httpsAgent = exports.baseApi = void 0;
+exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.skyblockItemNameToItem = exports.skyblockItemToUrl = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.agent = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
 const https_1 = require("https");
-// import { Agent } from 'http'
+const vanilla_damages_json_1 = __importDefault(require("skyblock-assets/data/vanilla_damages.json"));
+const http_1 = require("http");
 const skyblockAssets = __importStar(require("skyblock-assets"));
 if (!process.env.key)
     // if there's no key in env, run dotenv
     require('dotenv').config();
 exports.baseApi = 'https://skyblock-api.matdoes.dev';
-// export const baseApi = 'http://localhost:8080'
-// We need to create an agent to prevent memory leaks and to only do dns lookups once
-exports.httpsAgent = new https_1.Agent({
-    keepAlive: true
-});
+if (exports.baseApi.startsWith('https://'))
+    exports.agent = new https_1.Agent({
+        keepAlive: true
+    });
+else
+    exports.agent = new http_1.Agent({
+        keepAlive: true
+    });
 exports.skyblockConstantValues = null;
 /**
  * Fetch skyblock-api
@@ -47,7 +51,7 @@ async function fetchApi(path, retry = 3) {
     const fetchUrl = `${exports.baseApi}/${path}`;
     try {
         const fetchResponse = await node_fetch_1.default(fetchUrl, {
-            agent: () => exports.httpsAgent,
+            agent: () => exports.agent,
             headers: { key: process.env.key },
         });
         return await fetchResponse.json();
@@ -72,7 +76,7 @@ async function postApi(path, data, retry = true) {
     const fetchUrl = `${exports.baseApi}/${path}`;
     try {
         const fetchResponse = await node_fetch_1.default(encodeURI(fetchUrl), {
-            agent: () => exports.httpsAgent,
+            agent: () => exports.agent,
             headers: {
                 key: process.env.key,
                 'content-type': 'application/json'
@@ -132,16 +136,17 @@ const itemToUrlCache = new node_cache_1.default({
     useClones: false,
 });
 async function itemToUrl(item, packName) {
-    const stringifiedItem = (packName || 'packshq') + JSON.stringify(item);
+    var _a;
+    const stringifiedItem = (packName !== null && packName !== void 0 ? packName : 'packshq') + JSON.stringify(item);
     if (itemToUrlCache.has(stringifiedItem))
         return itemToUrlCache.get(stringifiedItem);
     const itemNbt = {
         display: {
-            Name: item.display.name
+            Name: (_a = item.display) === null || _a === void 0 ? void 0 : _a.name
         },
         ExtraAttributes: {
             id: item.id,
-        }
+        },
     };
     let textureUrl;
     if (item.head_texture)
@@ -159,9 +164,69 @@ async function itemToUrl(item, packName) {
     return textureUrl;
 }
 exports.itemToUrl = itemToUrl;
+async function skyblockItemToUrl(skyblockItemName) {
+    let item = skyblockItemNameToItem(skyblockItemName);
+    const itemTextureUrl = await itemToUrl(item, 'packshq');
+    return itemTextureUrl;
+}
+exports.skyblockItemToUrl = skyblockItemToUrl;
+function skyblockItemNameToItem(skyblockItemName) {
+    let item;
+    if (Object.keys(skyblockItems).includes(skyblockItemName)) {
+        item = skyblockItems[skyblockItemName];
+    }
+    else {
+        item = {
+            vanillaId: `minecraft:${skyblockItemName}`
+        };
+    }
+    return item;
+}
+exports.skyblockItemNameToItem = skyblockItemNameToItem;
+const skyblockItems = {
+    ink_sac: { vanillaId: 'minecraft:dye' },
+    cocoa_beans: { vanillaId: 'minecraft:dye:3' },
+    lapis_lazuli: { vanillaId: 'minecraft:dye:4' },
+    lily_pad: { vanillaId: 'minecraft:waterlily' },
+    melon_slice: { vanillaId: 'minecraft:melon' },
+    mithril_ore: {
+        vanillaId: 'minecraft:prismarine_crystals',
+        display: { name: 'Mithril Ore' }
+    },
+    acacia_log: { vanillaId: 'minecraft:log2' },
+    birch_log: { vanillaId: 'minecraft:log:2' },
+    cod: { vanillaId: 'minecraft:fish' },
+    dark_oak_log: { vanillaId: 'minecraft:log:2' },
+    jungle_log: { vanillaId: 'minecraft:log:3' },
+    oak_log: { vanillaId: 'minecraft:log' },
+    pufferfish: { vanillaId: 'minecraft:fish:3' },
+    salmon: { vanillaId: 'minecraft:fish:1' },
+    spruce_log: { vanillaId: 'minecraft:log:1' },
+};
 function itemToUrlCached(item, packName) {
+    var _a;
     if (!item)
         return null;
+    if (typeof item === 'string') {
+        let itemId = (_a = vanilla_damages_json_1.default[item]) !== null && _a !== void 0 ? _a : item;
+        let damage = null;
+        if (itemId.startsWith('minecraft:'))
+            itemId = itemId.slice('minecraft:'.length);
+        if (itemId.includes(':')) {
+            damage = parseInt(itemId.split(':')[1]);
+            itemId = itemId.split(':')[0];
+        }
+        item = {
+            count: 1,
+            display: {
+                glint: false,
+                lore: null,
+                name: null
+            },
+            id: null,
+            vanillaId: `minecraft:${itemId}`
+        };
+    }
     const stringifiedItem = (packName || 'packshq') + JSON.stringify(item);
     return itemToUrlCache.get(stringifiedItem);
 }

@@ -5,6 +5,7 @@
 
 {%- block head -%}
 {{- super() -}}
+<link rel="canonical" href="https://skyblock.matdoes.dev/player/{{ data.member.username }}">
 {% if data.customization and data.customization.backgroundUrl %}
 <style>
 body:before {
@@ -31,7 +32,7 @@ body:before {
 	{%- set activeProfileLastSave = 0 -%}
 	{%- for profile in data.profiles -%}
 		{%- for member in profile.members -%}
-			{%- if member.last_save > activeProfileLastSave -%}
+			{%- if member.uuid == data.player.uuid and member.last_save > activeProfileLastSave -%}
 				{%- set activeProfile = profile -%}
 				{%- set activeProfileLastSave = member.last_save -%}
 			{%- endif -%}

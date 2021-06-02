@@ -363,6 +363,13 @@ img.item-custom-head {
 	opacity: .4
 }
 
+.leaderboards-list-item-with-icon {
+	list-style: none;
+	padding-left: 1.2em;
+	position: relative;
+	right: 1.2em;
+}
+
 tr {
 	text-align: left
 }
@@ -494,4 +501,18 @@ header .enter-username-button {
 	main {
 		margin-top: 3em
 	}
+}
+
+.leaderboard-profile-list-item {
+	overflow-wrap: break-word
+}
+#leaderboard-profile-list {
+	margin-top: 1em
+}
+#leaderboard-title {
+	margin-bottom: 0
+}
+#leaderboard-info {
+	margin-top: .5em;
+	display: block
 }
