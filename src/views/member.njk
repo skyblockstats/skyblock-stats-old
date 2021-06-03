@@ -3,6 +3,8 @@
 
 {% block metatitle %}{% block title %}{{ data.member.username }}'s SkyBlock profile ({{ data.member.profileName }}) {% endblock %}{% endblock %}
 
+{% block metadescription %}{% block description %}{% include 'member-metadescription.njk' %}{% endblock %}{% endblock %}
+
 {% block backArrowHref %}/player/{{ data.member.username }}{% endblock %}
 
 {%- block head -%}
