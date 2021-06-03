@@ -2,6 +2,7 @@ import {
 	skyblockConstantValues,
 	skyblockItemNameToItem,
 	AccountCustomization,
+	CleanMemberProfile,
 	fetchLeaderboards,
 	skyblockItemToUrl,
 	cacheInventories,
@@ -13,9 +14,17 @@ import {
 	fetchProfile,
 	fetchPlayer,
 	CleanUser,
+	NotFound,
 	baseApi,
 } from './hypixel'
-import { clean, cleanNumber, formattingCodeToHtml, toRomanNumerals, shuffle, removeFormattingCode } from './util'
+import {
+	clean,
+	cleanNumber,
+	formattingCodeToHtml,
+	toRomanNumerals,
+	shuffle,
+	removeFormattingCode
+} from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
 import cookieParser from 'cookie-parser'
 import serveStatic from 'serve-static'
@@ -111,7 +120,18 @@ app.get('/chat', (req, res) => {
 })
 
 app.get('/player/:user', async(req, res) => {
-	const data = await fetchPlayer(req.params.user, false, true)
+	let data: CleanUser
+	try {
+		data = await fetchPlayer(req.params.user, false, true)
+	} catch (err) {
+		if (err instanceof NotFound)
+			return res.status(404).render('errors/notfound.njk')
+		else
+			throw err
+	}
+	if (data.profiles.length === 0) {
+		return res.status(404).render('errors/noprofiles.njk', { data })
+	}
 	if (req.params.user !== data?.player?.username)
 		return res.redirect(`/player/${data.player.username}`)
 	res.render('profiles.njk', { data })
@@ -125,14 +145,20 @@ app.get('/profile/:user', async(req, res) => {
 		if (activeProfileName?.name)
 			return res.redirect(`/player/${player.player.username}/${activeProfileName?.name}`)
 	}
-	return res.status(404).send('Not found')
+	return res.status(404).render('errors/notfound.njk')
 })
 
 
 app.get('/player/:user/:profile', async(req, res) => {
-	const data = await fetchProfile(req.params.user, req.params.profile, true)
-	if (!data)
-		return res.status(404).send('Not found')
+	let data: CleanMemberProfile
+	try {
+		data = await fetchProfile(req.params.user, req.params.profile, true)
+	} catch (err) {
+		if (err instanceof NotFound)
+			return res.redirect(`/player/${req.params.user}`)
+		else
+			throw err
+	}
 
 	if (req.params.profile !== data.profile.name)
 		return res.redirect(`/player/${data.member.username}/${data.profile.name}`)
@@ -300,14 +326,26 @@ app.use(serveStatic('src/public'))
 // this should always be the last route!
 // shortcut that redirects the user to their active profile
 app.get('/:user', async(req, res) => {
-	const player = await fetchPlayer(req.params.user)
+	let player: CleanUser
+	try {
+		player = await fetchPlayer(req.params.user)
+	} catch (err) {
+		if (err instanceof NotFound)
+			return res.status(404).render('errors/notfound.njk')
+		else
+			throw err
+	}
 	if (player && player.activeProfile) {
 		const activeProfileId = player.activeProfile
 		const activeProfileName = player.profiles.find((profile) => profile.uuid === activeProfileId)
 		if (activeProfileName?.name)
 			return res.redirect(`/player/${player.player.username}/${activeProfileName?.name}`)
 	}
-	return res.status(404).send('Not found')
+	return res.status(404).render('errors/notfound.njk')
+})
+
+app.use((req, res, next) => {
+	return res.status(404).render('errors/notfound.njk')
 })
 
 

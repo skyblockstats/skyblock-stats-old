@@ -1,0 +1,7 @@
+{% import "render.njk" as render %}
+
+{% extends "base.njk" %}
+{% block title %}404: Not found{% endblock %}
+{% block main %}
+<h1>{{ render.username(data.player, headType='3d') }} has no profiles</h1>
+{% endblock %}
