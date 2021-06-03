@@ -530,9 +530,11 @@ header .enter-username-button {
 }
 .tooltip {
 	position: relative;
-	cursor: pointer
+	cursor: pointer;
+	max-width: max-content
 }
 .tooltip::after {
+	display: inline-block;
 	left: 50%;
 	opacity: 0;
 	position: absolute;
@@ -545,16 +547,21 @@ header .enter-username-button {
 	margin-left: max(calc(-50% - 1em), -5em);
 	padding: .5em;
 	transition: all 200ms;
-	transform: scale(.6) translateY(50%);  
+	transform: scale(.6) translateY(50%);
 	width: max-content;
 	text-align: center;
 	max-width: 10em;
 	cursor: auto;
 	box-shadow: 0 0 1em .5em #0002;
+	pointer-events: none
 }
 .tooltip:hover::after, .tooltip:focus::after {
 	opacity: .9;
 	transform: scale(1) translateY(0);
 	z-index: 100;
-	transition: all 200ms;
+}
+/* hide all the tooltips after if one is selected, unfortunately we can't select all the elements before :( */
+.tooltip:focus ~ .tooltip::after {
+	transform: scale(.6) translateY(50%);
+	opacity: 0
 }
