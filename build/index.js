@@ -96,6 +96,8 @@ app.get('/chat', (req, res) => {
 });
 app.get('/player/:user', async (req, res) => {
     const data = await hypixel_1.fetchPlayer(req.params.user, false, true);
+    if (req.params.user !== data.player.username)
+        return res.redirect(`/player/${data.player.username}`);
     res.render('profiles.njk', { data });
 });
 app.get('/profile/:user', async (req, res) => {
@@ -113,6 +115,10 @@ app.get('/player/:user/:profile', async (req, res) => {
     const data = await hypixel_1.fetchProfile(req.params.user, req.params.profile, true);
     if (!data)
         return res.status(404).send('Not found');
+    if (req.params.profile !== data.profile.name)
+        return res.redirect(`/player/${data.member.username}/${data.profile.name}`);
+    else if (req.params.user !== data.member.username)
+        return res.redirect(`/player/${data.member.username}/${data.profile.name}`);
     const pack = (_a = req.query.pack) !== null && _a !== void 0 ? _a : (_b = data === null || data === void 0 ? void 0 : data.customization) === null || _b === void 0 ? void 0 : _b.pack;
     const backgroundUrl = (_c = data === null || data === void 0 ? void 0 : data.customization) === null || _c === void 0 ? void 0 : _c.backgroundUrl;
     if (req.query.simple !== undefined)
