@@ -1,5 +1,4 @@
 {# this is taken from infobox.njk with some changes -#}
-{%- if data.member.rank.name %}[{{ data.member.rank.name }}] {% endif %}{{ data.member.username }} ({{ data.member.profileName }})
 💾 Last save: {% if getTime() - data.member.last_save < 60 * 60 * 24 * 7 %}{{ ((getTime() - data.member.last_save) * 1000)|cleannumber('time') }} ago {% else %}{{ data.member.last_save|cleannumber('date') }}{% endif %}
 🚶 Joined: {% if getTime() - data.member.first_join < 60 * 60 * 24 * 7 %}{{ ((getTime() - data.member.first_join) * 1000)|cleannumber('time') }} ago {% else %}{{ data.member.first_join|cleannumber('date') }}{% endif %}
 ✨ Fairy souls: {{ data.member.fairy_souls.total }}/{{ getConstants().max_fairy_souls }}

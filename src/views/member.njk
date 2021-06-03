@@ -1,7 +1,7 @@
 {% import 'render.njk' as render %}
 {% extends 'base.njk' %}
 
-{% block metatitle %}{% block title %}{{ data.member.username }}'s SkyBlock profile ({{ data.member.profileName }}) {% endblock %}{% endblock %}
+{% block metatitle %}{%- if data.member.rank.name %}[{{ data.member.rank.name }}] {% endif %}{% block title %}{{ data.member.username }}'s SkyBlock profile ({{ data.member.profileName }}) {% endblock %}{% endblock %}
 
 {% block metadescription %}{% block description %}{% include 'member-metadescription.njk' %}{% endblock %}{% endblock %}
 
