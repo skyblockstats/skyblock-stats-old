@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.skyblockItemNameToItem = exports.skyblockItemToUrl = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.skyblockConstantValues = exports.agent = exports.baseApi = void 0;
+exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.skyblockItemNameToItem = exports.skyblockItemToUrl = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.NotFound = exports.skyblockConstantValues = exports.agent = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
 const https_1 = require("https");
@@ -42,6 +42,9 @@ else
         keepAlive: true
     });
 exports.skyblockConstantValues = null;
+class NotFound extends Error {
+}
+exports.NotFound = NotFound;
 /**
  * Fetch skyblock-api
  * @param path The url path, for example `player/py5/Strawberry`. This shouldn't have any trailing slashes
@@ -54,9 +57,13 @@ async function fetchApi(path, retry = 3) {
             agent: () => exports.agent,
             headers: { key: process.env.key },
         });
+        if (fetchResponse.status === 404)
+            throw new NotFound();
         return await fetchResponse.json();
     }
     catch (err) {
+        if (err instanceof NotFound)
+            throw err;
         if (retry > 0) {
             // wait 5 seconds and retry
             await new Promise(resolve => setTimeout(resolve, 5000));

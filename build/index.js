@@ -96,7 +96,19 @@ app.get('/chat', (req, res) => {
 });
 app.get('/player/:user', async (req, res) => {
     var _a;
-    const data = await hypixel_1.fetchPlayer(req.params.user, false, true);
+    let data;
+    try {
+        data = await hypixel_1.fetchPlayer(req.params.user, false, true);
+    }
+    catch (err) {
+        if (err instanceof hypixel_1.NotFound)
+            return res.status(404).render('errors/notfound.njk');
+        else
+            throw err;
+    }
+    if (data.profiles.length === 0) {
+        return res.status(404).render('errors/noprofiles.njk', { data });
+    }
     if (req.params.user !== ((_a = data === null || data === void 0 ? void 0 : data.player) === null || _a === void 0 ? void 0 : _a.username))
         return res.redirect(`/player/${data.player.username}`);
     res.render('profiles.njk', { data });
@@ -109,13 +121,20 @@ app.get('/profile/:user', async (req, res) => {
         if (activeProfileName === null || activeProfileName === void 0 ? void 0 : activeProfileName.name)
             return res.redirect(`/player/${player.player.username}/${activeProfileName === null || activeProfileName === void 0 ? void 0 : activeProfileName.name}`);
     }
-    return res.status(404).send('Not found');
+    return res.status(404).render('errors/notfound.njk');
 });
 app.get('/player/:user/:profile', async (req, res) => {
     var _a, _b, _c;
-    const data = await hypixel_1.fetchProfile(req.params.user, req.params.profile, true);
-    if (!data)
-        return res.status(404).send('Not found');
+    let data;
+    try {
+        data = await hypixel_1.fetchProfile(req.params.user, req.params.profile, true);
+    }
+    catch (err) {
+        if (err instanceof hypixel_1.NotFound)
+            return res.redirect(`/player/${req.params.user}`);
+        else
+            throw err;
+    }
     if (req.params.profile !== data.profile.name)
         return res.redirect(`/player/${data.member.username}/${data.profile.name}`);
     else if (req.params.user !== data.member.username)
@@ -248,13 +267,25 @@ app.use(serve_static_1.default('src/public'));
 // this should always be the last route!
 // shortcut that redirects the user to their active profile
 app.get('/:user', async (req, res) => {
-    const player = await hypixel_1.fetchPlayer(req.params.user);
+    let player;
+    try {
+        player = await hypixel_1.fetchPlayer(req.params.user);
+    }
+    catch (err) {
+        if (err instanceof hypixel_1.NotFound)
+            return res.status(404).render('errors/notfound.njk');
+        else
+            throw err;
+    }
     if (player && player.activeProfile) {
         const activeProfileId = player.activeProfile;
         const activeProfileName = player.profiles.find((profile) => profile.uuid === activeProfileId);
         if (activeProfileName === null || activeProfileName === void 0 ? void 0 : activeProfileName.name)
             return res.redirect(`/player/${player.player.username}/${activeProfileName === null || activeProfileName === void 0 ? void 0 : activeProfileName.name}`);
     }
-    return res.status(404).send('Not found');
+    return res.status(404).render('errors/notfound.njk');
+});
+app.use((req, res, next) => {
+    return res.status(404).render('errors/notfound.njk');
 });
 app.listen(8081, () => console.log('App started :)'));
