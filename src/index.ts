@@ -112,7 +112,7 @@ app.get('/chat', (req, res) => {
 
 app.get('/player/:user', async(req, res) => {
 	const data = await fetchPlayer(req.params.user, false, true)
-	if (req.params.user !== data.player.username)
+	if (req.params.user !== data?.player?.username)
 		return res.redirect(`/player/${data.player.username}`)
 	res.render('profiles.njk', { data })
 })

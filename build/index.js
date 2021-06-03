@@ -95,8 +95,9 @@ app.get('/chat', (req, res) => {
     res.render('fakechat.njk');
 });
 app.get('/player/:user', async (req, res) => {
+    var _a;
     const data = await hypixel_1.fetchPlayer(req.params.user, false, true);
-    if (req.params.user !== data.player.username)
+    if (req.params.user !== ((_a = data === null || data === void 0 ? void 0 : data.player) === null || _a === void 0 ? void 0 : _a.username))
         return res.redirect(`/player/${data.player.username}`);
     res.render('profiles.njk', { data });
 });
