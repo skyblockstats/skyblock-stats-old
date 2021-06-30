@@ -21,10 +21,31 @@ document.addEventListener('DOMContentLoaded', () => {
 	const tooltipEl = document.getElementById('global-tooltip')
 	let tooltipLocked = false
 
+	function moveTooltipToMouse(e) {
+		const mouseX = e.clientX
+		const mouseY = e.clientY
+
+
+		if (mouseY + tooltipEl.offsetHeight > window.innerHeight - 10) {
+			tooltipEl.style.bottom = '10px'
+			tooltipEl.style.removeProperty('top')
+		} else {
+			tooltipEl.style.top = mouseY + 'px'
+			tooltipEl.style.removeProperty('bottom')
+		}
+
+		if (mouseX + tooltipEl.offsetWidth > window.innerWidth - 10) {
+			tooltipEl.style.right = '10px'
+			tooltipEl.style.removeProperty('left')
+		} else {
+			tooltipEl.style.left = mouseX + 'px'
+			tooltipEl.style.removeProperty('right')
+		}
+	}
+
 	document.addEventListener('mousemove', (e) => {
 		if (!tooltipLocked && tooltipEl.style.display !== 'none') {
-			tooltipEl.style.top = e.pageY + 'px'
-			tooltipEl.style.left = e.pageX + 'px'
+			moveTooltipToMouse(e)
 		}
 	})
 	
@@ -34,8 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		itemEl.addEventListener('mouseover', (e) => {
 			if (!tooltipLocked) {
-				tooltipEl.style.top = e.pageY + 'px'
-				tooltipEl.style.left = e.pageX + 'px'
+				moveTooltipToMouse(e)
 				const loreHtml = itemEl.dataset.loreHtml
 					.replace(/&lt;/g, '<')
 					.replace(/&gt;/g, '>')
@@ -58,8 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		itemEl.addEventListener('click', (e) => {
 			tooltipLocked = !tooltipLocked
-			tooltipEl.style.top = e.pageY + 'px'
-			tooltipEl.style.left = e.pageX + 'px'
+			moveTooltipToMouse(e)
 			tooltipEl.style.display = 'block'
 			if (tooltipLocked) {
 				tooltipEl.style.userSelect = 'auto'

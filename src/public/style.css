@@ -308,7 +308,7 @@ h2.sectionTitle {
 }
 
 #global-tooltip {
-	position: absolute;
+	position: fixed;
 	user-select: none;
 	pointer-events: none;
 	overflow: hidden;
@@ -317,7 +317,8 @@ h2.sectionTitle {
 	padding: 0 .25rem;
 	border-radius: 3px;
 	box-shadow: 0 0 0 3px #206,0 0 0 6px #000;
-	font-family: Minecraft
+	font-family: Minecraft;
+	white-space: nowrap;
 }
 #global-tooltip p {
 	margin: 0
