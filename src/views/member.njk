@@ -66,14 +66,17 @@ body:before {
 				</section>
 			{%- endif -%}
 			{%- asyncAll category in categories -%}
-				<section id="{{ category }}" class="collapsible">
-					<h2>{{ category|replace('_', ' ')|title }}</h2>
-					{#- we need to use with so the include passes context -#}
-					{% with { data: data, category: category } %}
-						{#- include the category from the sections folder -#}
-						{%- include 'sections/' + category + '.njk' -%}
-					{% endwith %}
-				</section>
+				{%- set sectionContents -%}
+				{% with { data: data, category: category } %}
+					{%- include 'sections/' + category + '.njk' -%}
+				{% endwith %}
+				{%- endset -%}
+				{%- if sectionContents|trim and sectionContents|trim != '<ul></ul>' -%}
+					<section id="{{ category }}" class="collapsible">
+						<h2>{{ category|replace('_', ' ')|title }}</h2>
+						{{- sectionContents|safe -}}
+					</section>
+				{%- endif -%}
 			{%- endall -%}
 		</div>
 	</div>

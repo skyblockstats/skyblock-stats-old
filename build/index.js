@@ -77,6 +77,7 @@ env.addFilter('formatnumber', (n, digits = 3) => {
     const item = numberSymbolsLookup.slice().reverse().find(item => n >= item.value);
     return (n / item.value).toPrecision(digits).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1') + item.symbol;
 });
+env.addFilter('trim', (s) => s.trim());
 let donators = [];
 async function initDonators() {
     const donatorsFileRaw = await fs_1.promises.readFile('src/donators.txt', { encoding: 'ascii' });

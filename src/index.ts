@@ -98,7 +98,10 @@ env.addFilter('formatnumber', (n: number, digits: number=3) => {
 	  return (n / item.value).toPrecision(digits).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1') + item.symbol
 })
 
-let donators = []
+env.addFilter('trim', (s: string) => s.trim() )
+
+
+let donators: CleanUser[] = []
 
 async function initDonators() {
 	const donatorsFileRaw = await fs.readFile('src/donators.txt', { encoding: 'ascii'})
