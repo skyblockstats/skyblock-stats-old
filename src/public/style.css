@@ -129,7 +129,7 @@ button {
 .username {
 	/* usernames have the minecraft font */
 	font-family: Minecraft, sans-serif;
-	/* rreduce the size of the text because the font is too big */
+	/* reduce the size of the text because the font is too big */
 	font-size: .8em;
 	overflow-wrap: anywhere
 }
@@ -271,7 +271,7 @@ h2.sectionTitle {
 }
 
 .item-slot {
-	margin: .05em
+	margin: .05em;
 }
 
 .item-count {
@@ -565,4 +565,27 @@ header .enter-username-button {
 .tooltip:focus ~ .tooltip::after {
 	transform: scale(.6) translateY(50%);
 	opacity: 0
+}
+
+/* this is used for auction item names */
+.big-item-name {
+	/* usernames have the minecraft font */
+	font-family: Minecraft, sans-serif;
+	font-size: 2em;
+	overflow-wrap: anywhere;
+	margin-left: .25em;
+}
+
+.auction-prices-table td > .item-slot {
+	float: left
+}
+table {
+	border-collapse: collapse;
+}
+td, th {
+	border: 1px solid #fff3;
+	padding: .5rem;
+}
+.big-text {
+	font-size: 2em;
 }

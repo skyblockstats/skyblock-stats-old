@@ -9,11 +9,18 @@
 
 {% block main %}
 <h1>SkyBlock auction prices</h1>
-{% for auction in data %}
-    <div>
-        {{- render.item(auction.item) -}}
-        <p>{{ auction.count }} sold in past day</p>
-        <p>{{ auction.median }} median price</p>
-    </div>
-{% endfor %}
+<table class="auction-prices-table">
+    <tr>
+        <th>Item</th>
+        <th># sold in past 24 hours</th>
+        <th>Median price</th>
+    </tr>
+    {% for auction in data %}
+    <tr>
+        <td>{{- render.item(auction.item) -}} <span class="big-item-name">{{ auction.item.display.name|formattingCodeToHtml|safe }}</span></td>
+        <td class="big-text">{{ auction.count|cleannumber }}</td>
+        <td class="big-text">{{ auction.median|cleannumber }} coins</td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}
