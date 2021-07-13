@@ -264,7 +264,9 @@ app.get('/chat.png', async (req, res) => {
     res.redirect(`https://fake-chat.matdoes.dev/render.png?${queryString}`);
 });
 // we use serveStatic so it caches
-app.use(serve_static_1.default('src/public'));
+app.use(serve_static_1.default('src/public', {
+    maxAge: 86400
+}));
 // this should always be the last route!
 // shortcut that redirects the user to their active profile
 app.get('/:user', async (req, res) => {

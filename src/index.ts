@@ -324,7 +324,9 @@ app.get('/chat.png', async(req, res) => {
 
 
 // we use serveStatic so it caches
-app.use(serveStatic('src/public'))
+app.use(serveStatic('src/public', {
+	maxAge: 86400
+}))
 
 // this should always be the last route!
 // shortcut that redirects the user to their active profile
