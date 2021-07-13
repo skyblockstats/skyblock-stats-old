@@ -6,6 +6,7 @@ import {
 	fetchLeaderboards,
 	skyblockItemToUrl,
 	cacheInventories,
+	fetchTopAuctions,
 	fetchLeaderboard,
 	itemToUrlCached,
 	createSession,
@@ -16,6 +17,7 @@ import {
 	CleanUser,
 	NotFound,
 	baseApi,
+	itemToUrl,
 } from './hypixel'
 import {
 	clean,
@@ -320,6 +322,17 @@ app.get('/chat.png', async(req, res) => {
 	}
 	const queryString = new URLSearchParams(query).toString()
 	res.redirect(`https://fake-chat.matdoes.dev/render.png?${queryString}`)
+})
+
+
+app.get('/auctionprices', async(req, res) => {
+	const data = await fetchTopAuctions()
+	const promises: Promise<any>[] = []
+	const packName = undefined
+	for (const auction of data)
+		promises.push(itemToUrl(auction.item, packName))
+	await Promise.all(promises)
+	res.render('auctionprices.njk', { data })
 })
 
 

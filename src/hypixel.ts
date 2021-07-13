@@ -10,8 +10,8 @@ if (!process.env.key)
 	// if there's no key in env, run dotenv
 	require('dotenv').config()
 
-export const baseApi = 'https://skyblock-api.matdoes.dev'
-// export const baseApi = 'http://localhost:8080'
+// export const baseApi = 'https://skyblock-api.matdoes.dev'
+export const baseApi = 'http://localhost:8080'
 
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
 export let agent: HttpAgent | HttpsAgent
@@ -124,6 +124,10 @@ export async function fetchLeaderboard(name: string) {
 
 export async function fetchLeaderboards(): Promise<{ [category: string]: string[] }> {
 	return await fetchApi(`leaderboards`)
+}
+
+export async function fetchTopAuctions() {
+	return await fetchApi(`auctions/top`)
 }
 
 const itemToUrlCache = new NodeCache({

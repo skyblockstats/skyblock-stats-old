@@ -263,6 +263,15 @@ app.get('/chat.png', async (req, res) => {
     const queryString = new URLSearchParams(query).toString();
     res.redirect(`https://fake-chat.matdoes.dev/render.png?${queryString}`);
 });
+app.get('/auctionprices', async (req, res) => {
+    const data = await hypixel_1.fetchTopAuctions();
+    const promises = [];
+    const packName = undefined;
+    for (const auction of data)
+        promises.push(hypixel_1.itemToUrl(auction.item, packName));
+    await Promise.all(promises);
+    res.render('auctionprices.njk', { data });
+});
 // we use serveStatic so it caches
 app.use(serve_static_1.default('src/public'));
 // this should always be the last route!

@@ -1,0 +1,19 @@
+{% extends "base.njk" %}
+{% import 'render.njk' as render %}
+
+{% block title %}Hypixel SkyBlock auction prices{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block main %}
+<h1>SkyBlock auction prices</h1>
+{% for auction in data %}
+    <div>
+        {{- render.item(auction.item) -}}
+        <p>{{ auction.count }} sold in past day</p>
+        <p>{{ auction.median }} median price</p>
+    </div>
+{% endfor %}
+{% endblock %}

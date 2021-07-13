@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.skyblockItemNameToItem = exports.skyblockItemToUrl = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.NotFound = exports.skyblockConstantValues = exports.agent = exports.baseApi = void 0;
+exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.skyblockItemNameToItem = exports.skyblockItemToUrl = exports.itemToUrl = exports.fetchTopAuctions = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.NotFound = exports.skyblockConstantValues = exports.agent = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
 const https_1 = require("https");
@@ -32,7 +32,8 @@ const skyblockAssets = __importStar(require("skyblock-assets"));
 if (!process.env.key)
     // if there's no key in env, run dotenv
     require('dotenv').config();
-exports.baseApi = 'https://skyblock-api.matdoes.dev';
+// export const baseApi = 'https://skyblock-api.matdoes.dev'
+exports.baseApi = 'http://localhost:8080';
 if (exports.baseApi.startsWith('https://'))
     exports.agent = new https_1.Agent({
         keepAlive: true
@@ -137,6 +138,10 @@ async function fetchLeaderboards() {
     return await fetchApi(`leaderboards`);
 }
 exports.fetchLeaderboards = fetchLeaderboards;
+async function fetchTopAuctions() {
+    return await fetchApi(`auctions/top`);
+}
+exports.fetchTopAuctions = fetchTopAuctions;
 const itemToUrlCache = new node_cache_1.default({
     stdTTL: 60,
     checkperiod: 5,
