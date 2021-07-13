@@ -323,7 +323,6 @@ app.get('/chat.png', async(req, res) => {
 })
 
 
-// we use serveStatic so it caches
 app.use(serveStatic('src/public', {
 	maxAge: 86400
 }))

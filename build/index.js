@@ -263,7 +263,6 @@ app.get('/chat.png', async (req, res) => {
     const queryString = new URLSearchParams(query).toString();
     res.redirect(`https://fake-chat.matdoes.dev/render.png?${queryString}`);
 });
-// we use serveStatic so it caches
 app.use(serve_static_1.default('src/public', {
     maxAge: 86400
 }));
