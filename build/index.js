@@ -149,6 +149,7 @@ app.get('/player/:user/:profile', async (req, res) => {
 });
 app.get('/leaderboard/:name', async (req, res) => {
     const data = await hypixel_1.fetchLeaderboard(req.params.name);
+    await hypixel_1.skyblockItemToUrl(data.name.slice(11));
     res.render('leaderboard.njk', { data });
 });
 app.get('/leaderboards/:name', async (req, res) => {
