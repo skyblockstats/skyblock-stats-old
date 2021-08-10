@@ -369,6 +369,8 @@ img.item-custom-head {
 	padding-left: 1.2em;
 	position: relative;
 	right: 1.2em;
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
 }
 
 tr {
@@ -569,4 +571,7 @@ header .enter-username-button {
 .leaderboard-title-with-icon {
 	padding-left: 1.2em;
 	position: relative;
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
 }
+
