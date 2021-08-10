@@ -566,3 +566,7 @@ header .enter-username-button {
 	transform: scale(.6) translateY(50%);
 	opacity: 0
 }
+.leaderboard-title-with-icon {
+	padding-left: 1.2em;
+	position: relative;
+}

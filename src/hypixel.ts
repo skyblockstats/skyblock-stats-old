@@ -234,7 +234,7 @@ export function itemToUrlCached(item: Item, packName?: string): string {
 		}
 	}
 
-	const stringifiedItem = (packName || 'packshq') + JSON.stringify(item)
+	const stringifiedItem = (packName ?? 'packshq') + JSON.stringify(item)
 	return itemToUrlCache.get(stringifiedItem)
 }
 

@@ -179,6 +179,7 @@ app.get('/player/:user/:profile', async(req, res) => {
 
 app.get('/leaderboard/:name', async(req, res) => {
 	const data = await fetchLeaderboard(req.params.name)
+	await skyblockItemToUrl(data.name.slice(11))
 	res.render('leaderboard.njk', { data })
 })
 

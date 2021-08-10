@@ -6,7 +6,12 @@
 {% block backArrowHref %}/leaderboards{% endblock %}
 
 {%- block main -%}
-	<h1 id="leaderboard-title">{{ data.name|clean }}</h1>
+	{% set imageUrl = '' %}
+	{% if data.name|startsWith('collection_') %}
+		{% set imageUrl = data.name|slice(11)|itemNameToUrl %}
+	{% endif %}
+
+	<h1 id="leaderboard-title"{% if imageUrl %} style="background: url('{{ imageUrl }}') 0 0/1em no-repeat;" class="leaderboard-title-with-icon"{% endif %}>{{ data.name|clean }}</h1>
 	{%- if data.info %}<i id="leaderboard-info">{{ data.info|safe }}</i>{% endif -%}
 
 	<ol class="leaderboard-profile-list">
