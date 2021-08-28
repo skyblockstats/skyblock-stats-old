@@ -44,7 +44,7 @@ main {
 }
 
 /* base styles for inputs */
-input[type=text], input[type=submit] {
+input[type=text], input[type=submit], #auction-prices-item-input {
 	-webkit-appearance: none;
 	background-color: transparent;
 	color: var(--theme-darker-text);
@@ -589,3 +589,18 @@ td, th {
 .big-text {
 	font-size: 2em;
 }
+#auction-prices-item-input {
+	margin-bottom: 1em;
+	color: #fff;
+	padding: .4em .4em 0 .4em;
+	display: block;
+	width: 100%;
+}
+
+[contenteditable][placeholder]:empty:not(:focus)::before {
+	content: attr(placeholder);
+	color: #555;
+	position: absolute;
+	pointer-events: none;
+}
+

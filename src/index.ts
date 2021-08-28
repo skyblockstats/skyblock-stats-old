@@ -36,6 +36,7 @@ import { promises as fs } from 'fs'
 import express from 'express'
 import * as fsSync from 'fs'
 import crypto from 'crypto'
+import path from 'path'
 
 const app = express()
 
@@ -54,7 +55,7 @@ env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
 
 const hash = crypto.createHash('sha1')
 hash.setEncoding('hex')
-hash.write(fsSync.readFileSync('src/public/style.css'))
+hash.write(fsSync.readFileSync(path.join(__dirname, '../src/public/style.css')))
 hash.end()
 
 env.addGlobal('styleFileHash', hash.read())

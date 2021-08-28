@@ -5,22 +5,44 @@
 
 {% block head %}
 {{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	const auctionPricesItemInputEl = document.getElementById('auction-prices-item-input')
+	document.execCommand('defaultParagraphSeparator', false, 'p')
+	// when the user pastes, paste the plain text instead of html
+	auctionPricesItemInputEl.addEventListener('paste', e => {
+		e.preventDefault()
+		const text = e.clipboardData.getData('text/plain').replace(/\n/g, '')
+		document.execCommand('insertText', false, text)
+	})
+	auctionPricesItemInputEl.addEventListener('keydown', e => {
+		if (e.keyCode === 13)
+			e.preventDefault()
+	})
+	auctionPricesItemInputEl.addEventListener('input', e => {
+		if (e.target.textContent === '')
+			auctionPricesItemInputEl.innerHTML = ''
+	})
+})
+</script>
 {% endblock %}
 
 {% block main %}
 <h1>SkyBlock auction prices</h1>
 <table class="auction-prices-table">
-    <tr>
-        <th>Item</th>
-        <th># sold in past 24 hours</th>
-        <th>Median price</th>
-    </tr>
-    {% for auction in data %}
-    <tr>
-        <td>{{- render.item(auction.item) -}} <span class="big-item-name">{{ auction.item.display.name|formattingCodeToHtml|safe }}</span></td>
-        <td class="big-text">{{ auction.count|cleannumber }}</td>
-        <td class="big-text">{{ auction.median|cleannumber }} coins</td>
-    </tr>
-    {% endfor %}
+	<div id="auction-prices-item-input" contenteditable autocorrect="off" aria-multiline="false" placeholder="Search items"></div>
+	<noscript><style>.auction-prices-item-input{display:none}</style></noscript>
+	<tr>
+		<th>Item</th>
+		<th># sold in past 24 hours</th>
+		<th>Median price</th>
+	</tr>
+	{% for auction in data %}
+	<tr>
+		<td>{{- render.item(auction.item) -}} <span class="big-item-name">{{ auction.item.display.name|formattingCodeToHtml|safe }}</span></td>
+		<td class="big-text">{{ auction.count|cleannumber }}</td>
+		<td class="big-text">{{ auction.median|cleannumber }} coins</td>
+	</tr>
+	{% endfor %}
 </table>
 {% endblock %}
