@@ -1,6 +1,20 @@
 <ul>
 {%- for skill in data.member.skills | sort(true, true, 'value') -%}
-    <li class="tooltip" data-tooltip="{% if skill.levelXpRequired != null %}{{ ((skill.levelXp/skill.levelXpRequired)*100)|round }}% to next level, {{ skill.levelXp|round|cleannumber }}/{{ skill.levelXpRequired|formatnumber(3) }} xp{% else %}{{ skill.levelXp|round|cleannumber }} extra xp{% endif %}" tabindex="1">
+    {% set skillImages = {
+        'runecrafting': 'https://cdn.matdoes.dev/images/runescape/runecrafting.webp',
+        'alchemy': 'https://cdn.matdoes.dev/images/runescape/magic.webp',
+        'combat': 'https://cdn.matdoes.dev/images/runescape/attack.webp',
+        'enchanting': 'https://cdn.matdoes.dev/images/runescape/prayer.webp',
+        'foraging': 'https://cdn.matdoes.dev/images/runescape/woodcutting.webp',
+        'mining': 'https://cdn.matdoes.dev/images/runescape/mining.webp',
+        'taming': 'https://cdn.matdoes.dev/images/runescape/hunter.webp',
+        'farming': 'https://cdn.matdoes.dev/images/runescape/farming.webp',
+        'fishing': 'https://cdn.matdoes.dev/images/runescape/fishing.webp',
+        'carpentry': 'https://cdn.matdoes.dev/images/runescape/construction.webp'
+    } %}
+	{% set imageUrl = skillImages[skill.name] %}
+
+    <li class="tooltip list-item-with-icon" data-tooltip="{% if skill.levelXpRequired != null %}{{ ((skill.levelXp/skill.levelXpRequired)*100)|round }}% to next level, {{ skill.levelXp|round|cleannumber }}/{{ skill.levelXpRequired|formatnumber(3) }} xp{% else %}{{ skill.levelXp|round|cleannumber }} extra xp{% endif %}" tabindex="1" style="background: url('{{ imageUrl }}') 0 0/1em no-repeat;">
         {{ skill.name|clean }} <span class="skill-level{% if skill.level == skill.maxLevel %} skill-maxed{% endif %}">{{ skill.level }}</span>
     </li>
 {%- endfor -%}

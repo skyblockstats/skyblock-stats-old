@@ -446,7 +446,7 @@ img.item-custom-head {
 	opacity: .4
 }
 
-.leaderboards-list-item-with-icon {
+.list-item-with-icon {
 	list-style: none;
 	padding-left: 1.2em;
 	position: relative;
@@ -682,9 +682,12 @@ header .enter-username-button {
 	margin-top: 0;
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
-	grid-column-gap: 2em
+	grid-column-gap: 2em;
 }
 
+#skills > ul > li {
+	width: 10em
+}
 
 @media only screen and (max-width: 1000px) {
 	#skills {

@@ -1,6 +1,6 @@
 {# this is taken from infobox.njk with some changes -#}
 💾 Last save: {% if getTime() - data.member.last_save < 60 * 60 * 24 * 7 %}{{ ((getTime() - data.member.last_save) * 1000)|cleannumber('time') }} ago {% else %}{{ data.member.last_save|cleannumber('date') }}{% endif %}
-🚶 Joined: {% if getTime() - data.member.first_join < 60 * 60 * 24 * 7 %}{{ ((getTime() - data.member.first_join) * 1000)|cleannumber('time') }} ago {% else %}{{ data.member.first_join|cleannumber('date') }}{% endif %}
+🚶 Profile created: {% if getTime() - data.member.first_join < 60 * 60 * 24 * 7 %}{{ ((getTime() - data.member.first_join) * 1000)|cleannumber('time') }} ago {% else %}{{ data.member.first_join|cleannumber('date') }}{% endif %}
 ✨ Fairy souls: {{ data.member.fairy_souls.total }}/{{ getConstants().max_fairy_souls }}
 
 {%- if data.profile.minion_count == getConstants().max_minions -%}<p>🤖 Minion count: {{ data.profile.minion_count }}</p>{% endif %}
