@@ -652,3 +652,10 @@ header .enter-username-button {
 	image-rendering: pixelated;
 }
 
+.total-stat {
+	font-size: 1.2em;
+	list-style-type: none;
+	position: relative;
+	left: 1em;
+	bottom: .5em
+}
