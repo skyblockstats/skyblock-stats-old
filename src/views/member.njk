@@ -32,7 +32,7 @@ body:before {
 {%- block main -%}
 	<h1>{{ render.username(data.member, headType='3d') }} ({{ data.member.profileName }})</h1>
 	{%- set categories = [] -%}
-	{%- set categories = categories|append('skills') -%}
+	{# {%- set categories = categories|append('skills') -%} #}
 	{%- set categories = categories|append('deaths') -%}
 	{%- set categories = categories|append('kills') -%}
 	{%- set categories = categories|append('auctions') -%}
@@ -50,6 +50,12 @@ body:before {
 		<li><a href="#{{ category }}">{{ category|clean }}</a></li>
 		{%- endfor -%}
 	</ul>
+	<section id="skills">
+		<h2>Skills</h2>
+		{%- include 'sections/skills.njk' -%}
+	</section>
+
+	<br>
 
 	<div>
 		<div id="categories">
