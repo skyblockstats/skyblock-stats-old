@@ -2,6 +2,7 @@
 {%- set count = 0 -%}
 {%- for stat in data.member.stats | sort(true, true, 'value') -%}
 	{%- if stat.category == 'auctions' -%}
+
 		<li{%- if stat.categorizedName == 'total' %} class="total-stat"{% endif -%}>
 			{%- if stat.categorizedName == 'total' %}<b>{% endif -%}
 			{{ stat.categorizedName|clean -}}

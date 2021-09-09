@@ -204,7 +204,7 @@ app.get('/leaderboard', async(req, res) => {
 	res.redirect('/leaderboards')
 })
 
-const DISCORD_CLIENT_ID = '656634948148527107'
+const DISCORD_CLIENT_ID = '885347559382605916'
 
 app.get('/login', async(req, res) => {
 	res.redirect(`https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=https://${req.headers.host}%2Floggedin&response_type=code&scope=identify`)
