@@ -30,7 +30,7 @@
     </script>
     <form id="background-selector-form" action="/profile" method="post">
         <div id="background-selector">
-        {% for backgroundName in backgroundNames %}
+        {% for backgroundName in backgroundNames|shuffle %}
             <span style="background-image: url(/backgrounds/{{ backgroundName }})" loading="lazy" data-background="{{ backgroundName }}"></span>
         {% endfor %}
         </div>

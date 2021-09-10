@@ -53,7 +53,7 @@ exports.NotFound = NotFound;
 async function fetchApi(path, retry = 3) {
     const fetchUrl = `${exports.baseApi}/${path}`;
     try {
-        const fetchResponse = await (0, node_fetch_1.default)(fetchUrl, {
+        const fetchResponse = await node_fetch_1.default(fetchUrl, {
             agent: () => exports.agent,
             headers: { key: process.env.key },
         });
@@ -82,7 +82,7 @@ async function fetchApi(path, retry = 3) {
 async function postApi(path, data, retry = true) {
     const fetchUrl = `${exports.baseApi}/${path}`;
     try {
-        const fetchResponse = await (0, node_fetch_1.default)(encodeURI(fetchUrl), {
+        const fetchResponse = await node_fetch_1.default(encodeURI(fetchUrl), {
             agent: () => exports.agent,
             headers: {
                 key: process.env.key,
