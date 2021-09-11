@@ -700,3 +700,7 @@ header .enter-username-button {
 .unvisited-zone {
 	opacity: .5
 }
+
+#skills > ul > li {
+	margin: .25em .25em 0 0;
+}
