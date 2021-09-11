@@ -671,26 +671,26 @@ header .enter-username-button {
 	bottom: .5em
 }
 
-#skills {
+.profile-skills {
 	display: inline-block;
 	position: absolute;
 	margin: 1em;
 	margin-top: 1.6em;
 }
 
-#skills > ul {
+.profile-skills > ul {
 	margin-top: 0;
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	grid-column-gap: 2em;
 }
 
-#skills > ul > li {
+.profile-skills > ul > li {
 	width: 10em
 }
 
 @media only screen and (max-width: 1000px) {
-	#skills {
+	.profile-skills {
 		position: unset;
 		display: block;
 		width: max-content;
@@ -701,6 +701,6 @@ header .enter-username-button {
 	opacity: .5
 }
 
-#skills > ul > li {
+.profile-skills > ul > li {
 	margin: .25em .25em 0 0;
 }
