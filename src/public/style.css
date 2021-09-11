@@ -103,6 +103,7 @@ body {
 	color: var(--theme-main-text);
 	background-color: var(--theme-main-background);
 	margin: 0;
+	overflow-x: hidden;
 }
 html {
 	scroll-behavior: smooth
@@ -110,9 +111,9 @@ html {
 
 /* content is uglier when its max width */
 main {
-	margin: 1em auto;
+	margin: 0 auto;
 	width: 80%;
-	margin-top: 0;
+	padding: 1em;
 }
 
 .member-container {
@@ -594,11 +595,6 @@ header .enter-username-button {
 	background-size: 125%;
 }
 
-@media only screen and (max-width: 500px) {
-	main {
-		margin-top: 3em
-	}
-}
 
 .leaderboard-profile-list-item {
 	overflow-wrap: break-word
@@ -705,7 +701,25 @@ header .enter-username-button {
 		display: block;
 		width: max-content;
 	}
+	.blurred-background-container-container {
+		left: 0!important;
+		width: 100vw!important;
+		clip: rect(-1.7em, auto, auto, auto);
+	}
 }
+
+@media only screen and (max-width: 500px) {
+	.profile-skills {
+		margin-left: 0;
+		margin-right: 0
+	}
+}
+@media only screen and (max-width: 360px) {
+	.profile-skills > ul {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
+
 
 .unvisited-zone {
 	opacity: .5
@@ -716,15 +730,24 @@ header .enter-username-button {
 }
 
 
-.blurred-background-container {
+.blurred-background-container-container {
 	position: absolute;
-	width: 50em;
+	width: 47rem;
 	height: calc(100% + 1em);
 	z-index: -9;
 	overflow: hidden;
-	clip: rect(-1.7em, auto, auto, -2em);
+	clip: rect(-1em, auto, auto, -2em);
 }
-
+@media only screen and (max-width: 1400px) {
+	.blurred-background-container-container {
+		left: calc(5em + 5%);
+		width: 90%;
+		clip: rect(-1.7em, auto, auto, -10em);
+	}
+	main {
+		margin-top: .75em
+	}
+}
 .blurred-background {
 	position: fixed;
 	left: 0;

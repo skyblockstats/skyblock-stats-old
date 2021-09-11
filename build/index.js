@@ -142,7 +142,6 @@ app.get('/player/:user/:profile', async (req, res) => {
         return res.redirect(`/player/${data.member.username}/${data.profile.name}`);
     const pack = (_a = req.query.pack) !== null && _a !== void 0 ? _a : (_b = data === null || data === void 0 ? void 0 : data.customization) === null || _b === void 0 ? void 0 : _b.pack;
     const backgroundUrl = (_c = data === null || data === void 0 ? void 0 : data.customization) === null || _c === void 0 ? void 0 : _c.backgroundUrl;
-    console.log(data === null || data === void 0 ? void 0 : data.customization);
     const blurBackground = (_e = (_d = data === null || data === void 0 ? void 0 : data.customization) === null || _d === void 0 ? void 0 : _d.blurBackground) !== null && _e !== void 0 ? _e : false;
     if (req.query.simple !== undefined)
         return res.render('member-simple.njk', { data });
@@ -245,7 +244,6 @@ app.post('/profile', urlencodedParser, async (req, res) => {
     if (req.body['blur-toggle']) {
         customization.blurBackground = req.body['blur-toggle'] === 'on';
     }
-    console.log(customization, req.body);
     await hypixel_1.updateAccount({
         discordId: session.account.discordId,
         customization

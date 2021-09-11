@@ -171,7 +171,6 @@ app.get('/player/:user/:profile', async(req, res) => {
 
 	const pack = req.query.pack as string ?? data?.customization?.pack
 	const backgroundUrl = data?.customization?.backgroundUrl
-	console.log(data?.customization)
 	const blurBackground = data?.customization?.blurBackground ?? false
 
 	if (req.query.simple !== undefined)
@@ -302,7 +301,6 @@ app.post('/profile', urlencodedParser, async(req, res) => {
 		customization.blurBackground = req.body['blur-toggle'] === 'on'
 	}
 
-	console.log(customization, req.body)
 
 	await updateAccount({
 		discordId: session.account.discordId,
