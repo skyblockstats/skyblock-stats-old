@@ -171,10 +171,15 @@ app.get('/player/:user/:profile', async(req, res) => {
 
 	const pack = req.query.pack as string ?? data?.customization?.pack
 	const backgroundUrl = data?.customization?.backgroundUrl
+	console.log(data?.customization)
+	const blurBackground = data?.customization?.blurBackground ?? false
+
 	if (req.query.simple !== undefined)
 		return res.render('member-simple.njk', { data })
+
 	await cacheInventories(data.member.inventories, pack)
-	res.render('member.njk', { data, pack, backgroundUrl })
+
+	res.render('member.njk', { data, pack, backgroundUrl, blurBackground })
 })
 
 app.get('/leaderboard/:name', async(req, res) => {
@@ -293,6 +298,11 @@ app.post('/profile', urlencodedParser, async(req, res) => {
 		customization.pack = req.body.pack
 	if (backgroundUrl)
 		customization.backgroundUrl = backgroundUrl
+	if (req.body['blur-toggle']) {
+		customization.blurBackground = req.body['blur-toggle'] === 'on'
+	}
+
+	console.log(customization, req.body)
 
 	await updateAccount({
 		discordId: session.account.discordId,

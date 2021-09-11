@@ -21,13 +21,31 @@
             <option value="vanilla"{% if customization.pack == 'vanilla' %} selected{% endif %}>Vanilla</option>
         </select>
     </form>
+    <form id="blur-toggle-form" action="/profile" method="post">
+        <label for="blur-toggle-selector">Blur and darken background behind content: </label>
+        <input type="checkbox" name="blur-toggle" id="blur-toggle-selector"{% if customization.blurBackground %} checked{% endif %}></input>
+    </form>
+
+
     <script>
     const packSelectorEl = document.getElementById('pack-selector')
     const packSelectorFormEl = document.getElementById('pack-selector-form')
     packSelectorEl.addEventListener('change', e => {
         packSelectorFormEl.submit()
     })
+    const blurToggleEl = document.getElementById('blur-toggle-selector')
+    const blurToggleFormEl = document.getElementById('blur-toggle-form')
+    blurToggleFormEl.addEventListener('change', e => {
+        // pretend to submit as a form
+        fetch('/profile', {
+            method: 'POST',
+            body: new URLSearchParams({
+                'blur-toggle': blurToggleEl.checked ? 'on' : 'off'
+            })
+        })
+    })
     </script>
+
     <form id="background-selector-form" action="/profile" method="post">
         <div id="background-selector">
         {% for backgroundName in backgroundNames|shuffle %}

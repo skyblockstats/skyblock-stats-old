@@ -356,6 +356,7 @@ interface CleanFullProfileBasicMembers extends CleanProfile {
 export interface AccountCustomization {
 	backgroundUrl?: string
 	pack?: string
+	blurBackground?: boolean
 }
 
 interface CleanBasicPlayer {

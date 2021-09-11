@@ -125,7 +125,7 @@ app.get('/profile/:user', async (req, res) => {
     return res.status(404).render('errors/notfound.njk');
 });
 app.get('/player/:user/:profile', async (req, res) => {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e;
     let data;
     try {
         data = await hypixel_1.fetchProfile(req.params.user, req.params.profile, true);
@@ -142,10 +142,12 @@ app.get('/player/:user/:profile', async (req, res) => {
         return res.redirect(`/player/${data.member.username}/${data.profile.name}`);
     const pack = (_a = req.query.pack) !== null && _a !== void 0 ? _a : (_b = data === null || data === void 0 ? void 0 : data.customization) === null || _b === void 0 ? void 0 : _b.pack;
     const backgroundUrl = (_c = data === null || data === void 0 ? void 0 : data.customization) === null || _c === void 0 ? void 0 : _c.backgroundUrl;
+    console.log(data === null || data === void 0 ? void 0 : data.customization);
+    const blurBackground = (_e = (_d = data === null || data === void 0 ? void 0 : data.customization) === null || _d === void 0 ? void 0 : _d.blurBackground) !== null && _e !== void 0 ? _e : false;
     if (req.query.simple !== undefined)
         return res.render('member-simple.njk', { data });
     await hypixel_1.cacheInventories(data.member.inventories, pack);
-    res.render('member.njk', { data, pack, backgroundUrl });
+    res.render('member.njk', { data, pack, backgroundUrl, blurBackground });
 });
 app.get('/leaderboard/:name', async (req, res) => {
     const data = await hypixel_1.fetchLeaderboard(req.params.name);
@@ -240,6 +242,10 @@ app.post('/profile', urlencodedParser, async (req, res) => {
         customization.pack = req.body.pack;
     if (backgroundUrl)
         customization.backgroundUrl = backgroundUrl;
+    if (req.body['blur-toggle']) {
+        customization.blurBackground = req.body['blur-toggle'] === 'on';
+    }
+    console.log(customization, req.body);
     await hypixel_1.updateAccount({
         discordId: session.account.discordId,
         customization
