@@ -1,0 +1,20 @@
+{%- set zones_visited_count = 0 -%}
+{%- for zone in data.member.visited_zones -%}
+	{% if zone.visited %}
+		{%- set zones_visited_count = zones_visited_count + 1 -%}
+	{% endif %}
+{%- endfor -%}
+
+<p class="darker-text"><span class="main-text"><b>{{ zones_visited_count }}</b>/{{ data.member.visited_zones|length }} zones visited</span></p>
+<ul>
+{%- for zone in data.member.visited_zones -%}
+	{%- if zone.visited -%}
+		<li>{{ zone.name|clean }}</li>
+	{%- endif -%}
+{%- endfor -%}
+{%- for zone in data.member.visited_zones -%}
+	{%- if not zone.visited -%}
+		<li class="unvisited-zone">{{ zone.name|clean }}</li>
+	{%- endif -%}
+{%- endfor -%}
+</ul>

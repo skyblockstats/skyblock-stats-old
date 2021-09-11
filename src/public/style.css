@@ -696,3 +696,7 @@ header .enter-username-button {
 		width: max-content;
 	}
 }
+
+.unvisited-zone {
+	opacity: .5
+}
