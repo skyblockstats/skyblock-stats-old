@@ -4,7 +4,7 @@
 
 {%- block headerContainer -%}{#- this removes the header from the index page -#}{%- endblock -%}
 
-{% block metatitle %}{%- if data.member.rank.name %}SkyBlock Stats{% endblock %}{% endblock %}
+{% block metatitle %}{% block title %}SkyBlock Stats{% endblock %}{% endblock %}
 {% block metadescription %}{% block description %}Check your Hypixel SkyBlock stats, leaderboards, and more!{% endblock %}{% endblock %}
 
 
