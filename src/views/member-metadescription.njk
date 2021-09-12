@@ -18,8 +18,8 @@
     {%- endif -%}
 {%- endfor -%}
 
-{%- if mostSignificantKillsStat.value -%}
-⚔️ {{ mostSignificantKillsStat.value|cleannumber(mostSignificantKillsStat.unit or mostSignificantKillsStat.rawName|clean|lower) }}<
+{%- if mostSignificantKillsStat.value %}
+⚔️ {{ mostSignificantKillsStat.value|cleannumber(mostSignificantKillsStat.unit or mostSignificantKillsStat.rawName|clean|lower) }}
 {%- endif -%}
 
 {%- if mostSignificantDeathsStat.value %}
