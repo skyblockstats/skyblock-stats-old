@@ -387,6 +387,7 @@ h2.sectionTitle {
 	overflow: hidden;
 	border-radius: 1em;
 	max-width: max-content;
+	width: 40em;
 }
 .inventory-tab {
 	background-color: var(--theme-lighter-background);
