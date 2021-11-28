@@ -333,7 +333,7 @@ app.get('/chat.png', async(req, res) => {
 
 
 app.use(serveStatic('src/public', {
-	maxAge: 86400
+	maxAge: 86400000
 }))
 
 // this should always be the last route!
