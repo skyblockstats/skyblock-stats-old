@@ -402,7 +402,7 @@ h2.sectionTitle {
 }
 
 #global-tooltip {
-	position: fixed;
+	position: absolute;
 	user-select: none;
 	pointer-events: none;
 	overflow: hidden;
