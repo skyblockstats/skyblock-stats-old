@@ -1,7 +1,16 @@
-<ul>
-{%- for coll in data.member.collections | sort(true, true, 'category') -%}
-    <li class="tooltip" data-tooltip="{{ coll.xp }} xp" tabindex="1">
-        {{ coll.name|clean }} <span class="coll-level{% if coll.level == skill.maxLevel %} coll-maxed{% endif %}">{{ skill.level }}</span>
-    </li>
-{%- endfor -%}
-</ul>
+<div>
+    {% set currentCategory = "" %}
+    {%- for coll in data.member.collections | sort(true, true, 'category') -%}
+        {% if coll.category != currentCategory %}
+            {% if currentCategory != "" %}</ul>{% endif %}
+            {% set currentCategory = coll.category %}
+            <h3>{{ currentCategory|clean }}</h3>
+            <ul>
+        {% endif %}
+        {% set imageUrl = coll.name|itemNameToUrl %}
+        <li class="tooltip{% if imageUrl %} list-item-with-icon{% endif %}" data-tooltip="{{ coll.xp }} xp" tabindex="1" {%- if imageUrl %} style="background: url('{{ imageUrl }}') 0 0/1em no-repeat;"{% endif %}>
+            {{ coll.name|clean }} <span class="coll-level{% if coll.level == coll.maxLevel %} coll-maxed{% endif %}">{{ coll.level }}</span>
+        </li>
+    {%- endfor -%}
+    </ul>
+</div>

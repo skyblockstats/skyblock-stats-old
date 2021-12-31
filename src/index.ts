@@ -175,8 +175,14 @@ app.get('/player/:user/:profile', async(req, res) => {
 
 	if (req.query.simple !== undefined)
 		return res.render('member-simple.njk', { data })
+	
+	const promises = []
+	for (const coll of data.member.collections) {
+		promises.push(skyblockItemToUrl(coll.name))
+	}	
 
 	await cacheInventories(data.member.inventories, pack)
+	await Promise.all(promises)
 
 	res.render('member.njk', { data, pack, backgroundUrl, blurBackground })
 })

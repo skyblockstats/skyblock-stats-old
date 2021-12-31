@@ -625,7 +625,8 @@ header .enter-username-button {
 .tooltip {
 	position: relative;
 	cursor: pointer;
-	max-width: max-content
+	/* commented out because idk why this is here */
+	/* max-width: max-content */
 }
 .tooltip::after {
 	display: inline-block;
@@ -694,6 +695,25 @@ header .enter-username-button {
 
 .profile-skills > ul > li {
 	width: 10em
+}
+
+
+#collections ul {
+	margin: 0;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-column-gap: 0;
+	width: fit-content
+}
+
+#collections ul > li {
+	width: 12em;
+	height: 1.5em;
+	text-overflow: ellipsis;
+}
+
+#collections h3 {
+	margin: .5em 0 .5em .5em;
 }
 
 @media only screen and (max-width: 1000px) {

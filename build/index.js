@@ -145,7 +145,12 @@ app.get('/player/:user/:profile', async (req, res) => {
     const blurBackground = (_e = (_d = data === null || data === void 0 ? void 0 : data.customization) === null || _d === void 0 ? void 0 : _d.blurBackground) !== null && _e !== void 0 ? _e : false;
     if (req.query.simple !== undefined)
         return res.render('member-simple.njk', { data });
+    const promises = [];
+    for (const coll of data.member.collections) {
+        promises.push((0, hypixel_1.skyblockItemToUrl)(coll.name));
+    }
     await (0, hypixel_1.cacheInventories)(data.member.inventories, pack);
+    await Promise.all(promises);
     res.render('member.njk', { data, pack, backgroundUrl, blurBackground });
 });
 app.get('/leaderboard/:name', async (req, res) => {

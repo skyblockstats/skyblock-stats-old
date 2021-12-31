@@ -203,8 +203,7 @@ const skyblockItems: { [ itemName: string ]: Item } = {
 	pufferfish: { vanillaId: 'minecraft:fish:3' },
 	salmon: { vanillaId: 'minecraft:fish:1' },
 	spruce_log: { vanillaId: 'minecraft:log:1' },
-	// hypixel named the collection "gemstone_collection" instead of "gemstone"
-	gemstone_collection: {
+	gemstone: {
 		vanillaId: 'minecraft:skull',
 		head_texture: '39b6e047d3b2bca85e8cc49e5480f9774d8a0eafe6dfa9559530590283715142'
 	},
