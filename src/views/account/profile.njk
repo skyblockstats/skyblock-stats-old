@@ -18,19 +18,39 @@
             <option value="furfsky_reborn"{% if customization.pack == 'furfsky_reborn' %} selected{% endif %}>Furfsky Reborn</option>
             <option value="ectoplasm"{% if customization.pack == 'ectoplasm' %} selected{% endif %}>Ectoplasm</option>
             <option value="rnbw"{% if customization.pack == 'rnbw' %} selected{% endif %}>RNBW</option>
+            <option value="hypixel+"{% if customization.pack == 'hypixel+' %} selected{% endif %}>Hypixel+</option>
+            <option value="worlds_and_beyond"{% if customization.pack == 'worlds_and_beyond' %} selected{% endif %}>Worlds and Beyond</option>
             <option value="vanilla"{% if customization.pack == 'vanilla' %} selected{% endif %}>Vanilla</option>
         </select>
     </form>
+    <form id="blur-toggle-form" action="/profile" method="post">
+        <label for="blur-toggle-selector">Blur and darken background behind content: </label>
+        <input type="checkbox" name="blur-toggle" id="blur-toggle-selector"{% if customization.blurBackground %} checked{% endif %}></input>
+    </form>
+
+
     <script>
     const packSelectorEl = document.getElementById('pack-selector')
     const packSelectorFormEl = document.getElementById('pack-selector-form')
     packSelectorEl.addEventListener('change', e => {
         packSelectorFormEl.submit()
     })
+    const blurToggleEl = document.getElementById('blur-toggle-selector')
+    const blurToggleFormEl = document.getElementById('blur-toggle-form')
+    blurToggleFormEl.addEventListener('change', e => {
+        // pretend to submit as a form
+        fetch('/profile', {
+            method: 'POST',
+            body: new URLSearchParams({
+                'blur-toggle': blurToggleEl.checked ? 'on' : 'off'
+            })
+        })
+    })
     </script>
+
     <form id="background-selector-form" action="/profile" method="post">
         <div id="background-selector">
-        {% for backgroundName in backgroundNames %}
+        {% for backgroundName in backgroundNames|shuffle %}
             <span style="background-image: url(/backgrounds/{{ backgroundName }})" loading="lazy" data-background="{{ backgroundName }}"></span>
         {% endfor %}
         </div>

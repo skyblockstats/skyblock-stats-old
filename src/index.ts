@@ -98,7 +98,10 @@ env.addFilter('formatnumber', (n: number, digits: number=3) => {
 	  return (n / item.value).toPrecision(digits).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1') + item.symbol
 })
 
-let donators = []
+env.addFilter('trim', (s: string) => s.trim() )
+
+
+let donators: CleanUser[] = []
 
 async function initDonators() {
 	const donatorsFileRaw = await fs.readFile('src/donators.txt', { encoding: 'ascii'})
@@ -168,14 +171,19 @@ app.get('/player/:user/:profile', async(req, res) => {
 
 	const pack = req.query.pack as string ?? data?.customization?.pack
 	const backgroundUrl = data?.customization?.backgroundUrl
+	const blurBackground = data?.customization?.blurBackground ?? false
+
 	if (req.query.simple !== undefined)
 		return res.render('member-simple.njk', { data })
+
 	await cacheInventories(data.member.inventories, pack)
-	res.render('member.njk', { data, pack, backgroundUrl })
+
+	res.render('member.njk', { data, pack, backgroundUrl, blurBackground })
 })
 
 app.get('/leaderboard/:name', async(req, res) => {
 	const data = await fetchLeaderboard(req.params.name)
+	await skyblockItemToUrl(data.name.slice(11))
 	res.render('leaderboard.njk', { data })
 })
 
@@ -200,7 +208,7 @@ app.get('/leaderboard', async(req, res) => {
 	res.redirect('/leaderboards')
 })
 
-const DISCORD_CLIENT_ID = '656634948148527107'
+const DISCORD_CLIENT_ID = '885347559382605916'
 
 app.get('/login', async(req, res) => {
 	res.redirect(`https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=https://${req.headers.host}%2Floggedin&response_type=code&scope=identify`)
@@ -289,6 +297,10 @@ app.post('/profile', urlencodedParser, async(req, res) => {
 		customization.pack = req.body.pack
 	if (backgroundUrl)
 		customization.backgroundUrl = backgroundUrl
+	if (req.body['blur-toggle']) {
+		customization.blurBackground = req.body['blur-toggle'] === 'on'
+	}
+
 
 	await updateAccount({
 		discordId: session.account.discordId,
@@ -320,8 +332,9 @@ app.get('/chat.png', async(req, res) => {
 })
 
 
-// we use serveStatic so it caches
-app.use(serveStatic('src/public'))
+app.use(serveStatic('src/public', {
+	maxAge: 86400000
+}))
 
 // this should always be the last route!
 // shortcut that redirects the user to their active profile

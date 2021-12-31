@@ -33,8 +33,8 @@ const fs_1 = require("fs");
 const express_1 = __importDefault(require("express"));
 const fsSync = __importStar(require("fs"));
 const crypto_1 = __importDefault(require("crypto"));
-const app = express_1.default();
-app.use(cookie_parser_1.default());
+const app = (0, express_1.default)();
+app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 const env = nunjucks.configure('src/views', {
     autoescape: true,
@@ -50,8 +50,8 @@ hash.write(fsSync.readFileSync('src/public/style.css'));
 hash.end();
 env.addGlobal('styleFileHash', hash.read());
 env.addGlobal('getConstants', () => hypixel_1.skyblockConstantValues);
-env.addFilter('itemToUrl', (item, packName) => hypixel_1.itemToUrlCached(item, packName));
-env.addFilter('itemNameToUrl', (item, packName) => hypixel_1.itemToUrlCached(hypixel_1.skyblockItemNameToItem(item), packName));
+env.addFilter('itemToUrl', (item, packName) => (0, hypixel_1.itemToUrlCached)(item, packName));
+env.addFilter('itemNameToUrl', (item, packName) => (0, hypixel_1.itemToUrlCached)((0, hypixel_1.skyblockItemNameToItem)(item), packName));
 env.addFilter('append', (arr, item) => arr.concat(item));
 env.addFilter('slice', (arr, start, end) => arr.slice(start, end));
 env.addFilter('startsWith', (string, substring) => string.startsWith(substring));
@@ -77,13 +77,14 @@ env.addFilter('formatnumber', (n, digits = 3) => {
     const item = numberSymbolsLookup.slice().reverse().find(item => n >= item.value);
     return (n / item.value).toPrecision(digits).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1') + item.symbol;
 });
+env.addFilter('trim', (s) => s.trim());
 let donators = [];
 async function initDonators() {
     const donatorsFileRaw = await fs_1.promises.readFile('src/donators.txt', { encoding: 'ascii' });
     const donatorUuids = donatorsFileRaw.split('\n').filter(u => u).map(u => u.split(' ')[0]);
     const promises = [];
     for (const donatorUuid of donatorUuids) {
-        promises.push(hypixel_1.fetchPlayer(donatorUuid, true));
+        promises.push((0, hypixel_1.fetchPlayer)(donatorUuid, true));
     }
     donators = await Promise.all(promises);
 }
@@ -98,7 +99,7 @@ app.get('/player/:user', async (req, res) => {
     var _a;
     let data;
     try {
-        data = await hypixel_1.fetchPlayer(req.params.user, false, true);
+        data = await (0, hypixel_1.fetchPlayer)(req.params.user, false, true);
     }
     catch (err) {
         if (err instanceof hypixel_1.NotFound)
@@ -114,7 +115,7 @@ app.get('/player/:user', async (req, res) => {
     res.render('profiles.njk', { data });
 });
 app.get('/profile/:user', async (req, res) => {
-    const player = await hypixel_1.fetchPlayer(req.params.user);
+    const player = await (0, hypixel_1.fetchPlayer)(req.params.user);
     if (player && player.activeProfile) {
         const activeProfileId = player.activeProfile;
         const activeProfileName = player.profiles.find((profile) => profile.uuid === activeProfileId);
@@ -124,10 +125,10 @@ app.get('/profile/:user', async (req, res) => {
     return res.status(404).render('errors/notfound.njk');
 });
 app.get('/player/:user/:profile', async (req, res) => {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e;
     let data;
     try {
-        data = await hypixel_1.fetchProfile(req.params.user, req.params.profile, true);
+        data = await (0, hypixel_1.fetchProfile)(req.params.user, req.params.profile, true);
     }
     catch (err) {
         if (err instanceof hypixel_1.NotFound)
@@ -141,23 +142,25 @@ app.get('/player/:user/:profile', async (req, res) => {
         return res.redirect(`/player/${data.member.username}/${data.profile.name}`);
     const pack = (_a = req.query.pack) !== null && _a !== void 0 ? _a : (_b = data === null || data === void 0 ? void 0 : data.customization) === null || _b === void 0 ? void 0 : _b.pack;
     const backgroundUrl = (_c = data === null || data === void 0 ? void 0 : data.customization) === null || _c === void 0 ? void 0 : _c.backgroundUrl;
+    const blurBackground = (_e = (_d = data === null || data === void 0 ? void 0 : data.customization) === null || _d === void 0 ? void 0 : _d.blurBackground) !== null && _e !== void 0 ? _e : false;
     if (req.query.simple !== undefined)
         return res.render('member-simple.njk', { data });
-    await hypixel_1.cacheInventories(data.member.inventories, pack);
-    res.render('member.njk', { data, pack, backgroundUrl });
+    await (0, hypixel_1.cacheInventories)(data.member.inventories, pack);
+    res.render('member.njk', { data, pack, backgroundUrl, blurBackground });
 });
 app.get('/leaderboard/:name', async (req, res) => {
-    const data = await hypixel_1.fetchLeaderboard(req.params.name);
+    const data = await (0, hypixel_1.fetchLeaderboard)(req.params.name);
+    await (0, hypixel_1.skyblockItemToUrl)(data.name.slice(11));
     res.render('leaderboard.njk', { data });
 });
 app.get('/leaderboards/:name', async (req, res) => {
     res.redirect(`/leaderboard/${req.params.name}`);
 });
 app.get('/leaderboards', async (req, res) => {
-    const data = await hypixel_1.fetchLeaderboards();
+    const data = await (0, hypixel_1.fetchLeaderboards)();
     const promises = [];
     for (const leaderboardName of data.collection) {
-        promises.push(hypixel_1.skyblockItemToUrl(leaderboardName.slice(11)));
+        promises.push((0, hypixel_1.skyblockItemToUrl)(leaderboardName.slice(11)));
     }
     await Promise.all(promises);
     res.render('leaderboards.njk', { data });
@@ -165,12 +168,12 @@ app.get('/leaderboards', async (req, res) => {
 app.get('/leaderboard', async (req, res) => {
     res.redirect('/leaderboards');
 });
-const DISCORD_CLIENT_ID = '656634948148527107';
+const DISCORD_CLIENT_ID = '885347559382605916';
 app.get('/login', async (req, res) => {
     res.redirect(`https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=https://${req.headers.host}%2Floggedin&response_type=code&scope=identify`);
 });
 app.get('/loggedin', async (req, res) => {
-    const response = await hypixel_1.createSession(req.query.code);
+    const response = await (0, hypixel_1.createSession)(req.query.code);
     if (response.ok) {
         res.cookie('sid', response.session_id, { maxAge: 31536000000 });
         res.redirect('/verify');
@@ -191,11 +194,11 @@ app.post('/verify', urlencodedParser, async (req, res) => {
         return res.redirect('/login');
     if (!req.body.ign)
         return res.redirect('/verify');
-    const session = await hypixel_1.fetchSession(req.cookies.sid);
+    const session = await (0, hypixel_1.fetchSession)(req.cookies.sid);
     if (!session)
         return res.redirect('/login');
     const username = req.body.ign;
-    const player = await hypixel_1.fetchPlayer(username, true);
+    const player = await (0, hypixel_1.fetchPlayer)(username, true);
     const hypixelDiscordName = (_b = (_a = player === null || player === void 0 ? void 0 : player.player) === null || _a === void 0 ? void 0 : _a.socials) === null || _b === void 0 ? void 0 : _b.discord;
     if (!hypixelDiscordName)
         return res.render('account/verify.njk', { error: 'Please link your Discord in Hypixel by doing /profile -> Social media -> Discord. If you just changed it, wait a few minutes and try again.' });
@@ -203,7 +206,7 @@ app.post('/verify', urlencodedParser, async (req, res) => {
     const actualDiscordIdDiscrim = session.session.discord_user.id + '#' + session.session.discord_user.name.split('#')[1];
     if (!(hypixelDiscordName === actualDiscordName || hypixelDiscordName === actualDiscordIdDiscrim))
         return res.render('account/verify.njk', { error: `You\'re linked to ${hypixelDiscordName} on Hypixel, change this to ${actualDiscordName} by doing /profile -> Social media -> Discord. If you just changed it, wait a few minutes and try again.` });
-    await hypixel_1.updateAccount({
+    await (0, hypixel_1.updateAccount)({
         discordId: session.session.discord_user.id,
         minecraftUuid: player.player.uuid
     });
@@ -216,16 +219,16 @@ fs_1.promises.readdir('src/public/backgrounds').then(names => {
 app.get('/profile', async (req, res) => {
     if (!req.cookies.sid)
         return res.redirect('/login');
-    const session = await hypixel_1.fetchSession(req.cookies.sid);
+    const session = await (0, hypixel_1.fetchSession)(req.cookies.sid);
     if (!session)
         return res.redirect('/login');
-    const player = await hypixel_1.fetchPlayer(session.account.minecraftUuid);
+    const player = await (0, hypixel_1.fetchPlayer)(session.account.minecraftUuid);
     res.render('account/profile.njk', { player, customization: session.account.customization, backgroundNames });
 });
 app.post('/profile', urlencodedParser, async (req, res) => {
     if (!req.cookies.sid)
         return res.redirect('/login');
-    const session = await hypixel_1.fetchSession(req.cookies.sid);
+    const session = await (0, hypixel_1.fetchSession)(req.cookies.sid);
     if (!session)
         return res.redirect('/login');
     const backgroundName = req.body['background'];
@@ -238,7 +241,10 @@ app.post('/profile', urlencodedParser, async (req, res) => {
         customization.pack = req.body.pack;
     if (backgroundUrl)
         customization.backgroundUrl = backgroundUrl;
-    await hypixel_1.updateAccount({
+    if (req.body['blur-toggle']) {
+        customization.blurBackground = req.body['blur-toggle'] === 'on';
+    }
+    await (0, hypixel_1.updateAccount)({
         discordId: session.account.discordId,
         customization
     });
@@ -262,14 +268,15 @@ app.get('/chat.png', async (req, res) => {
     const queryString = new URLSearchParams(query).toString();
     res.redirect(`https://fake-chat.matdoes.dev/render.png?${queryString}`);
 });
-// we use serveStatic so it caches
-app.use(serve_static_1.default('src/public'));
+app.use((0, serve_static_1.default)('src/public', {
+    maxAge: 86400000
+}));
 // this should always be the last route!
 // shortcut that redirects the user to their active profile
 app.get('/:user', async (req, res) => {
     let player;
     try {
-        player = await hypixel_1.fetchPlayer(req.params.user);
+        player = await (0, hypixel_1.fetchPlayer)(req.params.user);
     }
     catch (err) {
         if (err instanceof hypixel_1.NotFound)

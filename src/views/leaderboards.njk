@@ -28,7 +28,7 @@
 					{% if leaderboard|startsWith('collection_') %}
 						{% set imageUrl = leaderboard|slice(11)|itemNameToUrl %}
 					{% endif %}
-					<li{% if imageUrl %} style="background: url('{{ imageUrl }}') 0 0/1em no-repeat;"{% endif %} class="leaderboards-list-item{% if imageUrl %} leaderboards-list-item-with-icon{% endif %}"><a href="/leaderboard/{{ leaderboard }}">{{ leaderboard|clean }}</a></li>
+					<li{% if imageUrl %} style="background: url('{{ imageUrl }}') 0 0/1em no-repeat;"{% endif %} class="leaderboards-list-item{% if imageUrl %} list-item-with-icon{% endif %}"><a href="/leaderboard/{{ leaderboard }}">{{ leaderboard|clean }}</a></li>
 				{%- endfor -%}
 				</ul>
 			</section>

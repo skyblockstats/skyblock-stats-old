@@ -2,11 +2,16 @@
 {%- set count = 0 -%}
 {%- for stat in data.member.stats | sort(true, true, 'value') -%}
 	{%- if stat.category == 'deaths' -%}
-		<li>{{ stat.categorizedName|clean }}: {{ stat.value }}</li>
+
+		<li{%- if stat.categorizedName == 'total' %} class="total-stat"{% endif -%}>
+			{%- if stat.categorizedName == 'total' %}<b>{% endif -%}
+			{{ stat.categorizedName|clean -}}
+			{%- if stat.categorizedName == 'total' %}</b>{% endif -%}
+
+			: {{ stat.value|cleannumber }}
+		</li>
+
 		{%- set count = count + 1 -%}
 	{%- endif -%}
 {%- endfor -%}
-{%- if count == 0 -%}
-	<p>No deaths stats</p>
-{%- endif -%}
 </ul>

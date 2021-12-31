@@ -25,14 +25,26 @@ body:before {
 	background: url('{{ backgroundUrl }}') no-repeat center center;
 	background-size: cover;
 }
+{%- if blurBackground -%}
+#main-header {
+	background-color: rgba(0,0,0,.4);
+	backdrop-filter: blur(1em)
+}
+{%- endif -%}
 </style>
 {% endif %}
 {%- endblock -%}
 
+{% block mainElement %}class="member-container"{% endblock %}
+
 {%- block main -%}
+	{%- if blurBackground -%}
+	<div class="blurred-background-container-container"><div class="blurred-background-container"><img class="blurred-background" src="{{ backgroundUrl }}"></div></div>
+	{%- endif -%}
+
 	<h1>{{ render.username(data.member, headType='3d') }} ({{ data.member.profileName }})</h1>
 	{%- set categories = [] -%}
-	{%- set categories = categories|append('skills') -%}
+	{# {%- set categories = categories|append('skills') -%} #}
 	{%- set categories = categories|append('deaths') -%}
 	{%- set categories = categories|append('kills') -%}
 	{%- set categories = categories|append('auctions') -%}
@@ -40,6 +52,7 @@ body:before {
 	{%- set categories = categories|append('races') -%}
 	{%- set categories = categories|append('misc') -%}
 	{%- set categories = categories|append('minions') -%}
+	{%- set categories = categories|append('zones') -%}
 	{%- set categories = categories|append('leaderboards') -%}
 	
 	{%- include 'sections/infobox.njk' -%}
@@ -50,6 +63,14 @@ body:before {
 		<li><a href="#{{ category }}">{{ category|clean }}</a></li>
 		{%- endfor -%}
 	</ul>
+	{%- if data.member.skills|length > 0 -%}
+	<section id="skills" class="profile-skills">
+		<h2>Skills</h2>
+		{%- include 'sections/skills.njk' -%}
+	</section>
+	{%- endif -%}
+
+	<br>
 
 	<div>
 		<div id="categories">
@@ -66,14 +87,17 @@ body:before {
 				</section>
 			{%- endif -%}
 			{%- asyncAll category in categories -%}
-				<section id="{{ category }}" class="collapsible">
-					<h2>{{ category|replace('_', ' ')|title }}</h2>
-					{#- we need to use with so the include passes context -#}
-					{% with { data: data, category: category } %}
-						{#- include the category from the sections folder -#}
-						{%- include 'sections/' + category + '.njk' -%}
-					{% endwith %}
-				</section>
+				{%- set sectionContents -%}
+				{% with { data: data, category: category } %}
+					{%- include 'sections/' + category + '.njk' -%}
+				{% endwith %}
+				{%- endset -%}
+				{%- if sectionContents|trim and sectionContents|trim != '<ul></ul>' -%}
+					<section id="{{ category }}" class="collapsible">
+						<h2>{{ category|replace('_', ' ')|title }}</h2>
+						{{- sectionContents|safe -}}
+					</section>
+				{%- endif -%}
 			{%- endall -%}
 		</div>
 	</div>

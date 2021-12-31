@@ -155,7 +155,7 @@ export async function itemToUrl(item: Item, packName?: string): Promise<string> 
 		textureUrl = await skyblockAssets.getTextureUrl({
 			id: item.vanillaId,
 			nbt: itemNbt,
-			pack: packName || 'packshq'
+			pack: packName ?? 'packshq'
 		})
 	
 	if (!textureUrl) {
@@ -197,12 +197,18 @@ const skyblockItems: { [ itemName: string ]: Item } = {
 	acacia_log: { vanillaId: 'minecraft:log2' },
 	birch_log: { vanillaId: 'minecraft:log:2' },
 	cod: { vanillaId: 'minecraft:fish' },
-	dark_oak_log: { vanillaId: 'minecraft:log:2' },
+	dark_oak_log: { vanillaId: 'minecraft:log2:1' },
 	jungle_log: { vanillaId: 'minecraft:log:3' },
 	oak_log: { vanillaId: 'minecraft:log' },
 	pufferfish: { vanillaId: 'minecraft:fish:3' },
 	salmon: { vanillaId: 'minecraft:fish:1' },
 	spruce_log: { vanillaId: 'minecraft:log:1' },
+	// hypixel named the collection "gemstone_collection" instead of "gemstone"
+	gemstone_collection: {
+		vanillaId: 'minecraft:skull',
+		head_texture: '39b6e047d3b2bca85e8cc49e5480f9774d8a0eafe6dfa9559530590283715142'
+	},
+	hard_stone: { vanillaId: 'minecraft:stone' },
 }
 
 
@@ -228,7 +234,7 @@ export function itemToUrlCached(item: Item, packName?: string): string {
 		}
 	}
 
-	const stringifiedItem = (packName || 'packshq') + JSON.stringify(item)
+	const stringifiedItem = (packName ?? 'packshq') + JSON.stringify(item)
 	return itemToUrlCache.get(stringifiedItem)
 }
 
@@ -350,6 +356,7 @@ interface CleanFullProfileBasicMembers extends CleanProfile {
 export interface AccountCustomization {
 	backgroundUrl?: string
 	pack?: string
+	blurBackground?: boolean
 }
 
 interface CleanBasicPlayer {
