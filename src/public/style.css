@@ -795,7 +795,8 @@ header .enter-username-button {
 .mayor {
 	display: inline-block;
 	width: 12em;
-	margin-right: 1em
+	margin-right: 1em;
+	vertical-align: top;
 }
 .mayor h3 {
 	filter: brightness(1.5);
@@ -821,9 +822,9 @@ header .enter-username-button {
 	margin: 0
 }
 .mayor-candidates {
-	display: grid;
+	/* display: ; */
 	/* everything next to each other */
-	grid-template-columns: repeat(5, 1fr);
+	/* grid-template-columns: repeat(5, 1fr); */
 	max-width: fit-content
 }
 .mayor-perks {
