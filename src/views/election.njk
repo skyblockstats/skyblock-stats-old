@@ -89,7 +89,7 @@
 	{% endfor %}
 </div>
 {% set nextSpecialMayorYear = (((data.current.year or data.previous.year) + 1) / 8)|round(0, 'ceil') * 8 %}
-{% set nextSpecialMayorName = ['Jerry', 'Scorpius', 'Derpy'][(nextSpecialMayorYear / 8) % 3] %}
+{% set nextSpecialMayorName = ['Scorpius', 'Derpy', 'Jerry'][(nextSpecialMayorYear / 8) % 3] %}
 <p>Next special mayor: <b>{{ nextSpecialMayorName }}</b> <span class="next-special-mayor-time">({{ skyblockYear(nextSpecialMayorYear) }})</span></p>
 
 
