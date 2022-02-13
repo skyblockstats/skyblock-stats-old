@@ -15,10 +15,19 @@
 		marina: '807fc9bee8d3344e840e4031a37249a4c3c87fc80cf16432cc5c2153d1f9c53d',
 		diaz: '9cf4737cd444b590545734a6408cbe23c182f4283f167a3e3c09532ccbef17f9',
 		diana: '83cc1cf672a4b2540be346ead79ac2d9ed19d95b6075bf95be0b6d0da61377be',
+		
+		derpy: 'be0f89466528ad5eca5a6506adddd896ff78c4fd21facaa74a8c4a809c89207',
+		scorpius: '8f26fa0c47536e78e337257d898af8b1ebc87c0894503375234035ff2c7ef8f0',
+
 		technoblade: '786c039d969d1839155255e38e7b06a626ea9f8baf9cb55e0a77311efe18a3e',
-		dante: '5af658e00ac0d0ce0686e79f59c067b9577c01ba57ad8c6575db8490c3161772'
+		dante: '5af658e00ac0d0ce0686e79f59c067b9577c01ba57ad8c6575db8490c3161772',
+		faith: '64b39d0756b92b8b7599d1f971580088954e21c5f60c673d0d4f63693fb002b5'
 	} %}
-	{% set url = 'https://www.mc-heads.net/body/' + skinIds[name|lower] %}
+	{% if name|lower == 'jerry' %}
+		{% set url = '/villager.png' %}
+	{% else %}
+		{% set url = 'https://www.mc-heads.net/body/' + skinIds[name|lower] %}
+	{% endif %}
 	<img src="{{ url }}" alt="Mayor {{ name|capitalize }}">
 {%- endmacro -%}
 
