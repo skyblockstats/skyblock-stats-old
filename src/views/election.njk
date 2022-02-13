@@ -89,8 +89,12 @@
 	{% endfor %}
 </div>
 {% set nextSpecialMayorYear = (((data.current.year or data.previous.year) + 1) / 8)|round(0, 'ceil') * 8 %}
-{% set nextSpecialMayorName = ['Scorpius', 'Derpy', 'Jerry'][(nextSpecialMayorYear / 8) % 3] %}
-<p>Next special mayor: <b>{{ nextSpecialMayorName }}</b> <span class="next-special-mayor-time">({{ skyblockYear(nextSpecialMayorYear) }})</span></p>
-
+{% set specialMayors = ['Scorpius', 'Derpy', 'Jerry'] %}
+<h2>Upcoming special mayors</h2>
+<ul>
+	<li><b>{{ specialMayors[(nextSpecialMayorYear / 8) % 3] }}</b> <span class="next-special-mayor-time">({{ skyblockYear(nextSpecialMayorYear) }})</span></li>
+	<li><b>{{ specialMayors[((nextSpecialMayorYear / 8) + 1) % 3] }}</b> <span class="next-special-mayor-time">({{ skyblockYear(nextSpecialMayorYear + 8) }})</span></li>
+	<li><b>{{ specialMayors[((nextSpecialMayorYear / 8) + 2) % 3] }}</b> <span class="next-special-mayor-time">({{ skyblockYear(nextSpecialMayorYear + 16) }})</span></li>
+</ul>
 
 {% endblock %}
