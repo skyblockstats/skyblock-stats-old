@@ -1,5 +1,16 @@
 {%- set totalVotes = 0 -%}
 {%- set winner = {} -%}
+{%- set candidateEmojis = {
+	'aatrox': '⚔️',
+	'paul': '☠️',
+	'foxy': '🍬',
+	'cole': '⛏️',
+	'marina': '🐟',
+	'barry': '🔮',
+	'diaz': '🏦',
+	'diana': '🦅',
+	'derpy': '👨‍🦲'
+} %}
 {%- for candidate in data.previous.candidates -%}
 	{%- set totalVotes = totalVotes + candidate.votes -%}
 	{%- if candidate.name == data.previous.winner -%}
@@ -7,10 +18,10 @@
 	{%- endif -%}
 {%- endfor -%}
 
-Current mayor: {{ winner.name }} ({{ ((winner.votes / totalVotes) * 100)|round }}%)
+Current mayor: {{ candidateEmojis[winner.name|lower] or '❓' }} {{ winner.name }} ({{ ((winner.votes / totalVotes) * 100)|round }}%)
 {%- for candidate in data.previous.candidates|sort(true, false, 'votes') -%}
 	{%- if candidate.name != data.previous.winner -%}
 {{ '' }}
-{{ candidate.name }} ({{ ((candidate.votes / totalVotes) * 100)|round }}%)
+{{ candidateEmojis[candidate.name|lower] or '❓' }} {{ candidate.name }} ({{ ((candidate.votes / totalVotes) * 100)|round }}%)
 	{%- endif -%}
 {%- endfor -%}
