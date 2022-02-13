@@ -1,0 +1,85 @@
+{% extends "base.njk" %}
+{% block title %}SkyBlock Election Status{% endblock %}
+
+{% block main %}
+<h1>SkyBlock Election Status</h1>
+
+
+{%- macro renderMayor(name) -%}
+	{% set skinIds = {
+		barry: 'f04c591b164746e848f3d6a451ee87a62dd193e5c45e94ed78e72df119aca426',
+		paul: '1b59c43d8dbccfd7ec6e6394b6304b70d4ed315add0494ee77c733f41818c73a',
+		aatrox: 'c1bdf505bb8c0f1f3365a03032de1931663ff71c57e022558de312b8f1b5c445',
+		foxy: '3485a717fa0f51d7fadc66a5d5e9853905bef914e3b2848a2f128e63d2db87',
+		cole: '16422de08848952d1cbead66bbbad6f07191bdcc952f3d1036aeb0c22938f39b',
+		marina: '807fc9bee8d3344e840e4031a37249a4c3c87fc80cf16432cc5c2153d1f9c53d',
+		diaz: '9cf4737cd444b590545734a6408cbe23c182f4283f167a3e3c09532ccbef17f9',
+		diana: '83cc1cf672a4b2540be346ead79ac2d9ed19d95b6075bf95be0b6d0da61377be',
+		technoblade: '786c039d969d1839155255e38e7b06a626ea9f8baf9cb55e0a77311efe18a3e',
+		dante: '5af658e00ac0d0ce0686e79f59c067b9577c01ba57ad8c6575db8490c3161772'
+	} %}
+	{% set url = 'https://www.mc-heads.net/body/' + skinIds[name|lower] %}
+	<img src="{{ url }}" alt="Mayor {{ name|capitalize }}">
+{%- endmacro -%}
+
+{%- macro skyblockYear(year) -%}
+	{%- set inSeconds = (446400 * year) - (getTime() - 1560275700) -%}
+	{%- set tooltipTime = (inSeconds|abs * 1000)|cleannumber('time') -%}
+	{%- set tooltipText = ('in ' + tooltipTime) if inSeconds >= 0 else (tooltipTime + ' ago') -%}
+	<span class="tooltip" data-tooltip="{{ tooltipText }}" tabindex="1">Year {{ year }}</span>
+{%- endmacro -%}
+
+{% if data.current %}
+<h2>Ongoing election <span class="candidate-year">({{ skyblockYear(data.current.year) }})</span></h2>
+<div class="mayor-candidates">
+	{% for candidate in data.current.candidates %}
+	<div class="mayor">
+		{% set color = colorCodes[candidate.color] if candidate.color else null %}
+		<div>
+			<h3{% if color %} style="color: {{color}}"{% endif %}>{{candidate.name}}</h3>
+			<p class="mayor-vote-count"><span class="mayor-vote-count-number"{% if color %} style="color: {{color}}"{% endif %}>{{candidate.votes.toLocaleString()}}</span> votes</p>
+			{{ renderMayor(candidate.name) }}
+		</div>
+		<ul class="mayor-perks">
+			{% for perk in candidate.perks %}
+			<div class="mayor-perk">
+				<h4{% if color %} style="color: {{ color }}"{% endif %}>{{ perk.name }}</h4>
+				<p>{{ perk.description|formattingCodeToHtml|safe }}</p>
+			</div>
+			{% endfor %}
+		</ul>
+	</div>
+	{% endfor %}
+</div>
+{% endif %}
+
+<h2>Previous election <span class="candidate-year">({{ skyblockYear(data.previous.year) }})</span></h2>
+<div class="mayor-candidates">
+	{% for candidate in data.previous.candidates %}
+	<div class="mayor">
+		{% set color = colorCodes[candidate.color] if candidate.color else null %}
+		<div>
+			<h3{% if color %} style="color: {{color}}"{% endif %}>{{candidate.name}}</h3>
+			<p class="mayor-vote-count"><span class="mayor-vote-count-number"{% if color %} style="color: {{color}}"{% endif %}>{{candidate.votes.toLocaleString()}}</span> votes</p>
+			{% if candidate.name == data.previous.winner %}
+			<p class="mayor-winner">Winner</p>
+			{% endif %}
+			{{ renderMayor(candidate.name) }}
+		</div>
+		<ul class="mayor-perks">
+			{% for perk in candidate.perks %}
+			<div class="mayor-perk">
+				<h4{% if color %} style="color: {{ color }}"{% endif %}>{{ perk.name }}</h4>
+				<p>{{ perk.description|formattingCodeToHtml|safe }}</p>
+			</div>
+			{% endfor %}
+		</ul>
+	</div>
+	{% endfor %}
+</div>
+{% set nextSpecialMayorYear = (((data.current.year or data.previous.year) + 1) / 8)|round(0, 'ceil') * 8 %}
+{% set nextSpecialMayorName = ['Jerry', 'Scorpius', 'Derpy'][(nextSpecialMayorYear / 8) % 3] %}
+<p>Next special mayor: <b>{{ nextSpecialMayorName }}</b> <span class="next-special-mayor-time">({{ skyblockYear(nextSpecialMayorYear) }})</span></p>
+
+
+{% endblock %}

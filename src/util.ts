@@ -1,20 +1,20 @@
-const colorCodes: { [ key: string ]: string } = {
-	'0': '#000000',
-	'1': '#0000be',
-	'2': '#00be00',
-	'3': '#00bebe',
+export const colorCodes: { [ key: string ]: string } = {
+	'0': '#000000', // black
+	'1': '#0000be', // blue
+	'2': '#00be00', // green
+	'3': '#00bebe', // cyan
 	'4': '#be0000', // red
-	'5': '#be00be',
+	'5': '#be00be', // magenta
 	'6': '#ffaa00', // gold
-	'7': '#bebebe',
-	'8': '#3f3f3f',
-	'9': '#3f3ffe',
-	'a': '#3ffe3f',
-	'b': '#3ffefe',
+	'7': '#bebebe', // light gray
+	'8': '#3f3f3f', // dark gray
+	'9': '#3f3ffe', // light blue
+	'a': '#3ffe3f', // light green
+	'b': '#3ffefe', // light cyan
 	'c': '#fe3f3f', // light red
-	'd': '#fe3ffe',
-	'e': '#fefe3f',
-	'f': '#ffffff',
+	'd': '#fe3ffe', // light magenta
+	'e': '#fefe3f', // yellow
+	'f': '#ffffff', // white
 }
 const specialCodes: { [ key: string ]: string } = {
 	'l': 'font-weight: bold'
@@ -85,22 +85,31 @@ function millisecondsToTime(totalMilliseconds: number) {
 	const totalSeconds = totalMilliseconds / 1000
 	const totalMinutes = totalSeconds / 60
 	const totalHours = totalMinutes / 60
+	const totalDays = totalHours / 24
 
 	const milliseconds = Math.floor(totalMilliseconds) % 1000
 	const seconds = Math.floor(totalSeconds) % 60
 	const minutes = Math.floor(totalMinutes) % 60
-	const hours = Math.floor(totalHours)
+	const hours = Math.floor(totalHours) % 24
+	const days = Math.floor(totalDays)
 
 	const stringUnits: string[] = []
 
+	if (days > 1) stringUnits.push(`${days} days`)
+	else if (days == 1) stringUnits.push(`${days} day`)
+
 	if (hours > 1) stringUnits.push(`${hours} hours`)
 	else if (hours == 1) stringUnits.push(`${hours} hour`)
+
 	if (minutes > 1) stringUnits.push(`${minutes} minutes`)
 	else if (minutes == 1) stringUnits.push(`${minutes} minute`)
+
 	if (seconds > 1) stringUnits.push(`${seconds} seconds`)
 	else if (seconds == 1) stringUnits.push(`${seconds} second`)
+
 	if (milliseconds > 1) stringUnits.push(`${milliseconds} milliseconds`)
 	else if (milliseconds == 1) stringUnits.push(`${milliseconds} millisecond`)
+
 	return stringUnits.slice(0, 2).join(' and ')
 }
 

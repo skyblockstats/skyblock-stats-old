@@ -9,6 +9,7 @@ import {
 	fetchLeaderboard,
 	itemToUrlCached,
 	createSession,
+	fetchElection,
 	updateAccount,
 	fetchSession,
 	fetchProfile,
@@ -18,12 +19,13 @@ import {
 	baseApi,
 } from './hypixel'
 import {
-	clean,
-	cleanNumber,
 	formattingCodeToHtml,
+	removeFormattingCode,
 	toRomanNumerals,
+	cleanNumber,
+	colorCodes,
 	shuffle,
-	removeFormattingCode
+	clean,
 } from './util'
 import WithExtension from '@allmarkedup/nunjucks-with'
 import cookieParser from 'cookie-parser'
@@ -49,6 +51,7 @@ const env = nunjucks.configure('src/views', {
 env.addExtension('WithExtension', new WithExtension())
 env.addGlobal('BASE_API', baseApi)
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
+env.addGlobal('colorCodes', colorCodes)
 
 const hash = crypto.createHash('sha1')
 hash.setEncoding('hex')
@@ -236,6 +239,11 @@ app.get('/verify', async(req, res) => {
 	res.render('account/verify.njk')
 })
 
+app.get('/election', async(req, res) => {
+	const data = await fetchElection()
+	res.render('election.njk', { data })
+})
+
 
 // we use bodyparser to be able to get data from req.body
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -320,8 +328,6 @@ app.post('/profile', urlencodedParser, async(req, res) => {
 app.post('/player', urlencodedParser, (req, res) => {
 	res.redirect('/player/' + req.body['user-search'])
 })
-
-
 app.get('/profiles/:user', async(req, res) => {
 	res.redirect(`/player/${req.params.user}`)
 })

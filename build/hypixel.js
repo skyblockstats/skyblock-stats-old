@@ -21,8 +21,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.skyblockItemNameToItem = exports.skyblockItemToUrl = exports.itemToUrl = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.NotFound = exports.skyblockConstantValues = exports.agent = exports.baseApi = void 0;
+exports.updateAccount = exports.fetchSession = exports.createSession = exports.cacheInventories = exports.itemToUrlCached = exports.skyblockItemNameToItem = exports.skyblockItemToUrl = exports.itemToUrl = exports.fetchElection = exports.fetchLeaderboards = exports.fetchLeaderboard = exports.fetchProfile = exports.fetchPlayer = exports.NotFound = exports.skyblockConstantValues = exports.agent = exports.baseApi = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_cache_1 = __importDefault(require("node-cache"));
 const https_1 = require("https");
@@ -32,7 +33,7 @@ const skyblockAssets = __importStar(require("skyblock-assets"));
 if (!process.env.key)
     // if there's no key in env, run dotenv
     require('dotenv').config();
-exports.baseApi = 'https://skyblock-api.matdoes.dev';
+exports.baseApi = (_a = process.env.base_api_url) !== null && _a !== void 0 ? _a : 'https://skyblock-api.matdoes.dev';
 if (exports.baseApi.startsWith('https://'))
     exports.agent = new https_1.Agent({
         keepAlive: true
@@ -137,6 +138,10 @@ async function fetchLeaderboards() {
     return await fetchApi(`leaderboards`);
 }
 exports.fetchLeaderboards = fetchLeaderboards;
+async function fetchElection() {
+    return await fetchApi('election');
+}
+exports.fetchElection = fetchElection;
 const itemToUrlCache = new node_cache_1.default({
     stdTTL: 60,
     checkperiod: 5,
@@ -164,9 +169,8 @@ async function itemToUrl(item, packName) {
             nbt: itemNbt,
             pack: packName !== null && packName !== void 0 ? packName : 'packshq'
         });
-    if (!textureUrl) {
+    if (!textureUrl)
         console.log('no texture', item);
-    }
     itemToUrlCache.set(stringifiedItem, textureUrl);
     return textureUrl;
 }
@@ -236,6 +240,7 @@ function itemToUrlCached(item, packName) {
                 name: null
             },
             id: null,
+            // vanillaId: damage === null ? `minecraft:${itemId}` : `minecraft:${itemId}:${damage}`
             vanillaId: `minecraft:${itemId}`
         };
     }

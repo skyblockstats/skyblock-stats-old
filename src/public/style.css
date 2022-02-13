@@ -5,7 +5,9 @@
 
 	--theme-main-text: #eee;
 	--theme-darker-text: #999;
-	--theme-transparent-border: rgba(128,128,128,.3)
+	--theme-transparent-border: rgba(128,128,128,.3);
+
+	--theme-yellow: #ff0;
 }
 
 /* minecraft font */
@@ -629,6 +631,7 @@ header .enter-username-button {
 	/* max-width: max-content */
 }
 .tooltip::after {
+	font-size: 1rem;
 	display: inline-block;
 	left: 50%;
 	opacity: 0;
@@ -779,4 +782,65 @@ header .enter-username-button {
 	object-fit: cover;
 	background-blend-mode: overlay;
 	filter: blur(1em) brightness(.6);
+}
+
+.mayor-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-column-gap: 1em;
+	grid-row-gap: 1em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+.mayor {
+	display: inline-block;
+	width: 12em;
+	margin-right: 1em
+}
+.mayor h3 {
+	filter: brightness(1.5);
+	text-align: center;
+}
+.mayor img {
+	display: block;
+	width: 5em;
+	margin: 0 auto;
+}
+.mayor-vote-count-number {
+	filter: brightness(1.2);
+}
+.mayor-vote-count {
+	text-align: center;
+	width: 100%;
+	margin: 0 0 .5em 0;
+}
+.mayor-perk h4 {
+	margin-bottom: 0
+}
+.mayor-perk p {
+	margin: 0
+}
+.mayor-candidates {
+	display: grid;
+	/* everything next to each other */
+	grid-template-columns: repeat(5, 1fr);
+	max-width: fit-content
+}
+.mayor-perks {
+	list-style-type: none;
+	padding: 0
+}
+.candidate-year {
+	font-weight: normal;
+	color: var(--theme-darker-text)
+}
+.mayor-winner {
+	color: var(--theme-yellow);
+	font-weight: bold;
+	margin: 0;
+	text-align: center;
+	font-size: 1em
+}
+.next-special-mayor-time {
+	color: var(--theme-darker-text)
 }

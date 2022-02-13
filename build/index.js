@@ -44,6 +44,7 @@ const env = nunjucks.configure('src/views', {
 env.addExtension('WithExtension', new nunjucks_with_1.default());
 env.addGlobal('BASE_API', hypixel_1.baseApi);
 env.addGlobal('getTime', () => (new Date()).getTime() / 1000);
+env.addGlobal('colorCodes', util_1.colorCodes);
 const hash = crypto_1.default.createHash('sha1');
 hash.setEncoding('hex');
 hash.write(fsSync.readFileSync('src/public/style.css'));
@@ -190,6 +191,10 @@ app.get('/verify', async (req, res) => {
     if (!req.cookies.sid)
         return res.redirect('/login');
     res.render('account/verify.njk');
+});
+app.get('/election', async (req, res) => {
+    const data = await (0, hypixel_1.fetchElection)();
+    res.render('election.njk', { data });
 });
 // we use bodyparser to be able to get data from req.body
 const urlencodedParser = body_parser_1.default.urlencoded({ extended: false });

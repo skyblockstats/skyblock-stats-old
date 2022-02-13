@@ -10,7 +10,7 @@ if (!process.env.key)
 	// if there's no key in env, run dotenv
 	require('dotenv').config()
 
-export const baseApi = 'https://skyblock-api.matdoes.dev'
+export const baseApi = process.env.base_api_url ?? 'https://skyblock-api.matdoes.dev'
 // export const baseApi = 'http://localhost:8080'
 
 // We need to create an agent to prevent memory leaks and to only do dns lookups once
@@ -125,6 +125,10 @@ export async function fetchLeaderboard(name: string) {
 export async function fetchLeaderboards(): Promise<{ [category: string]: string[] }> {
 	return await fetchApi(`leaderboards`)
 }
+export async function fetchElection() {
+	return await fetchApi('election')
+}
+
 
 const itemToUrlCache = new NodeCache({
 	stdTTL: 60,
@@ -158,9 +162,8 @@ export async function itemToUrl(item: Item, packName?: string): Promise<string> 
 			pack: packName ?? 'packshq'
 		})
 	
-	if (!textureUrl) {
+	if (!textureUrl)
 		console.log('no texture', item)
-	}
 
 	itemToUrlCache.set(stringifiedItem, textureUrl)
 	return textureUrl
@@ -229,6 +232,7 @@ export function itemToUrlCached(item: Item, packName?: string): string {
 				name: null
 			},
 			id: null,
+			// vanillaId: damage === null ? `minecraft:${itemId}` : `minecraft:${itemId}:${damage}`
 			vanillaId: `minecraft:${itemId}`
 		}
 	}

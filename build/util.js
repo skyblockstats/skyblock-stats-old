@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shuffle = exports.toRomanNumerals = exports.clean = exports.cleanNumber = exports.removeFormattingCode = exports.formattingCodeToHtml = void 0;
-const colorCodes = {
+exports.shuffle = exports.toRomanNumerals = exports.clean = exports.cleanNumber = exports.removeFormattingCode = exports.formattingCodeToHtml = exports.colorCodes = void 0;
+exports.colorCodes = {
     '0': '#000000',
     '1': '#0000be',
     '2': '#00be00',
@@ -17,7 +17,7 @@ const colorCodes = {
     'c': '#fe3f3f',
     'd': '#fe3ffe',
     'e': '#fefe3f',
-    'f': '#ffffff',
+    'f': '#ffffff', // white
 };
 const specialCodes = {
     'l': 'font-weight: bold'
@@ -45,12 +45,12 @@ function formattingCodeToHtml(formatted) {
         if (character === colorCodeCharacter) {
             const colorCharacter = formatted[0];
             formatted = formatted.slice(1);
-            if (colorCodes[colorCharacter]) {
-                if (currentColor !== colorCodes[colorCharacter]) { // make sure the color is different than the active one
+            if (exports.colorCodes[colorCharacter]) {
+                if (currentColor !== exports.colorCodes[colorCharacter]) { // make sure the color is different than the active one
                     // if there's already a color, close that tag
                     if (currentColor)
                         htmlOutput += '</span>';
-                    currentColor = colorCodes[colorCharacter];
+                    currentColor = exports.colorCodes[colorCharacter];
                     htmlOutput += `<span style="color: ${currentColor}">`;
                 }
             }
@@ -85,11 +85,17 @@ function millisecondsToTime(totalMilliseconds) {
     const totalSeconds = totalMilliseconds / 1000;
     const totalMinutes = totalSeconds / 60;
     const totalHours = totalMinutes / 60;
+    const totalDays = totalHours / 24;
     const milliseconds = Math.floor(totalMilliseconds) % 1000;
     const seconds = Math.floor(totalSeconds) % 60;
     const minutes = Math.floor(totalMinutes) % 60;
-    const hours = Math.floor(totalHours);
+    const hours = Math.floor(totalHours) % 24;
+    const days = Math.floor(totalDays);
     const stringUnits = [];
+    if (days > 1)
+        stringUnits.push(`${days} days`);
+    else if (days == 1)
+        stringUnits.push(`${days} day`);
     if (hours > 1)
         stringUnits.push(`${hours} hours`);
     else if (hours == 1)
