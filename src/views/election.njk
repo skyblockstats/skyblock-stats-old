@@ -1,5 +1,7 @@
 {% extends "base.njk" %}
-{% block title %}SkyBlock Election Status{% endblock %}
+{% block metatitle %}{% block title %}SkyBlock Mayor Election Status{% endblock %}{% endblock %}
+{% block metadescription %}{% block description %}{% include 'election-metadescription.njk' %}{% endblock %}{% endblock %}
+
 
 {% block main %}
 <h1>SkyBlock Election Status</h1>

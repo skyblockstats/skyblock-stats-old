@@ -1,0 +1,16 @@
+{%- set totalVotes = 0 -%}
+{%- set winner = {} -%}
+{%- for candidate in data.previous.candidates -%}
+	{%- set totalVotes = totalVotes + candidate.votes -%}
+	{%- if candidate.name == data.previous.winner -%}
+		{%- set winner = candidate -%}
+	{%- endif -%}
+{%- endfor -%}
+
+Current mayor: {{ winner.name }} ({{ ((winner.votes / totalVotes) * 100)|round }}%)
+{%- for candidate in data.previous.candidates|sort(true, false, 'votes') -%}
+	{%- if candidate.name != data.previous.winner -%}
+{{ '' }}
+{{ candidate.name }} ({{ ((candidate.votes / totalVotes) * 100)|round }}%)
+	{%- endif -%}
+{%- endfor -%}
