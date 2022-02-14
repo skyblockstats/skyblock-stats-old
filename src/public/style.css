@@ -743,7 +743,7 @@ header .enter-username-button {
 		margin-right: 0
 	}
 }
-@media only screen and (max-width: 360px) {
+@media only screen and (max-width: 410px) {
 	.profile-skills > ul {
 		grid-template-columns: repeat(1, 1fr);
 	}
