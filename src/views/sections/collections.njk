@@ -9,7 +9,7 @@
             <ul>
         {% endif %}
         {% set imageUrl = coll.name|itemNameToUrl %}
-        <li class="tooltip{% if imageUrl %} list-item-with-icon{% endif %}" data-tooltip="{{ coll.xp }} xp" tabindex="1" {%- if imageUrl %} style="background: url('{{ imageUrl }}') 0 0/1em no-repeat;"{% endif %}>
+        <li class="tooltip{% if imageUrl %} list-item-with-icon{% endif %}" data-tooltip="amount: {{ coll.xp }}" tabindex="1" {%- if imageUrl %} style="background: url('{{ imageUrl }}') 0 0/1em no-repeat;"{% endif %}>
             {{ coll.name|clean }} <span class="coll-level{% if coll.level == coll.maxLevel %} coll-maxed{% endif %}">{{ coll.level }}</span>
         </li>
     {%- endfor -%}
