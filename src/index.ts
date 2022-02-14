@@ -103,8 +103,37 @@ env.addFilter('formatnumber', (n: number, digits: number=3) => {
 
 env.addFilter('trim', (s: string) => s.trim() )
 
+// convert all the emojis in a string into images
+env.addFilter('twemojiHtml', (s: string) => {
+	let htmlEncoded = s.replace('<', '&lt;').replace('>', '&gt;').replace('&', '&amp;')
+	// replace unicode emojis with <img src="/emoji/[hex].svg">
+	let asTwemoji = htmlEncoded.replace(emojiRegex, (match) => {
+		return `<img src="/emoji/${[...match].map(p => p.codePointAt(0).toString(16)).join('-')}.svg" class="emoji">`
+	})
+	return asTwemoji
+} )
+
+const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g
+
+let emojis: Record<string, string> = {}
+// list items in src/public/emoji
+// and create a map of emoji hex to emoji unicode
+async function initEmojis() {
+	const emojiFiles = await fs.readdir('src/public/emoji')
+	for (const file of emojiFiles) {
+		const hex = file.split('.')[0]
+		// get the unicode emoji from the hex, codepoints are separated by '-'
+		const emoji = hex.split('-').map(p => String.fromCodePoint(parseInt(p, 16))).join('')
+		emojis[hex] = emoji
+	}
+}
+initEmojis()
 
 let donators: CleanUser[] = []
+
+const admins = [
+	'6536bfed869548fd83a1ecd24cf2a0fd' // mat
+]
 
 async function initDonators() {
 	const donatorsFileRaw = await fs.readFile('src/donators.txt', { encoding: 'ascii'})
@@ -175,6 +204,7 @@ app.get('/player/:user/:profile', async(req, res) => {
 	const pack = req.query.pack as string ?? data?.customization?.pack
 	const backgroundUrl = data?.customization?.backgroundUrl
 	const blurBackground = data?.customization?.blurBackground ?? false
+	const emoji = data?.customization?.emoji ?? false
 
 	if (req.query.simple !== undefined)
 		return res.render('member-simple.njk', { data })
@@ -187,7 +217,7 @@ app.get('/player/:user/:profile', async(req, res) => {
 	await cacheInventories(data.member.inventories, pack)
 	await Promise.all(promises)
 
-	res.render('member.njk', { data, pack, backgroundUrl, blurBackground })
+	res.render('member.njk', { data, pack, backgroundUrl, blurBackground, emoji })
 })
 
 app.get('/leaderboard/:name', async(req, res) => {
@@ -226,6 +256,7 @@ app.get('/login', async(req, res) => {
 
 app.get('/loggedin', async(req, res) => {
 	const response = await createSession(req.query.code as string)
+	console.log('response', response)
 	if (response.ok) {
 		res.cookie('sid', response.session_id, { maxAge: 31536000000 })
 		res.redirect('/verify')
@@ -287,10 +318,21 @@ fs.readdir('src/public/backgrounds').then(names => {
 app.get('/profile', async(req, res) => {
 	if (!req.cookies.sid) return res.redirect('/login')
 	const session = await fetchSession(req.cookies.sid)
-	if (!session) return res.redirect('/login')
+	if (!session || !session.account) return res.redirect('/login')
+
+	const isDonator = !!donators.find(u => u.player.uuid === session.account.minecraftUuid)
+	const isAdmin = !!admins.find(u => u === session.account.minecraftUuid)
 
 	const player = await fetchPlayer(session.account.minecraftUuid)
-	res.render('account/profile.njk', { player, customization: session.account.customization, backgroundNames })
+	res.render(
+		'account/profile.njk',
+		{
+			player,
+			customization: session.account.customization,
+			backgroundNames,
+			isDonator: isDonator || isAdmin,
+			emojis
+		})
 })
 
 app.post('/profile', urlencodedParser, async(req, res) => {
@@ -306,14 +348,27 @@ app.post('/profile', urlencodedParser, async(req, res) => {
 
 	const backgroundUrl = backgroundName ? `/backgrounds/${backgroundName}` : undefined
 
+	const isDonator = !!donators.find(u => u.player.uuid === session.account.minecraftUuid)
+	const isAdmin = !!admins.find(u => u === session.account.minecraftUuid)
+
 	const customization: AccountCustomization = session.account.customization || {}
 	if (req.body.pack)
 		customization.pack = req.body.pack
 	if (backgroundUrl)
 		customization.backgroundUrl = backgroundUrl
-	if (req.body['blur-toggle']) {
+	if (req.body['blur-toggle'])
 		customization.blurBackground = req.body['blur-toggle'] === 'on'
+	if (req.body['emoji'] !== undefined) {
+		const emoji = req.body['emoji']
+		const matched = emoji.match(emojiRegex)
+		// if this isn't an emoji, remove the emoji from their profile
+		if (emoji === '' || matched.length !== 1 || matched[0] !== emoji)
+			customization.emoji = ''
+		else if (isDonator || isAdmin) {
+			customization.emoji = emoji
+		}
 	}
+		
 
 
 	await updateAccount({

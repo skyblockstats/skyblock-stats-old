@@ -17,13 +17,6 @@
 	font-display: swap;
 }
 
-@font-face {
-	font-family: Twemoji;
-	src: url(https://cdn.matdoes.dev/fonts/twemoji.ttf);
-	font-display: swap;
-}
-
-
 /* latin-ext */
 @font-face {
 	font-family: 'Atkinson Hyperlegible';
@@ -222,6 +215,13 @@ button {
 	/* rreduce the size of the text because the font is too big */
 	font-size: .8em;
 	overflow-wrap: anywhere
+}
+
+.emoji {
+	position: relative;
+	height: 1em;
+	vertical-align: text-bottom;
+	bottom: .1em
 }
 
 .username-rank-prefix {
@@ -597,6 +597,11 @@ header .enter-username-button {
 #background-selector > span:hover {
 	background-size: 125%;
 }
+#profile-emoji-selector {
+	width: 2em;
+	padding: 0;
+	text-align: center;
+}
 
 
 .leaderboard-profile-list-item {
@@ -782,6 +787,9 @@ header .enter-username-button {
 	object-fit: cover;
 	background-blend-mode: overlay;
 	filter: blur(1em) brightness(.6);
+}
+.profile-emoji {
+	margin-left: .25em
 }
 
 .mayor-grid {

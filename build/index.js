@@ -79,7 +79,33 @@ env.addFilter('formatnumber', (n, digits = 3) => {
     return (n / item.value).toPrecision(digits).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1') + item.symbol;
 });
 env.addFilter('trim', (s) => s.trim());
+// convert all the emojis in a string into images
+env.addFilter('twemojiHtml', (s) => {
+    let htmlEncoded = s.replace('<', '&lt;').replace('>', '&gt;').replace('&', '&amp;');
+    // replace unicode emojis with <img src="/emoji/[hex].svg">
+    let asTwemoji = htmlEncoded.replace(emojiRegex, (match) => {
+        return `<img src="/emoji/${[...match].map(p => p.codePointAt(0).toString(16)).join('-')}.svg" class="emoji">`;
+    });
+    return asTwemoji;
+});
+const emojiRegex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g;
+let emojis = {};
+// list items in src/public/emoji
+// and create a map of emoji hex to emoji unicode
+async function initEmojis() {
+    const emojiFiles = await fs_1.promises.readdir('src/public/emoji');
+    for (const file of emojiFiles) {
+        const hex = file.split('.')[0];
+        // get the unicode emoji from the hex, codepoints are separated by '-'
+        const emoji = hex.split('-').map(p => String.fromCodePoint(parseInt(p, 16))).join('');
+        emojis[hex] = emoji;
+    }
+}
+initEmojis();
 let donators = [];
+const admins = [
+    '6536bfed869548fd83a1ecd24cf2a0fd' // mat
+];
 async function initDonators() {
     const donatorsFileRaw = await fs_1.promises.readFile('src/donators.txt', { encoding: 'ascii' });
     const donatorUuids = donatorsFileRaw.split('\n').filter(u => u).map(u => u.split(' ')[0]);
@@ -126,7 +152,7 @@ app.get('/profile/:user', async (req, res) => {
     return res.status(404).render('errors/notfound.njk');
 });
 app.get('/player/:user/:profile', async (req, res) => {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f, _g;
     let data;
     try {
         data = await (0, hypixel_1.fetchProfile)(req.params.user, req.params.profile, true);
@@ -144,6 +170,7 @@ app.get('/player/:user/:profile', async (req, res) => {
     const pack = (_a = req.query.pack) !== null && _a !== void 0 ? _a : (_b = data === null || data === void 0 ? void 0 : data.customization) === null || _b === void 0 ? void 0 : _b.pack;
     const backgroundUrl = (_c = data === null || data === void 0 ? void 0 : data.customization) === null || _c === void 0 ? void 0 : _c.backgroundUrl;
     const blurBackground = (_e = (_d = data === null || data === void 0 ? void 0 : data.customization) === null || _d === void 0 ? void 0 : _d.blurBackground) !== null && _e !== void 0 ? _e : false;
+    const emoji = (_g = (_f = data === null || data === void 0 ? void 0 : data.customization) === null || _f === void 0 ? void 0 : _f.emoji) !== null && _g !== void 0 ? _g : false;
     if (req.query.simple !== undefined)
         return res.render('member-simple.njk', { data });
     const promises = [];
@@ -152,7 +179,7 @@ app.get('/player/:user/:profile', async (req, res) => {
     }
     await (0, hypixel_1.cacheInventories)(data.member.inventories, pack);
     await Promise.all(promises);
-    res.render('member.njk', { data, pack, backgroundUrl, blurBackground });
+    res.render('member.njk', { data, pack, backgroundUrl, blurBackground, emoji });
 });
 app.get('/leaderboard/:name', async (req, res) => {
     const data = await (0, hypixel_1.fetchLeaderboard)(req.params.name);
@@ -180,6 +207,7 @@ app.get('/login', async (req, res) => {
 });
 app.get('/loggedin', async (req, res) => {
     const response = await (0, hypixel_1.createSession)(req.query.code);
+    console.log('response', response);
     if (response.ok) {
         res.cookie('sid', response.session_id, { maxAge: 31536000000 });
         res.redirect('/verify');
@@ -230,10 +258,18 @@ app.get('/profile', async (req, res) => {
     if (!req.cookies.sid)
         return res.redirect('/login');
     const session = await (0, hypixel_1.fetchSession)(req.cookies.sid);
-    if (!session)
+    if (!session || !session.account)
         return res.redirect('/login');
+    const isDonator = !!donators.find(u => u.player.uuid === session.account.minecraftUuid);
+    const isAdmin = !!admins.find(u => u === session.account.minecraftUuid);
     const player = await (0, hypixel_1.fetchPlayer)(session.account.minecraftUuid);
-    res.render('account/profile.njk', { player, customization: session.account.customization, backgroundNames });
+    res.render('account/profile.njk', {
+        player,
+        customization: session.account.customization,
+        backgroundNames,
+        isDonator: isDonator || isAdmin,
+        emojis
+    });
 });
 app.post('/profile', urlencodedParser, async (req, res) => {
     if (!req.cookies.sid)
@@ -246,13 +282,24 @@ app.post('/profile', urlencodedParser, async (req, res) => {
     if (backgroundName && !backgroundNames.includes(backgroundName))
         return res.send('That background doesn\'t exist. ');
     const backgroundUrl = backgroundName ? `/backgrounds/${backgroundName}` : undefined;
+    const isDonator = !!donators.find(u => u.player.uuid === session.account.minecraftUuid);
+    const isAdmin = !!admins.find(u => u === session.account.minecraftUuid);
     const customization = session.account.customization || {};
     if (req.body.pack)
         customization.pack = req.body.pack;
     if (backgroundUrl)
         customization.backgroundUrl = backgroundUrl;
-    if (req.body['blur-toggle']) {
+    if (req.body['blur-toggle'])
         customization.blurBackground = req.body['blur-toggle'] === 'on';
+    if (req.body['emoji'] !== undefined) {
+        const emoji = req.body['emoji'];
+        const matched = emoji.match(emojiRegex);
+        // if this isn't an emoji, remove the emoji from their profile
+        if (emoji === '' || matched.length !== 1 || matched[0] !== emoji)
+            customization.emoji = '';
+        else if (isDonator || isAdmin) {
+            customization.emoji = emoji;
+        }
     }
     await (0, hypixel_1.updateAccount)({
         discordId: session.account.discordId,

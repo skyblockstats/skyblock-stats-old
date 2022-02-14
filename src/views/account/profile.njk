@@ -25,8 +25,16 @@
     </form>
     <form id="blur-toggle-form" action="/profile" method="post">
         <label for="blur-toggle-selector">Blur and darken background behind content: </label>
-        <input type="checkbox" name="blur-toggle" id="blur-toggle-selector"{% if customization.blurBackground %} checked{% endif %}></input>
+        <input type="checkbox" name="blur-toggle" id="blur-toggle-selector"{% if customization.blurBackground %} checked{% endif %} />
     </form>
+    {% if isDonator %}
+    <form id="profile-emoji-form" action="/profile" method="post">
+        <label for="profile-emoji-selector">Emoji next to username: </label>
+        <input type="text" name="emoji" id="profile-emoji-selector" value="{{ customization.emoji }}" />
+        <button type="submit">Save</button>
+    </form>
+    {% endif %}
+    
 
 
     <script>
@@ -45,6 +53,22 @@
                 'blur-toggle': blurToggleEl.checked ? 'on' : 'off'
             })
         })
+    })
+    const profileEmojiSelectorEl = document.getElementById('profile-emoji-selector')
+    // make sure it's a valid emoji
+    let previousValue = profileEmojiSelectorEl.value
+    profileEmojiSelectorEl.addEventListener('input', e => {
+        console.log(profileEmojiSelectorEl.value)
+        if (profileEmojiSelectorEl.value.length >= 1) {
+            const matched = profileEmojiSelectorEl.value.match(/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g)
+            if (matched) {
+                profileEmojiSelectorEl.value = matched[matched.length - 1]
+            } else {
+                profileEmojiSelectorEl.value = previousValue
+                return false
+            }
+        }
+        previousValue = profileEmojiSelectorEl.value
     })
     </script>
 

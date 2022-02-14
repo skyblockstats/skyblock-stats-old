@@ -360,6 +360,7 @@ export interface AccountCustomization {
 	backgroundUrl?: string
 	pack?: string
 	blurBackground?: boolean
+	emoji?: string
 }
 
 interface CleanBasicPlayer {

@@ -42,7 +42,7 @@ body:before {
 	<div class="blurred-background-container-container"><div class="blurred-background-container"><img class="blurred-background" src="{{ backgroundUrl }}"></div></div>
 	{%- endif -%}
 
-	<h1>{{ render.username(data.member, headType='3d') }} ({{ data.member.profileName }})</h1>
+	<h1>{{ render.username(data.member, headType='3d') }}{% if emoji %}<span class="profile-emoji">{{ emoji|twemojiHtml|safe }}</span>{% endif %} ({{ data.member.profileName }})</h1>
 	{%- set categories = [] -%}
 	{# {%- set categories = categories|append('skills') -%} #}
 	{%- set categories = categories|append('deaths') -%}
