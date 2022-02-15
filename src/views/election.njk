@@ -28,7 +28,7 @@
 	{% if name|lower == 'jerry' %}
 		{% set url = '/villager.png' %}
 	{% else %}
-		{% set url = 'https://www.mc-heads.net/body/' + skinIds[name|lower] %}
+		{% set url = 'https://mc-heads.net/body/' + skinIds[name|lower] %}
 	{% endif %}
 	<img src="{{ url }}" alt="Mayor {{ name|capitalize }}">
 {%- endmacro -%}
