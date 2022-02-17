@@ -65,7 +65,8 @@ function formattingCodeToHtml(formatted) {
             }
         }
         else {
-            htmlOutput += character;
+            // no xss!
+            htmlOutput += character.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
     }
     reset();

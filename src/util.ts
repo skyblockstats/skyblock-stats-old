@@ -1,4 +1,4 @@
-export const colorCodes: { [ key: string ]: string } = {
+export const colorCodes: { [key: string]: string } = {
 	'0': '#000000', // black
 	'1': '#0000be', // blue
 	'2': '#00be00', // green
@@ -16,7 +16,7 @@ export const colorCodes: { [ key: string ]: string } = {
 	'e': '#fefe3f', // yellow
 	'f': '#ffffff', // white
 }
-const specialCodes: { [ key: string ]: string } = {
+const specialCodes: { [key: string]: string } = {
 	'l': 'font-weight: bold'
 }
 
@@ -63,7 +63,8 @@ export function formattingCodeToHtml(formatted: string): string {
 				reset()
 			}
 		} else {
-			htmlOutput += character
+			// no xss!
+			htmlOutput += character.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 		}
 	}
 	reset()
@@ -140,9 +141,9 @@ export function toRomanNumerals(number: number) {
 }
 
 export function shuffle<T>(a: T[]): T[] {
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[a[i], a[j]] = [a[j], a[i]]
-    }
-    return a
+	for (let i = a.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1))
+			;[a[i], a[j]] = [a[j], a[i]]
+	}
+	return a
 }
