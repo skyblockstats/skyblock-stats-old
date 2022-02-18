@@ -160,7 +160,6 @@ function skyblockTime(year, month = 1, day = 1) {
         time += 37200 * (month - 1);
     if (day)
         time += 1200 * (day - 1);
-    console.log(time, year, month, day);
     return time;
 }
 exports.skyblockTime = skyblockTime;

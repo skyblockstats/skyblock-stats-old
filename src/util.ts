@@ -155,6 +155,5 @@ export function skyblockTime(year: number, month: number=1, day: number=1) {
 	if (year) time += 446400 * (year)
 	if (month) time += 37200 * (month - 1)
 	if (day) time += 1200 * (day - 1)
-	console.log(time, year, month, day)
 	return time
 }
