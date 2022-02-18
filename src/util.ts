@@ -117,7 +117,7 @@ function millisecondsToTime(totalMilliseconds: number) {
 export function cleanNumber(number: number, unit?: string): string {
 	switch (unit) {
 		case 'time':
-			return millisecondsToTime(number)
+			return millisecondsToTime(Math.abs(number))
 		case 'date':
 			return (new Date(number * 1000)).toUTCString()
 	}
@@ -146,4 +146,15 @@ export function shuffle<T>(a: T[]): T[] {
 			;[a[i], a[j]] = [a[j], a[i]]
 	}
 	return a
+}
+
+/** Get the seconds since epoch for a given SkyBlock date. The year, month, and day are 1 indexed. */
+export function skyblockTime(year: number, month: number=1, day: number=1) {
+	const sbEpoch = 1560275700
+	let time = sbEpoch
+	if (year) time += 446400 * (year)
+	if (month) time += 37200 * (month - 1)
+	if (day) time += 1200 * (day - 1)
+	console.log(time, year, month, day)
+	return time
 }

@@ -43,7 +43,7 @@ const env = nunjucks.configure('src/views', {
 // we need this extension to have sections work correctly
 env.addExtension('WithExtension', new nunjucks_with_1.default());
 env.addGlobal('BASE_API', hypixel_1.baseApi);
-env.addGlobal('getTime', () => (new Date()).getTime() / 1000);
+env.addGlobal('getTime', () => Date.now() / 1000);
 env.addGlobal('colorCodes', util_1.colorCodes);
 const hash = crypto_1.default.createHash('sha1');
 hash.setEncoding('hex');
@@ -51,6 +51,7 @@ hash.write(fsSync.readFileSync('src/public/style.css'));
 hash.end();
 env.addGlobal('styleFileHash', hash.read());
 env.addGlobal('getConstants', () => hypixel_1.skyblockConstantValues);
+env.addGlobal('skyblockTime', util_1.skyblockTime);
 env.addFilter('itemToUrl', (item, packName) => (0, hypixel_1.itemToUrlCached)(item, packName));
 env.addFilter('itemNameToUrl', (item, packName) => (0, hypixel_1.itemToUrlCached)((0, hypixel_1.skyblockItemNameToItem)(item), packName));
 env.addFilter('append', (arr, item) => arr.concat(item));

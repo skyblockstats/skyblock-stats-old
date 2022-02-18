@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shuffle = exports.toRomanNumerals = exports.clean = exports.cleanNumber = exports.removeFormattingCode = exports.formattingCodeToHtml = exports.colorCodes = void 0;
+exports.skyblockTime = exports.shuffle = exports.toRomanNumerals = exports.clean = exports.cleanNumber = exports.removeFormattingCode = exports.formattingCodeToHtml = exports.colorCodes = void 0;
 exports.colorCodes = {
     '0': '#000000',
     '1': '#0000be',
@@ -118,7 +118,7 @@ function millisecondsToTime(totalMilliseconds) {
 function cleanNumber(number, unit) {
     switch (unit) {
         case 'time':
-            return millisecondsToTime(number);
+            return millisecondsToTime(Math.abs(number));
         case 'date':
             return (new Date(number * 1000)).toUTCString();
     }
@@ -150,3 +150,17 @@ function shuffle(a) {
     return a;
 }
 exports.shuffle = shuffle;
+/** Get the seconds since epoch for a given SkyBlock date. The year, month, and day are 1 indexed. */
+function skyblockTime(year, month = 1, day = 1) {
+    const sbEpoch = 1560275700;
+    let time = sbEpoch;
+    if (year)
+        time += 446400 * (year);
+    if (month)
+        time += 37200 * (month - 1);
+    if (day)
+        time += 1200 * (day - 1);
+    console.log(time, year, month, day);
+    return time;
+}
+exports.skyblockTime = skyblockTime;

@@ -853,3 +853,6 @@ header .enter-username-button {
 .next-special-mayor-time {
 	color: var(--theme-darker-text)
 }
+.election-ends-in-text {
+	margin-top: 0
+}

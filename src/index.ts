@@ -22,6 +22,7 @@ import {
 	formattingCodeToHtml,
 	removeFormattingCode,
 	toRomanNumerals,
+	skyblockTime,
 	cleanNumber,
 	colorCodes,
 	shuffle,
@@ -50,7 +51,7 @@ const env = nunjucks.configure('src/views', {
 // we need this extension to have sections work correctly
 env.addExtension('WithExtension', new WithExtension())
 env.addGlobal('BASE_API', baseApi)
-env.addGlobal('getTime', () => (new Date()).getTime() / 1000)
+env.addGlobal('getTime', () => Date.now() / 1000)
 env.addGlobal('colorCodes', colorCodes)
 
 const hash = crypto.createHash('sha1')
@@ -61,6 +62,8 @@ hash.end()
 env.addGlobal('styleFileHash', hash.read())
 
 env.addGlobal('getConstants', () => skyblockConstantValues)
+
+env.addGlobal('skyblockTime', skyblockTime)
 
 env.addFilter('itemToUrl', (item, packName: string) => itemToUrlCached(item, packName))
 env.addFilter('itemNameToUrl', (item, packName: string) => itemToUrlCached(skyblockItemNameToItem(item), packName))
